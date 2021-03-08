@@ -8,3 +8,4 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - 3306:3306
+    restart: on-failure

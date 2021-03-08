@@ -3,3 +3,5 @@ spring:
     url: jdbc:mysql://localhost:3306/reservatio
     username: reservatio
     password: reservatio
+    hikari:
+      initialization-fail-timeout: -1
