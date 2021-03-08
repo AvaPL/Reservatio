@@ -43,10 +43,10 @@
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
-        <!-- TODO: Temporary in-memory H2 database -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
