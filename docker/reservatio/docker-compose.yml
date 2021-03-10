@@ -1,0 +1,25 @@
+services:
+  db:
+    image: mysql:${MYSQL_VERSION}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - 3306:3306
+    restart: on-failure
+  backend:
+    build: ../../backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/${MYSQL_DATABASE}
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - 8080:8080
+    restart: on-failure
+  frontend:
+    build: ../../frontend
+    ports:
+      - 3000:3000
+    restart: on-failure
