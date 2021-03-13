@@ -1,5 +1,11 @@
+FROM maven:3-openjdk-15-slim as build
+COPY pom.xml .
+# Cache dependencies
+RUN ["mvn", "verify", "clean", "--fail-never"]
+COPY src src
+RUN ["mvn", "package", "-DskipTests"]
+
 FROM openjdk:15-alpine
 EXPOSE 8080
-ARG JAR_FILE=target/*.jar
-COPY ${JAR_FILE} reservatio.jar
-ENTRYPOINT ["java","-jar","/reservatio.jar"]
+COPY --from=build target/*.jar reservatio.jar
+ENTRYPOINT ["java","-jar","reservatio.jar"]
