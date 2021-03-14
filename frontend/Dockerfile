@@ -5,5 +5,6 @@ ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json ./
 COPY package-lock.json ./
 RUN npm ci
-COPY . ./
+COPY public public
+COPY src src
 CMD ["npm", "start"]
