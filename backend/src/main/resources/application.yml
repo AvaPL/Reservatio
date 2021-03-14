@@ -1,4 +1,7 @@
 spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop # TODO: Temporary
   datasource:
     url: jdbc:mysql://localhost:3306/reservatio
     username: reservatio
