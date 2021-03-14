@@ -1,2 +1,2 @@
 # Reservatio
-Application for hairstylists, beauticians and their clients.
+Application for hairstylists, beauticians and their customers.
