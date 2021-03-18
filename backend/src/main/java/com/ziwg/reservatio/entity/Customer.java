@@ -8,7 +8,7 @@ import java.util.List;
 
 @Entity
 @Data
-public class Employee {
+public class Customer {
 
     @Id
     @GeneratedValue
@@ -19,18 +19,14 @@ public class Employee {
     @NotNull
     @Column(length = 20)
     private String lastName;
+    @NotNull
+    @Column(length = 12)
+    private String phoneNumber;
+    @NotNull
+    @Column(length = 45)
+    private String email;
 
-    @OneToMany(mappedBy = "employee")
+    @OneToMany(mappedBy = "customer")
     private List<Reservation> reservations;
 
-    @ManyToOne
-    private ServiceProvider serviceProvider;
-
-    @ManyToMany
-    @JoinTable(
-            name = "employee_service",
-            joinColumns = @JoinColumn(name = "employee_id"),
-            inverseJoinColumns = @JoinColumn(name = "service_id")
-    )
-    private List<Service> services;
 }

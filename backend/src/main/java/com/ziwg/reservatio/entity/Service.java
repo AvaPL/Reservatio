@@ -9,12 +9,16 @@ import java.util.List;
 @Entity
 @Data
 public class Service {
+
     @Id
     @GeneratedValue
     private Long id;
     @NotNull
     @Column(length = 100)
     private String name;
+
+    @OneToMany(mappedBy = "service")
+    private List<Reservation> reservations;
 
     @ManyToOne
     private ServiceProvider serviceProvider;

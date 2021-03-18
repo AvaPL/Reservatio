@@ -9,6 +9,7 @@ import java.util.List;
 @Entity
 @Data
 public class ServiceProvider {
+
     @Id
     @GeneratedValue
     private Long id;
@@ -18,4 +19,10 @@ public class ServiceProvider {
 
     @OneToMany(mappedBy = "serviceProvider")
     private List<Service> services;
+
+    @OneToMany(mappedBy = "serviceProvider")
+    private List<Reservation> reservations;
+
+    @OneToMany(mappedBy = "serviceProvider")
+    private List<Employee> employees;
 }
