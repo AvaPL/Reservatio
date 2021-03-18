@@ -2,6 +2,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop # TODO: Temporary
+    show-sql: true
   datasource:
     url: jdbc:mysql://localhost:3306/reservatio
     username: reservatio

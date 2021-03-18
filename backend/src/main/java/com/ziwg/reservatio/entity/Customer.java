@@ -1,30 +1,35 @@
 package com.ziwg.reservatio.entity;
 
 import com.sun.istack.NotNull;
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Data
+@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
+@RequiredArgsConstructor
 public class Customer {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
     @Column(length = 20)
-    private String firstName;
+    private final String firstName;
     @NotNull
     @Column(length = 20)
-    private String lastName;
+    private final String lastName;
     @NotNull
     @Column(length = 12)
-    private String phoneNumber;
+    private final String phoneNumber;
     @NotNull
     @Column(length = 45)
-    private String email;
+    private final String email;
 
     @OneToMany(mappedBy = "customer")
     private List<Reservation> reservations;
