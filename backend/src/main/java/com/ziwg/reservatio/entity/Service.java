@@ -16,13 +16,20 @@ public class Service {
     @NotNull
     @Column(length = 100)
     private String name;
+    @NotNull
+    @Column
+    private Float price;
+    @NotNull
+    @Column
+    private Integer duration;
+    @Column(length = 500)
+    private String description;
 
     @OneToMany(mappedBy = "service")
     private List<Reservation> reservations;
 
     @ManyToOne
     private ServiceProvider serviceProvider;
-
     @ManyToMany(mappedBy = "services")
     private List<Employee> employees;
 }

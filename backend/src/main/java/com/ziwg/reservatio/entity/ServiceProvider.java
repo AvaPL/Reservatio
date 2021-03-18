@@ -16,7 +16,15 @@ public class ServiceProvider {
     @NotNull
     @Column(unique = true)
     private String email;
+    @NotNull
+    @Column(length = 50)
+    private String name;
+    @NotNull
+    @Column(length = 12,unique = true)
+    private String phone_nr;
 
+    @OneToOne
+    private Address address;
     @OneToMany(mappedBy = "serviceProvider")
     private List<Service> services;
 
