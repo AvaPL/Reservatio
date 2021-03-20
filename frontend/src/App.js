@@ -20,8 +20,8 @@ function App() {
     );
 }
 
-function RoutesWithNavigation() {
-    return (
+const RoutesWithNavigation = () =>
+    (
         <div>
             <Navigation/>
             <Switch>
@@ -33,7 +33,6 @@ function RoutesWithNavigation() {
                 <Redirect to="/not-found"/>
             </Switch>
         </div>
-    );
-}
+    )
 
 export default App;
