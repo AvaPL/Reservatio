@@ -1,38 +1,78 @@
 import './App.scss';
 import {Navigation} from "./navigation/Navigation";
 import {BrowserRouter, Switch, Route, Redirect} from "react-router-dom";
-import Appointments from "./appointments/Appointments";
-import Explore from "./explore/Explore";
-import Favorites from "./favorites/Favorites";
-import Search from "./search/Search";
+import Appointments from "./customer/appointments/Appointments";
+import Explore from "./customer/explore/Explore";
+import Favorites from "./customer/favorites/Favorites";
+import Search from "./customer/search/Search";
 import PageNotFound from "./pagenotfound/PageNotFound";
+import Employees from "./serviceprovider/employees/Employees";
+import Profile from "./serviceprovider/profile/Profile";
+import Services from "./serviceprovider/services/Services";
+import Statistics from "./serviceprovider/statistics/Statistics";
+import {Component} from "react";
 
-function App() {
-    return (
-        <div className="App">
-            <BrowserRouter>
+class App extends Component {
+
+    constructor(props, context) {
+        super(props, context);
+        this.state = {
+            isCustomer: true // TODO: Temporary
+        }
+    }
+
+    render() {
+        return (
+            <div className="App">
+                <BrowserRouter>
+                    <Switch>
+                        <Route exact path="/not-found" component={PageNotFound}/>
+                        {this.chooseRoutes()}
+                    </Switch>
+                </BrowserRouter>
+            </div>
+        );
+    }
+
+    chooseRoutes() {
+        if (this.state.isCustomer)
+            return this.customerRoutes()
+        else
+            return this.serviceProviderRoutes()
+    }
+
+    customerRoutes() {
+        const routes = [
+            {name: "Explore", path: "/explore", component: Explore},
+            {name: "Favorites", path: "/favorites", component: Favorites},
+            {name: "Search", path: "/search", component: Search},
+            {name: "Appointments", path: "/appointments", component: Appointments}
+        ]
+        return this.routesWithNavigation(routes)
+    }
+
+    routesWithNavigation(routes) {
+        return (
+            <Route>
+                <Navigation routes={routes}/>
                 <Switch>
-                    <Route exact path="/not-found" component={PageNotFound}/>
-                    <Route component={RoutesWithNavigation}/>
+                    <Route exact path="/"><Redirect to={routes[0].path}/></Route>
+                    {routes.map(r => <Route exact path={r.path} component={r.component} key={r.name}/>)}
+                    <Redirect to="/not-found"/>
                 </Switch>
-            </BrowserRouter>
-        </div>
-    );
-}
+            </Route>
+        );
+    }
 
-const RoutesWithNavigation = () =>
-    (
-        <div>
-            <Navigation/>
-            <Switch>
-                <Route exact path="/"><Redirect to="/explore"/></Route>
-                <Route exact path="/appointments" component={Appointments}/>
-                <Route exact path="/explore" component={Explore}/>
-                <Route exact path="/favorites" component={Favorites}/>
-                <Route exact path="/search" component={Search}/>
-                <Redirect to="/not-found"/>
-            </Switch>
-        </div>
-    )
+    serviceProviderRoutes() {
+        const routes = [
+            {name: "Statistics", path: "/statistics", component: Statistics},
+            {name: "Services", path: "/services", component: Services},
+            {name: "Employees", path: "/employees", component: Employees},
+            {name: "Profile", path: "/profile", component: Profile}
+        ]
+        return this.routesWithNavigation(routes)
+    }
+}
 
 export default App;
