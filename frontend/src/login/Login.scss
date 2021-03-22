@@ -1,0 +1,98 @@
+$login-primary: #F85F6A;
+$login-light: #FDAAAF;
+$login-dark: #d9535d;
+
+@import url('https://fonts.googleapis.com/css2?family=Asap&display=swap');
+
+.Login-picture-box{
+  //padding: 0;
+  margin-top: 5%;
+  margin-left: 5%;
+  margin-right: 5%;
+  width: 60%;
+  float: left;
+}
+
+.Login-desktop-form {
+  margin-top: 5%;
+  margin-right: 5%;
+  width: 25%;
+  float: right;
+}
+
+.Login-company-name {
+  font-family: 'Brush Script MT', sans-serif;
+  font-weight: bold;
+  font-size: 60px;
+  color: $login-primary;
+  margin-top: 20%;
+}
+
+.Login-form-box {
+  font-family: 'Asap', sans-serif;
+  margin: 5% 10%;
+  text-align: left;
+}
+
+.Login-form-title {
+  font-family: 'Asap', sans-serif;
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.Login-form-subtitle {
+  font-family: 'Asap', sans-serif;
+  font-size: 18px;
+  color: #abb5be;
+}
+
+.Login-form {
+  margin-top: 5%;
+}
+
+.Login-form-label {
+  font-family: 'Asap', sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+  color: $login-primary;
+}
+
+.btn-reservatio {
+  background-color: $login-primary !important;
+  border-color: $login-primary !important;
+  color: #ffffff;
+  width: 100%;
+
+  &:hover {
+    background-color: $login-dark !important;
+  }
+
+  &.active {
+    background-color: $login-dark !important;
+    border-color: $login-dark !important;
+    outline: $login-light;
+  }
+}
+
+.Login-link {
+  font-family: 'Asap', sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+  color: $login-primary !important;
+}
+
+a:link {
+  color: $login-primary;
+}
+
+a:visited {
+  color: $login-dark;
+}
+
+a:hover {
+  color: $login-dark !important;
+}
+
+a:active {
+  color: $login-dark !important;
+}
