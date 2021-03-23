@@ -7,6 +7,7 @@ import Favorites from "./customer/favorites/Favorites";
 import Search from "./customer/search/Search";
 import PageNotFound from "./pagenotfound/PageNotFound";
 import Login from "./login/Login";
+import Registration from "./registration/Registration";
 import Employees from "./serviceprovider/employees/Employees";
 import Profile from "./serviceprovider/profile/Profile";
 import Services from "./serviceprovider/services/Services";
@@ -29,6 +30,7 @@ class App extends Component {
                     <Switch>
                         <Route exact path="/not-found" component={PageNotFound}/>
                         <Route exact path="/login" component={Login}/>
+                        <Route exact path="/register" component={Registration}/>
                         {this.chooseRoutes()}
                     </Switch>
                 </BrowserRouter>
