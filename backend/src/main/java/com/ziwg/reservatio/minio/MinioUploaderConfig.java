@@ -1,4 +1,4 @@
-package com.ziwg.reservatio.images;
+package com.ziwg.reservatio.minio;
 
 import io.minio.MinioClient;
 import lombok.Getter;
