@@ -17,11 +17,12 @@ class Registration extends Component {
         clientButtonColor: notClickedButtonColor,
         salonButtonColor: notClickedButtonColor,
         clientButtonClicked: false,
-        salonButtonClicked: false
+        salonButtonClicked: false,
+        submitButtonDisabled: true
     };
 
     updateDimensions = () => {
-        this.setState({ width: window.innerWidth, height: window.innerHeight });
+        this.setState({width: window.innerWidth, height: window.innerHeight});
     };
 
     componentDidMount() {
@@ -37,7 +38,8 @@ class Registration extends Component {
             clientButtonColor: clickedButtonColor,
             salonButtonColor: notClickedButtonColor,
             clientButtonClicked: true,
-            salonButtonClicked: false
+            salonButtonClicked: false,
+            submitButtonDisabled: false
         })
     };
 
@@ -46,12 +48,27 @@ class Registration extends Component {
             clientButtonColor: notClickedButtonColor,
             salonButtonColor: clickedButtonColor,
             clientButtonClicked: false,
-            salonButtonClicked: true
+            salonButtonClicked: true,
+            submitButtonDisabled: false
         })
     };
 
+    handleChange = event => {
+        this.setState({[event.target.id]: event.target.value});
+    };
+
+    handleKeyDown = event => {
+        if (event.key === 'Enter') {
+            this.handleSignUpClicked();
+        }
+    };
+
+    handleSignUpClicked = () => {
+        console.log(this.state);
+    };
+
     render() {
-        if (this.state.width>900) {
+        if (this.state.width > 900) {
             return <div>
                 <div className="Auth-picture-box">
                     <img
@@ -61,8 +78,8 @@ class Registration extends Component {
                 </div>
                 <div className="Auth-desktop-form">
                     <div className="overflow-auto scrollbar" style={{height: '600px'}}>
-                    {this.getRegistrationForm()}
-                </div>
+                        {this.getRegistrationForm()}
+                    </div>
                 </div>
             </div>
         }
@@ -78,13 +95,19 @@ class Registration extends Component {
                     <ButtonGroup className="Auth-btn-group">
                         <Button className="Auth-btn-group-btn shadow-none"
                                 onClick={this.handleClientClick}
-                                style={{backgroundColor:this.state.clientButtonColor}}>Client</Button>
+                                style={{backgroundColor: this.state.clientButtonColor}}>Client</Button>
                         <Button className="Auth-btn-group-btn shadow-none"
                                 onClick={this.handleSalonClick}
-                                style={{backgroundColor:this.state.salonButtonColor}}>Salon</Button>
+                                style={{backgroundColor: this.state.salonButtonColor}}>Salon</Button>
                     </ButtonGroup>
-                    {this.state.clientButtonClicked && <CustomerRegistrationForm/>}
-                    {this.state.salonButtonClicked && <ServiceProviderRegistrationForm/>}
+                    {this.state.clientButtonClicked &&
+                    <CustomerRegistrationForm handleChange={this.handleChange} handleKeyDown={this.handleKeyDown}/>}
+                    {this.state.salonButtonClicked &&
+                    <ServiceProviderRegistrationForm handleChange={this.handleChange} handleKeyDown={this.handleKeyDown}/>}
+                    <Button className="btn-reservatio shadow-none" type="submit"
+                            disabled={this.state.submitButtonDisabled} onClick={this.handleSignUpClicked}>
+                        Submit
+                    </Button>
                 </div>
                 <div className="Auth-link">Have an account? <a href={"/login"}>Sign in</a></div>
             </div>

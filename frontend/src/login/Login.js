@@ -12,7 +12,7 @@ class Login extends Component {
     };
 
     updateDimensions = () => {
-        this.setState({ width: window.innerWidth, height: window.innerHeight });
+        this.setState({width: window.innerWidth, height: window.innerHeight});
     };
 
     componentDidMount() {
@@ -23,8 +23,22 @@ class Login extends Component {
         window.removeEventListener('resize', this.updateDimensions);
     };
 
+    handleChange = event => {
+        this.setState({[event.target.id]: event.target.value});
+    };
+
+    handleKeyDown = event => {
+        if (event.key === 'Enter') {
+            this.handleSignInClicked();
+        }
+    };
+
+    handleSignInClicked = () => {
+        console.log(this.state);
+    };
+
     render() {
-        if (this.state.width>900) {
+        if (this.state.width > 900) {
             return <div>
                 <div className="Auth-picture-box">
                     <img
@@ -33,7 +47,7 @@ class Login extends Component {
                         style={{height: '100%', width: '100%', objectFit: 'contain'}}/>
                 </div>
                 <div className="Auth-desktop-form">
-                {this.getLoginForm()}
+                    {this.getLoginForm()}
                 </div>
             </div>
         }
@@ -50,17 +64,18 @@ class Login extends Component {
                     <Form className="Auth-form">
                         <Form.Group controlId="email">
                             <Form.Label className="Auth-form-label">Email address</Form.Label>
-                            <Form.Control type="email" placeholder="Enter email"/>
+                            <Form.Control type="email" placeholder="Enter email" onChange={this.handleChange}
+                                          onKeyDown={this.handleKeyDown}/>
                         </Form.Group>
-
                         <Form.Group controlId="password">
                             <Form.Label className="Auth-form-label">Password</Form.Label>
-                            <Form.Control type="password" placeholder="Password"/>
+                            <Form.Control type="password" placeholder="Password" onChange={this.handleChange}
+                                          onKeyDown={this.handleKeyDown}/>
                         </Form.Group>
-                        <Button className="btn-reservatio shadow-none" type="submit">
-                            Sign in
-                        </Button>
                     </Form>
+                    <Button className="btn-reservatio shadow-none" type="submit" onClick={this.handleSignInClicked}>
+                        Sign in
+                    </Button>
                 </div>
                 <div className="Auth-link"><a href={"/register"}>Sign up</a></div>
             </div>
