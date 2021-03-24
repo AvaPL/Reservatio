@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Carousel from "react-bootstrap/Carousel";
 import "../stylesheets/Authentication.scss";
 
 class Login extends Component {
@@ -8,7 +9,20 @@ class Login extends Component {
     state = {
         width: window.innerWidth,
         height: window.innerHeight,
-        imageUrl: "https://pliki.propertydesign.pl/i/11/75/94/117594_r0_1140.jpg"
+        featuredSalons: [
+            {
+                name: "uBasi",
+                imageUrl: "https://pliki.propertydesign.pl/i/11/75/94/117594_r0_1140.jpg"
+            },
+            {
+                name: "Cool salon",
+                imageUrl: "https://welpmagazine.com/wp-content/uploads/2020/10/Filament-hair-salon1.jpg"
+            },
+            {
+                name: "Another salon",
+                imageUrl: "https://www.triss.com.pl/wp-content/uploads/granat-2768U-1.jpg"
+            }
+        ]
     };
 
     updateDimensions = () => {
@@ -40,18 +54,29 @@ class Login extends Component {
     render() {
         if (this.state.width > 900) {
             return <div>
-                <div className="Auth-picture-box">
-                    <img
-                        src={this.state.imageUrl}
-                        alt={"hairdresser"}
-                        style={{height: '100%', width: '100%', objectFit: 'contain'}}/>
-                </div>
+                <Carousel className="Auth-picture-box">
+                    {this.state.featuredSalons.map(salon => this.getCarouselItem(salon.name, salon.imageUrl))}
+                </Carousel>
                 <div className="Auth-desktop-form">
                     {this.getLoginForm()}
                 </div>
             </div>
         }
         return this.getLoginForm();
+    }
+
+    getCarouselItem(name, imageUrl) {
+        return <Carousel.Item>
+            <img
+                className="img-responsive d-block "
+                height={600}
+                src={imageUrl}
+                alt="First slide"
+            />
+            <Carousel.Caption>
+                <h3>{name}</h3>
+            </Carousel.Caption>
+        </Carousel.Item>;
     }
 
     getLoginForm() {

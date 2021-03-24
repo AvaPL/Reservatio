@@ -4,6 +4,7 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 import CustomerRegistrationForm from "./CustomerRegistrationForm";
 import ServiceProviderRegistrationForm from "./ServiceProviderRegistrationForm";
 import "../stylesheets/Authentication.scss";
+import Carousel from "react-bootstrap/Carousel";
 
 let notClickedButtonColor = '#FDAAAF';
 let clickedButtonColor = '#F85F6A';
@@ -13,12 +14,21 @@ class Registration extends Component {
     state = {
         width: window.innerWidth,
         height: window.innerHeight,
-        imageUrl: "https://pliki.propertydesign.pl/i/11/75/94/117594_r0_1140.jpg",
-        clientButtonColor: notClickedButtonColor,
-        salonButtonColor: notClickedButtonColor,
-        clientButtonClicked: false,
         salonButtonClicked: false,
-        submitButtonDisabled: true
+        featuredSalons: [
+            {
+                name: "uBasi",
+                imageUrl: "https://pliki.propertydesign.pl/i/11/75/94/117594_r0_1140.jpg"
+            },
+            {
+                name: "Cool salon",
+                imageUrl: "https://welpmagazine.com/wp-content/uploads/2020/10/Filament-hair-salon1.jpg"
+            },
+            {
+                name: "Another salon",
+                imageUrl: "https://www.triss.com.pl/wp-content/uploads/granat-2768U-1.jpg"
+            }
+        ]
     };
 
     updateDimensions = () => {
@@ -35,21 +45,13 @@ class Registration extends Component {
 
     handleClientClick = () => {
         this.setState({
-            clientButtonColor: clickedButtonColor,
-            salonButtonColor: notClickedButtonColor,
-            clientButtonClicked: true,
-            salonButtonClicked: false,
-            submitButtonDisabled: false
+            salonButtonClicked: false
         })
     };
 
     handleSalonClick = () => {
         this.setState({
-            clientButtonColor: notClickedButtonColor,
-            salonButtonColor: clickedButtonColor,
-            clientButtonClicked: false,
-            salonButtonClicked: true,
-            submitButtonDisabled: false
+            salonButtonClicked: true
         })
     };
 
@@ -70,12 +72,9 @@ class Registration extends Component {
     render() {
         if (this.state.width > 900) {
             return <div>
-                <div className="Auth-picture-box">
-                    <img
-                        src={this.state.imageUrl}
-                        alt={"hairdresser"}
-                        style={{height: '100%', width: '100%', objectFit: 'contain'}}/>
-                </div>
+                <Carousel className="Auth-picture-box">
+                    {this.state.featuredSalons.map(salon => this.getCarouselItem(salon.name, salon.imageUrl))}
+                </Carousel>
                 <div className="Auth-desktop-form">
                     <div className="overflow-auto scrollbar" style={{height: '600px'}}>
                         {this.getRegistrationForm()}
@@ -84,6 +83,20 @@ class Registration extends Component {
             </div>
         }
         return this.getRegistrationForm();
+    }
+
+    getCarouselItem(name, imageUrl) {
+        return <Carousel.Item>
+            <img
+                className="img-responsive d-block "
+                height={600}
+                src={imageUrl}
+                alt="First slide"
+            />
+            <Carousel.Caption>
+                <h3>{name}</h3>
+            </Carousel.Caption>
+        </Carousel.Item>;
     }
 
     getRegistrationForm() {
@@ -95,17 +108,18 @@ class Registration extends Component {
                     <ButtonGroup className="Auth-btn-group">
                         <Button className="Auth-btn-group-btn shadow-none"
                                 onClick={this.handleClientClick}
-                                style={{backgroundColor: this.state.clientButtonColor}}>Client</Button>
+                                style={{backgroundColor: this.state.salonButtonClicked ? notClickedButtonColor : clickedButtonColor}}>Client</Button>
                         <Button className="Auth-btn-group-btn shadow-none"
                                 onClick={this.handleSalonClick}
-                                style={{backgroundColor: this.state.salonButtonColor}}>Salon</Button>
+                                style={{backgroundColor: this.state.salonButtonClicked ? clickedButtonColor : notClickedButtonColor}}>Salon</Button>
                     </ButtonGroup>
-                    {this.state.clientButtonClicked &&
-                    <CustomerRegistrationForm handleChange={this.handleChange} handleKeyDown={this.handleKeyDown}/>}
-                    {this.state.salonButtonClicked &&
-                    <ServiceProviderRegistrationForm handleChange={this.handleChange} handleKeyDown={this.handleKeyDown}/>}
+                    {this.state.salonButtonClicked ?
+                        <ServiceProviderRegistrationForm handleChange={this.handleChange}
+                                                         handleKeyDown={this.handleKeyDown}/> :
+                        <CustomerRegistrationForm handleChange={this.handleChange} handleKeyDown={this.handleKeyDown}/>
+                    }
                     <Button className="btn-reservatio shadow-none" type="submit"
-                            disabled={this.state.submitButtonDisabled} onClick={this.handleSignUpClicked}>
+                            onClick={this.handleSignUpClicked}>
                         Submit
                     </Button>
                 </div>
