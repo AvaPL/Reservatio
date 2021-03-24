@@ -9,3 +9,9 @@ spring:
     password: reservatio
     hikari:
       initialization-fail-timeout: -1
+reservatio:
+  minio:
+    endpoint: http://localhost:9000
+    username: reservatio
+    password: reservatio
+    bucket: reservatio
