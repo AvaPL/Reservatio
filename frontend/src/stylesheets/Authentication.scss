@@ -1,0 +1,139 @@
+$auth-primary: #F85F6A;
+$auth-light: #FDAAAF;
+$auth-darker-light: #fc848b;
+$auth-dark: #d9535d;
+
+@import url('https://fonts.googleapis.com/css2?family=Asap&display=swap');
+
+.Auth-picture-box {
+  margin-top: 5%;
+  margin-left: 5%;
+  margin-right: 5%;
+  width: 60%;
+  float: left;
+  height: 90%;
+}
+
+.carousel-item {
+  width: 100%;
+
+}
+
+.Auth-desktop-form {
+  margin-top: 5%;
+  margin-right: 5%;
+  width: 25%;
+  float: right;
+}
+
+.Auth-company-name {
+  font-family: 'Brush Script MT', sans-serif;
+  font-weight: bold;
+  font-size: 60px;
+  color: $auth-primary;
+  margin-top: 20%;
+}
+
+.Auth-form-box {
+  font-family: 'Asap', sans-serif;
+  margin: 5% 10%;
+  text-align: left;
+}
+
+.Auth-form-title {
+  font-family: 'Asap', sans-serif;
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.Auth-form-subtitle {
+  font-family: 'Asap', sans-serif;
+  font-size: 18px;
+  color: #abb5be;
+}
+
+.Auth-form {
+  margin-top: 5%;
+}
+
+.Auth-form-label {
+  font-family: 'Asap', sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+  color: $auth-primary;
+}
+
+.Auth-btn-group {
+  width: 70%;
+  margin: 5% 15%;
+}
+
+.Auth-btn-group-btn {
+  border: none !important;
+  color: #ffffff;
+
+  &:hover {
+    background-color: $auth-darker-light !important;
+  }
+}
+
+.Auth-checkbox {
+  font-family: 'Asap', sans-serif;
+  font-size: 11px;
+}
+
+.btn-reservatio {
+  background-color: $auth-primary !important;
+  border: none !important;
+  color: #ffffff;
+  width: 100%;
+
+  &:hover {
+    background-color: $auth-dark !important;
+  }
+
+  &:active {
+    background-color: $auth-dark !important;
+  }
+}
+
+.Auth-link {
+  font-family: 'Asap', sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 15%;
+  color: black;
+}
+
+a:link {
+  color: $auth-primary;
+}
+
+a:visited {
+  color: $auth-dark;
+}
+
+a:hover {
+  color: $auth-dark !important;
+}
+
+a:active {
+  color: $auth-dark !important;
+}
+
+.scrollbar {
+  overflow-y: scroll;
+}
+
+.scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background: $auth-light;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 1rem;
+  background-color: $auth-primary;
+}
