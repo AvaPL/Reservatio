@@ -15,3 +15,38 @@ reservatio:
     username: reservatio
     password: reservatio
     bucket: reservatio
+    bucketPolicy: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "AWS": [
+                "*"
+              ]
+            },
+            "Action": [
+              "s3:ListBucket",
+              "s3:GetBucketLocation"
+            ],
+            "Resource": [
+              "arn:aws:s3:::${reservatio.minio.bucket}"
+            ]
+          },
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "AWS": [
+                "*"
+              ]
+            },
+            "Action": [
+              "s3:GetObject"
+            ],
+            "Resource": [
+              "arn:aws:s3:::${reservatio.minio.bucket}/*"
+            ]
+          }
+        ]
+      }

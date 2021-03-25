@@ -18,10 +18,11 @@ public class MinioUploaderConfig {
     private String username;
     private String password;
     private String bucket;
+    private String bucketPolicy;
 
     @Bean
     public MinioUploader minioUploader() {
         val minioClient = MinioClient.builder().endpoint(endpoint).credentials(username, password).build();
-        return new MinioUploader(minioClient, bucket);
+        return new MinioUploader(minioClient, bucket, bucketPolicy);
     }
 }
