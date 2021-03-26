@@ -1,6 +1,8 @@
 package com.ziwg.reservatio.minio;
 
 import io.minio.*;
+import io.minio.http.Method;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,7 @@ import java.nio.file.Path;
 public class MinioUploader {
 
     private final MinioClient minioClient;
+    @Getter
     private final String minioBucket;
     private final String bucketPolicy;
 
@@ -55,5 +58,12 @@ public class MinioUploader {
         val response = minioClient.uploadObject(args);
         log.info("Uploaded new object '" + key + "' to bucket '" + minioBucket + "'");
         return response;
+    }
+
+    @SneakyThrows
+    public String urlFor(String key) {
+        val args = GetPresignedObjectUrlArgs.builder().method(Method.GET).bucket(minioBucket).object(key).build();
+        val urlWithExpiry = minioClient.getPresignedObjectUrl(args);
+        return urlWithExpiry.split("\\?", 2)[0];
     }
 }
