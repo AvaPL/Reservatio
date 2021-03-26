@@ -1,0 +1,7 @@
+reservatio:
+  minio:
+    endpoint: mock
+    username: mock
+    password: mock
+    bucket: mock
+    bucketPolicy: mock
