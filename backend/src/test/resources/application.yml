@@ -1,3 +1,7 @@
+spring:
+  data:
+    rest:
+      base-path: /rest
 reservatio:
   minio:
     endpoint: mock
