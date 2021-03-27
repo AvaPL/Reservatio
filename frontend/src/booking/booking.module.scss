@@ -1,0 +1,92 @@
+.booking {
+  text-align: left;
+}
+.mainImgWrapper {
+  position: relative;
+  height: 30vh;
+}
+
+.mainImg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.mainBack {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: white;
+  margin-left: 1rem;
+  margin-top: 1rem;
+}
+
+.mainStar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin-right: 1rem;
+  margin-top: 1rem;
+}
+.mainStarButton {
+  border: 1px solid #f8f9fa;
+  border-radius: .25rem;
+  padding: 6px 12px;
+  background-color: transparent;
+  svg {
+    color: white;
+  }
+}
+
+.mainScore {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  color: white;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+  pointer-events: none;
+}
+
+.squareBox {
+  width: 6vmin;
+  height: 6vmin;
+  min-width: 3rem;
+  min-height: 3rem;
+}
+
+.paddingTop {
+  padding-top: 0.5rem;
+}
+
+.marginBottom {
+  margin-bottom: 1rem;
+}
+
+.serviceCardTitle {
+  word-break: break-word;
+}
+
+.serviceCardPriceInfoCol {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.reviewCardImgWrapper {
+  position: relative;
+  padding-bottom: 100%;
+}
+
+.reviewCardImg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
