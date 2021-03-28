@@ -2,39 +2,157 @@ package com.ziwg.reservatio.loadtestdata;
 
 import com.ziwg.reservatio.entity.*;
 import com.ziwg.reservatio.repository.*;
-import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
+import java.util.Iterator;
+import java.util.concurrent.ThreadLocalRandom;
 
-@Slf4j
 @Configuration
 public class LoadTestData {
 
+    private static final int numberOfCustomers = 20;
+    private static final int numberOfServiceProviders = 3;
+    private static final int numberOfServices = 10;
+    private static final int numberOfEmployees = 20;
+    private static final int numberOfReservations = 10;
+    private static final int numberOfReviews = 5;
+    private static final int numberOfServicesPerEmployee = 2;
+
+    private final CustomerRepository customerRepository;
+    private final AddressRepository addressRepository;
+    private final ServiceProviderRepository serviceProviderRepository;
+    private final ServiceRepository serviceRepository;
+    private final EmployeeRepository employeeRepository;
+    private final ReservationRepository reservationRepository;
+    private final ReviewRepository reviewRepository;
+
+    @Autowired
+    public LoadTestData(CustomerRepository customerRepository, AddressRepository addressRepository, ServiceProviderRepository serviceProviderRepository, EmployeeRepository employeeRepository, ServiceRepository serviceRepository, ReservationRepository reservationRepository, ReviewRepository reviewRepository) {
+        this.customerRepository = customerRepository;
+        this.addressRepository = addressRepository;
+        this.serviceProviderRepository = serviceProviderRepository;
+        this.employeeRepository = employeeRepository;
+        this.serviceRepository = serviceRepository;
+        this.reservationRepository = reservationRepository;
+        this.reviewRepository = reviewRepository;
+    }
+
     @Bean
-    public CommandLineRunner initDatabase(CustomerRepository customerRepository,
-                                          AddressRepository addressRepository,
-                                          ServiceProviderRepository serviceProviderRepository,
-                                          EmployeeRepository employeeRepository,
-                                          ServiceRepository serviceRepository,
-                                          ReservationRepository reservationRepository) {
+    public CommandLineRunner initDatabase() {
         return args -> {
-            Customer customer = new Customer("Andrzej", "Ktosiek", "123456789", "andrzej@gmail.com");
-            customerRepository.save(customer);
-            Address address = new Address("Kwiatowa", "1", "Wroclaw", "50-520");
-            addressRepository.save(address);
-            ServiceProvider serviceProvider = new ServiceProvider("uBasi@gmail.com", "U Basi", "123456789", address);
-            serviceProviderRepository.save(serviceProvider);
-            Service service = new Service("Strzyzenie", 50f, 60, "Obcinamy wlosy", serviceProvider);
-            serviceRepository.save(service);
-            Employee employee = new Employee("Basia", "Fryzjerka", serviceProvider);
-            employee.setServices(Collections.singletonList(service));
-            employeeRepository.save(employee);
-            Reservation reservation = new Reservation(LocalDateTime.now(), customer, service, employee);
-            log.info("Preloading " + reservationRepository.save(reservation));
+            fillCustomers();
+            fillAddresses();
+            fillServiceProviders();
+            fillServices();
+            fillEmployees();
+            fillReservations();
+            fillReviews();
+            joinEmployeesAndServices();
         };
+    }
+
+    private void fillCustomers() {
+        for (int i = 1; i <= LoadTestData.numberOfCustomers; i++) {
+            customerRepository.save(new Customer("name" + i,
+                    "lastname" + i,
+                    "+48" + String.format("%-" + 9 + "s", i).replace(" ", "0"),
+                    "customer" + i + "@gmail.com"));
+        }
+    }
+
+    private void fillAddresses() {
+        for (int i = 1; i <= LoadTestData.numberOfServiceProviders; i++) {
+            addressRepository.save(new Address("street" + i,
+                    String.valueOf(i),
+                    "city" + i,
+                    "00-" + ThreadLocalRandom.current().nextInt(100, 999 + 1)));
+        }
+    }
+
+    private void fillServiceProviders() {
+        Iterator<Address> addressIterator = addressRepository.findAll().iterator();
+        for (int i = 1; i <= LoadTestData.numberOfServiceProviders; i++) {
+            if (!addressIterator.hasNext())
+                addressIterator = addressRepository.findAll().iterator();
+            serviceProviderRepository.save(new ServiceProvider("serviceprovider" + i + "@gmail.com",
+                    "serviceprovider" + i,
+                    "+48" + String.format("%-" + 9 + "s", i).replace(" ", "0"),
+                    addressIterator.next()));
+        }
+    }
+
+    private void fillServices() {
+        Iterator<ServiceProvider> serviceProviderIterator = serviceProviderRepository.findAll().iterator();
+        for (int i = 1; i <= LoadTestData.numberOfServices; i++) {
+            if (!serviceProviderIterator.hasNext())
+                serviceProviderIterator = serviceProviderRepository.findAll().iterator();
+            serviceRepository.save(new Service("service" + i,
+                    (float) i,
+                    i * 10,
+                    "description" + i,
+                    serviceProviderIterator.next()));
+        }
+    }
+
+    private void fillEmployees() {
+        Iterator<ServiceProvider> serviceProviderIterator = serviceProviderRepository.findAll().iterator();
+        for (int i = 1; i <= LoadTestData.numberOfEmployees; i++) {
+            if (!serviceProviderIterator.hasNext())
+                serviceProviderIterator = serviceProviderRepository.findAll().iterator();
+            employeeRepository.save(new Employee("employee" + i,
+                    "lastname" + i,
+                    serviceProviderIterator.next()));
+
+        }
+    }
+
+    private void fillReservations() {
+        Iterator<Customer> customerIterator = customerRepository.findAll().iterator();
+        Iterator<Service> serviceIterator = serviceRepository.findAll().iterator();
+        Iterator<Employee> employeeIterator = employeeRepository.findAll().iterator();
+        for (int i = 1; i <= LoadTestData.numberOfReservations; i++) {
+            if (!customerIterator.hasNext())
+                customerIterator = customerRepository.findAll().iterator();
+            if (!serviceIterator.hasNext())
+                serviceIterator = serviceRepository.findAll().iterator();
+            if (!employeeIterator.hasNext())
+                employeeIterator = employeeRepository.findAll().iterator();
+            reservationRepository.save(new Reservation(LocalDateTime.now(),
+                    customerIterator.next(),
+                    serviceIterator.next(),
+                    employeeIterator.next()));
+        }
+    }
+
+    private void fillReviews() {
+        Iterator<Reservation> reservationIterator = reservationRepository.findAll().iterator();
+        for (int i = 1; i <= numberOfReviews; i++) {
+            if (!reservationIterator.hasNext())
+                reservationIterator = reservationRepository.findAll().iterator();
+            Reservation reservation = reservationIterator.next();
+            Review review = new Review(i, "review" + i, reservation);
+            reservation.setReview(review);
+            reviewRepository.save(review);
+            reservationRepository.save(reservation);
+        }
+    }
+
+    private void joinEmployeesAndServices() {
+        Iterator<Service> serviceIterator = serviceRepository.findAll().iterator();
+        for (Employee employee : employeeRepository.findAll()) {
+            for (int i = 0; i < numberOfServicesPerEmployee; i++) {
+                if (!serviceIterator.hasNext())
+                    serviceIterator = serviceRepository.findAll().iterator();
+                Service service = serviceIterator.next();
+                employee.getServices().add(service);
+                service.getEmployees().add(employee);
+                serviceRepository.save(service);
+            }
+            employeeRepository.save(employee);
+        }
     }
 }

@@ -26,7 +26,7 @@ public class ServiceProvider {
     private final String name;
     @NotNull
     @Column(length = 12,unique = true)
-    private final String phone_nr;
+    private final String phoneNumber;
 
     @OneToOne
     private final Address address;
