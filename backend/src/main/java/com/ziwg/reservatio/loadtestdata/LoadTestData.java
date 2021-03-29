@@ -3,6 +3,7 @@ package com.ziwg.reservatio.loadtestdata;
 import com.ziwg.reservatio.entity.*;
 import com.ziwg.reservatio.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,16 +43,20 @@ public class LoadTestData {
     }
 
     @Bean
-    public CommandLineRunner initDatabase() {
+    public CommandLineRunner initDatabase(@Value("${reservatio.loadData}") String loadData) {
+        if (Boolean.parseBoolean(loadData)) {
+            return args -> {
+                fillCustomers();
+                fillAddresses();
+                fillServiceProviders();
+                fillServices();
+                fillEmployees();
+                fillReservations();
+                fillReviews();
+                joinEmployeesAndServices();
+            };
+        }
         return args -> {
-            fillCustomers();
-            fillAddresses();
-            fillServiceProviders();
-            fillServices();
-            fillEmployees();
-            fillReservations();
-            fillReviews();
-            joinEmployeesAndServices();
         };
     }
 
