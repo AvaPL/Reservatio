@@ -1,16 +1,24 @@
 package com.ziwg.reservatio.loadtestdata;
 
 import com.ziwg.reservatio.entity.*;
+import com.ziwg.reservatio.minio.MinioUploader;
 import com.ziwg.reservatio.repository.*;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.ResourceUtils;
 
+import java.io.File;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom;
+
 
 @Configuration
 public class LoadTestData {
@@ -30,9 +38,10 @@ public class LoadTestData {
     private final EmployeeRepository employeeRepository;
     private final ReservationRepository reservationRepository;
     private final ReviewRepository reviewRepository;
+    private final MinioUploader minioUploader;
 
     @Autowired
-    public LoadTestData(CustomerRepository customerRepository, AddressRepository addressRepository, ServiceProviderRepository serviceProviderRepository, EmployeeRepository employeeRepository, ServiceRepository serviceRepository, ReservationRepository reservationRepository, ReviewRepository reviewRepository) {
+    public LoadTestData(CustomerRepository customerRepository, AddressRepository addressRepository, ServiceProviderRepository serviceProviderRepository, EmployeeRepository employeeRepository, ServiceRepository serviceRepository, ReservationRepository reservationRepository, ReviewRepository reviewRepository, MinioUploader minioUploader) {
         this.customerRepository = customerRepository;
         this.addressRepository = addressRepository;
         this.serviceProviderRepository = serviceProviderRepository;
@@ -40,6 +49,7 @@ public class LoadTestData {
         this.serviceRepository = serviceRepository;
         this.reservationRepository = reservationRepository;
         this.reviewRepository = reviewRepository;
+        this.minioUploader = minioUploader;
     }
 
     @Bean
@@ -78,15 +88,23 @@ public class LoadTestData {
         }
     }
 
+    @SneakyThrows
     private void fillServiceProviders() {
         Iterator<Address> addressIterator = addressRepository.findAll().iterator();
         for (int i = 1; i <= LoadTestData.numberOfServiceProviders; i++) {
             if (!addressIterator.hasNext())
                 addressIterator = addressRepository.findAll().iterator();
-            serviceProviderRepository.save(new ServiceProvider("serviceprovider" + i + "@gmail.com",
+
+            ServiceProvider serviceProvider = new ServiceProvider("serviceprovider" + i + "@gmail.com",
                     "serviceprovider" + i,
                     "+48" + String.format("%-" + 9 + "s", i).replace(" ", "0"),
-                    addressIterator.next()));
+                    addressIterator.next());
+            File imageFile = ResourceUtils.getFile("classpath:images/" + serviceProvider.getName() + ".jpg");
+            if (imageFile.exists()) {
+                minioUploader.upload(imageFile, serviceProvider.getName() + ".jpg");
+                serviceProvider.setImageUrl(minioUploader.urlFor(serviceProvider.getName() + ".jpg"));
+            }
+            serviceProviderRepository.save(serviceProvider);
         }
     }
 

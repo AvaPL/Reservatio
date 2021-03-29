@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,6 +28,7 @@ public class ServiceProvider {
     @NotNull
     @Column(length = 12,unique = true)
     private final String phoneNumber;
+    private String imageUrl;
 
     @OneToOne
     private final Address address;
