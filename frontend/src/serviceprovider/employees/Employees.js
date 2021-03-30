@@ -6,7 +6,7 @@ import './Employees.scss'
 class Employees extends Component {
     render() {
         return (
-            <div className="employees-text m-lg-5 m-md-4 m-sm-4">
+            <div className="employees-text m-4 m-lg-5">
                 <Tab.Container defaultActiveKey="first">
                     <Row>
                         <Col className="align-self-center">
