@@ -1,0 +1,44 @@
+.rcorners2 {
+  position: relative;
+  left: 50%;
+  transform: translate(-50%);
+  border-radius: 15px;
+  border: 2px solid #F85F6A;
+  padding: 20px;
+  width: auto;
+  max-width: 800px;
+  height: 145px;
+}
+
+.break{
+  margin-bottom: 1cm;
+}
+
+.calendar {
+  position: fixed;
+  left: 10%;
+  border: 2px solid black;
+  width: 80px;
+  height: 90px;
+}
+
+.calendarleft{
+  width: 10px;
+  height: 86px;
+  background: #d9535d;
+}
+
+.jumpleft{
+  margin-left: 35px;
+}
+
+.day{
+  margin-right: 1cm;
+  font-family: 'Asap', sans-serif;
+  font-weight: bold;
+  font-size: 150%;
+}
+
+.top{
+  margin-top: 7px;
+}
