@@ -1,0 +1,43 @@
+$border-primary: #FDC2C6;
+$button-primary: #F85F6A;
+$button-hover: #D9535D;
+
+.employees-text {
+  font-family: 'Asap', sans-serif;
+}
+
+.employees-border {
+  border: 2px solid $border-primary;
+  border-radius: 10px;
+}
+
+.employees-button-add {
+  background-color: $button-primary !important;
+  border: none !important;
+
+  &:hover {
+    background-color: $button-hover !important;
+  }
+
+  &:active {
+    background-color: $button-hover !important;
+  }
+}
+
+.employees-button-delete {
+  background-color: transparent !important;
+  border: none !important;
+  color: black !important;
+}
+
+a.employees-tab {
+  color: black;
+
+  &:hover{
+    color: $button-primary;
+  }
+
+  &.active {
+    background-color: $button-primary !important;
+  }
+}
