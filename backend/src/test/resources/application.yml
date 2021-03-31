@@ -3,6 +3,7 @@ spring:
     rest:
       base-path: /rest
 reservatio:
+  loadData: true
   minio:
     endpoint: mock
     username: mock
