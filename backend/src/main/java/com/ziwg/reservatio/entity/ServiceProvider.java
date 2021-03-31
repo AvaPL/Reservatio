@@ -26,12 +26,13 @@ public class ServiceProvider {
     @Column(length = 50)
     private final String name;
     @NotNull
-    @Column(length = 12,unique = true)
+    @Column(length = 12, unique = true)
     private final String phoneNumber;
     private String imageUrl;
 
     @OneToOne
     private final Address address;
+
     @OneToMany(mappedBy = "serviceProvider")
     private List<Service> services;
 
