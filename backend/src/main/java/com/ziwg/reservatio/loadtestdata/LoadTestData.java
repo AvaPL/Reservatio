@@ -14,6 +14,7 @@ import org.springframework.util.ResourceUtils;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 
@@ -68,10 +69,12 @@ public class LoadTestData {
     }
 
     private void fillCustomers() {
+        Random random = new Random();
         for (int i = 1; i <= LoadTestData.numberOfCustomers; i++) {
+            int randomPhoneNumber = 100000000 + random.nextInt(900000000);
             customerRepository.save(new Customer("name" + i,
                     "lastname" + i,
-                    "+48" + String.format("%-" + 9 + "s", i).replace(" ", "0"),
+                    "+48" + randomPhoneNumber,
                     "customer" + i + "@gmail.com"));
         }
     }
