@@ -11,7 +11,7 @@ $button-hover: #D9535D;
   border-radius: 10px;
 }
 
-.employees-button-add {
+.employees-button-primary {
   background-color: $button-primary !important;
   border: none !important;
 
@@ -24,7 +24,7 @@ $button-hover: #D9535D;
   }
 }
 
-.employees-button-delete {
+.employees-button-secondary {
   background-color: transparent !important;
   border: none !important;
   color: black !important;
