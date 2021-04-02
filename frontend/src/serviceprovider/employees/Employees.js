@@ -65,7 +65,7 @@ class Employees extends Component {
             <Nav variant="pills" className="flex-column">
                 {
                     this.state.employees.map(employee =>
-                        <Nav.Item>
+                        <Nav.Item key={employee.name}>
                             <Nav.Link eventKey={employee.name} className="employees-tab"
                                       onSelect={() => this.setState({selectedEmployee: employee})}>{employee.name}</Nav.Link>
                         </Nav.Item>
@@ -80,13 +80,13 @@ class Employees extends Component {
             <Tab.Content>
                 {
                     this.state.employees.map(employee =>
-                        <Tab.Pane eventKey={employee.name}>
+                        <Tab.Pane key={employee.name} eventKey={employee.name}>
                             <span className="font-weight-bold" style={{fontSize: "150%"}}>Services:</span>
                             {
                                 <ul>
                                     {
                                         employee.services.map(service =>
-                                            <li>{service}</li>
+                                            <li key={service}>{service}</li>
                                         )
                                     }
                                 </ul>
@@ -102,7 +102,11 @@ class Employees extends Component {
         return (
             <AddEmployeeModal show={this.state.showModalAdd}
                               onHide={() => this.setState({showModalAdd: false})}
-                              onClick={() => console.log("Added employee")}/>
+                              onClick={employee => {
+                                  console.log("Added employee")
+                                  console.log(employee)
+                                  this.setState({showModalAdd: false})
+                              }}/>
         );
     }
 
@@ -127,7 +131,10 @@ class Employees extends Component {
                     <Button className="employees-button-secondary shadow-none"
                             onClick={() => this.setState({showModalDelete: false})}>Cancel</Button>
                     <Button className="employees-button-primary shadow-none"
-                            onClick={() => console.log(`Deleted employee [${this.state.selectedEmployee.name}]`)}>Delete</Button>
+                            onClick={() => {
+                                console.log(`Deleted employee [${this.state.selectedEmployee.name}]`)
+                                this.setState({showModalDelete: false})
+                            }}>Delete</Button>
                 </Modal.Footer>
             </Modal>
         );

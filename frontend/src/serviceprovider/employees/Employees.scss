@@ -33,7 +33,7 @@ $button-hover: #D9535D;
 a.employees-tab {
   color: black;
 
-  &:hover{
+  &:not(.active):hover {
     color: $button-primary;
   }
 
