@@ -12,6 +12,7 @@ export class AddEmployeeModal extends Component {
     }
 
     /* TODO: Replace Auth classes with dedicated ones */
+
     /* TODO: Change fonts */
 
     render() {
@@ -25,28 +26,28 @@ export class AddEmployeeModal extends Component {
                 centered
             >
                 <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter" className="Auth-form-title">
+                    <Modal.Title id="contained-modal-title-vcenter" className="employees-form-title">
                         Add new employee
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
                         <Form.Group controlId="firstName">
-                            <Form.Label className="Auth-form-label">First name</Form.Label>
+                            <Form.Label className="employees-form-label">First name</Form.Label>
                             <Form.Control type="text" placeholder="First name"
                                           onChange={event => this.handleChange(event)}/>
                         </Form.Group>
                         <Form.Group controlId="lastName">
-                            <Form.Label className="Auth-form-label">Last name</Form.Label>
+                            <Form.Label className="employees-form-label">Last name</Form.Label>
                             <Form.Control type="text" placeholder="Last name"
                                           onChange={event => this.handleChange(event)}/>
                         </Form.Group>
                         <Form.Group controlId="services">
-                            <Form.Label className="Auth-form-label">Services</Form.Label>
+                            <Form.Label className="employees-form-label">Services</Form.Label>
                             {
                                 services.map(service =>
-                                    <Form.Check id={service.name} key={service.name} className="Auth-checkbox" type="checkbox"
-                                                label={service.name}
+                                    <Form.Check id={service.name} key={service.name} className="employees-form-checkbox"
+                                                type="checkbox" label={service.name}
                                                 onChange={event => this.handleServiceChange(event)}/>
                                 )
                             }
