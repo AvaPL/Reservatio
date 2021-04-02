@@ -21,6 +21,7 @@ public class Review {
     private final Integer grade;
     @Column(length = 2000)
     private final String message;
+
     @OneToOne
     private final Reservation reservation;
 
