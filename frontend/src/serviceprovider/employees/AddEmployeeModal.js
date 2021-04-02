@@ -11,10 +11,6 @@ export class AddEmployeeModal extends Component {
         }
     }
 
-    /* TODO: Replace Auth classes with dedicated ones */
-
-    /* TODO: Change fonts */
-
     render() {
         const services = [{name: "Service A"}, {name: "Service B"}, {name: "Service C"}]
         return (
