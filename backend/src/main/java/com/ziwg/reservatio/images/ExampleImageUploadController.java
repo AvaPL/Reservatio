@@ -31,7 +31,7 @@ public class ExampleImageUploadController {
         this.minioUploader = minioUploader;
     }
 
-    @PostMapping(produces = MediaTypes.HAL_JSON_VALUE)
+    @PostMapping
     @SneakyThrows
     public ResponseEntity<ImageModel> upload(@RequestParam("image") MultipartFile file) {
         val filename = Optional.ofNullable(file.getOriginalFilename()).orElse("");
