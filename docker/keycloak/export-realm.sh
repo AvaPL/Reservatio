@@ -11,4 +11,4 @@ docker exec -it ${container_name} /opt/jboss/keycloak/bin/standalone.sh \
   -Dkeycloak.migration.usersExportStrategy=REALM_FILE \
   -Dkeycloak.migration.file=/tmp/${realm_name}-realm.json
 
-docker cp ${container_name}:/tmp/${realm_name}-realm.json ../keycloak/
+docker cp ${container_name}:/tmp/${realm_name}-realm.json ./

@@ -3,11 +3,16 @@ services:
     image: mysql:${MYSQL_VERSION}
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_RESERVATIO_DATABASE: ${MYSQL_RESERVATIO_DATABASE}
+      MYSQL_RESERVATIO_USER: ${MYSQL_RESERVATIO_USER}
+      MYSQL_RESERVATIO_PASSWORD: ${MYSQL_RESERVATIO_PASSWORD}
+      MYSQL_KEYCLOAK_DATABASE: ${MYSQL_KEYCLOAK_DATABASE}
+      MYSQL_KEYCLOAK_USER: ${MYSQL_KEYCLOAK_USER}
+      MYSQL_KEYCLOAK_PASSWORD: ${MYSQL_KEYCLOAK_PASSWORD}
     ports:
       - 3306:3306
+    volumes:
+      - ../mysql/init.sh:/docker-entrypoint-initdb.d/init.sh
     restart: on-failure
   minio:
     image: minio/minio:${MINIO_VERSION}
@@ -23,7 +28,9 @@ services:
     environment:
       KEYCLOAK_USER: ${KEYCLOAK_USER}
       KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
-      DB_VENDOR: h2 # TODO: Delete this and use mysql instead.
+      DB_DATABASE: ${MYSQL_KEYCLOAK_DATABASE}
+      DB_USER: ${MYSQL_KEYCLOAK_USER}
+      DB_PASSWORD: ${MYSQL_KEYCLOAK_PASSWORD}
       KEYCLOAK_IMPORT: /tmp/${KEYCLOAK_REALM}-realm.json
     ports:
       - 8180:8080
