@@ -53,3 +53,18 @@ reservatio:
           }
         ]
       }
+keycloak:
+  auth-server-url: http://localhost:8180/auth
+  realm: reservatio
+  resource: reservatio
+  security-constraints:
+    - auth-roles:
+        - customer
+      security-collections:
+        - patterns:
+            - /rest/customer/*
+    - auth-roles:
+        - service_provider
+      security-collections:
+        - patterns:
+            - /rest/service-provider/*
