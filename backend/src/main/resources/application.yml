@@ -68,6 +68,7 @@ keycloak:
     - security-collections:
         - patterns:
             - /register-customer
+            - /register-service-provider
     - auth-roles:
         - admin
       security-collections:
