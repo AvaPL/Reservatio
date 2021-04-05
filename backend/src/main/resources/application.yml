@@ -55,16 +55,19 @@ reservatio:
       }
   keycloak:
     server-url: ${keycloak.auth-server-url}
-    username: admin
-    password: admin
+    username: reservatio
+    password: reservatio
     realm: ${keycloak.realm}
-    client-id: ${keycloak.realm}-realm
+    client-id: ${keycloak.resource}
 keycloak:
   auth-server-url: http://localhost:8180/auth
   public-client: true
   realm: reservatio
   resource: reservatio
   security-constraints:
+    - security-collections:
+        - patterns:
+            - /register-customer
     - auth-roles:
         - admin
       security-collections:
