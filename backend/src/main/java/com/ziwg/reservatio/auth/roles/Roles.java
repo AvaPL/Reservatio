@@ -1,4 +1,4 @@
-package com.ziwg.reservatio.auth.role;
+package com.ziwg.reservatio.auth.roles;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,5 +9,5 @@ public enum Roles {
     CUSTOMER("customer"),
     SERVICE_PROVIDER("service_provider");
 
-    private final String roleName;
+    private final String keycloakRoleName;
 }

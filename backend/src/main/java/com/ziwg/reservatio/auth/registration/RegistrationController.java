@@ -2,7 +2,7 @@ package com.ziwg.reservatio.auth.registration;
 
 import com.ziwg.reservatio.auth.registration.form.CustomerRegistrationForm;
 import com.ziwg.reservatio.auth.registration.form.ServiceProviderRegistrationForm;
-import com.ziwg.reservatio.auth.role.Roles;
+import com.ziwg.reservatio.auth.roles.Roles;
 import com.ziwg.reservatio.entity.Address;
 import com.ziwg.reservatio.entity.Customer;
 import com.ziwg.reservatio.entity.ServiceProvider;
@@ -57,7 +57,7 @@ public class RegistrationController {
     }
 
     private void saveCustomerInKeycloak(CustomerRegistrationForm registrationForm) {
-        Set<String> roles = Collections.singleton(Roles.CUSTOMER.getRoleName());
+        Set<String> roles = Collections.singleton(Roles.CUSTOMER.getKeycloakRoleName());
         val userRepresentation = SimpleUserRepresentation.builder().email(registrationForm.getEmail())
                 .password(registrationForm.getPassword()).username(registrationForm.getEmail())
                 .firstName(registrationForm.getFirstName()).lastName(registrationForm.getLastName()).build();
@@ -83,7 +83,7 @@ public class RegistrationController {
     }
 
     private void saveServiceProviderInKeycloak(ServiceProviderRegistrationForm registrationForm) {
-        Set<String> roles = Collections.singleton(Roles.SERVICE_PROVIDER.getRoleName());
+        Set<String> roles = Collections.singleton(Roles.SERVICE_PROVIDER.getKeycloakRoleName());
         val userRepresentation = SimpleUserRepresentation.builder().email(registrationForm.getEmail())
                 .password(registrationForm.getPassword()).username(registrationForm.getName()).build();
         keycloakClient.createUser(userRepresentation, roles);
