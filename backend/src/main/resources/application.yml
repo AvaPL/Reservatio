@@ -53,6 +53,12 @@ reservatio:
           }
         ]
       }
+  keycloak:
+    server-url: ${keycloak.auth-server-url}
+    username: admin
+    password: admin
+    realm: ${keycloak.realm}
+    client-id: ${keycloak.realm}-realm
 keycloak:
   auth-server-url: http://localhost:8180/auth
   public-client: true

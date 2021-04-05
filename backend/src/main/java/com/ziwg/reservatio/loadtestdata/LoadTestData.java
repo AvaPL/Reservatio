@@ -34,7 +34,8 @@ public class LoadTestData {
             employee.setServices(Collections.singletonList(service));
             employeeRepository.save(employee);
             Reservation reservation = new Reservation(LocalDateTime.now(), customer, service, employee);
-            log.info("Preloading " + reservationRepository.save(reservation));
+            reservationRepository.save(reservation);
+            log.info("Preloaded test data");
         };
     }
 }
