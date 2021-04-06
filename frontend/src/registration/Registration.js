@@ -56,7 +56,13 @@ class Registration extends Component {
     };
 
     handleChange = event => {
-        this.setState({[event.target.id]: event.target.value});
+        const form = this.state.form
+        this.setState({
+            form: {
+                ...form,
+                [event.target.id]: event.target.value
+            }
+        });
     };
 
     handleKeyDown = event => {
@@ -66,7 +72,23 @@ class Registration extends Component {
     };
 
     handleSignUpClicked = () => {
-        console.log(this.state);
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.state.form)
+        }
+        const endpoint = this.state.salonButtonClicked ? 'register-service-provider' : 'register-customer' // TODO: Load from env
+        fetch('http://localhost:8080/' + endpoint, requestOptions) // TODO: Load host from env
+            .then(response => {
+                if (response.ok)
+                    return response.json() // TODO: Register does not return json
+                else
+                    throw new Error(response.statusText)
+            })
+            .then(response => console.log("Redirect to login page")) // TODO: Redirect
+            .catch(error => console.log(error))
     };
 
     render() {
