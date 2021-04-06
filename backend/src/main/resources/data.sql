@@ -1,6 +1,11 @@
+create or replace view service_provider_employees_view
+as
+select sp.id
+from service_provider sp;
+
 create or replace view employee_view
 as
-select e.id as id, concat(e.first_name, ' ', e.last_name) as name
+select e.id as id, concat(e.first_name, ' ', e.last_name) as name, e.service_provider_id
 from employee e;
 
 create or replace view employee_service_view

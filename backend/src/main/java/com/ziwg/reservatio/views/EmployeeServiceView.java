@@ -18,6 +18,7 @@ public class EmployeeServiceView {
     @Id
     private Long id;
     private String name;
+
     @ManyToOne
     @JoinColumn(name = "employee_id")
     private EmployeeView employeeView;
