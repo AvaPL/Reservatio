@@ -53,3 +53,34 @@ reservatio:
           }
         ]
       }
+  keycloak:
+    server-url: ${keycloak.auth-server-url}
+    username: reservatio
+    password: reservatio
+    realm: ${keycloak.realm}
+    client-id: ${keycloak.resource}
+keycloak:
+  auth-server-url: http://localhost:8180/auth
+  public-client: true
+  realm: reservatio
+  resource: reservatio
+  security-constraints:
+    - security-collections:
+        - patterns:
+            - /register-customer
+            - /register-service-provider
+    - auth-roles:
+        - admin
+      security-collections:
+        - patterns:
+            - /*
+    - auth-roles:
+        - customer
+      security-collections:
+        - patterns:
+            - /rest/customer/*
+    - auth-roles:
+        - service_provider
+      security-collections:
+        - patterns:
+            - /rest/service-provider/*

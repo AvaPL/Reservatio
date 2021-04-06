@@ -1,5 +1,5 @@
 services:
-  db:
+  mysql:
     image: mysql:${MYSQL_VERSION}
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -21,7 +21,7 @@ services:
   backend:
     build: ../../backend
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/${MYSQL_DATABASE}
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE}
       SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
       SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
       RESERVATIO_MINIO_ENDPOINT: http://minio:9000
