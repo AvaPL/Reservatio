@@ -145,7 +145,7 @@ class Employees extends Component {
     }
 
     onAddClick = employee => {
-        console.log("Added employee")
+        console.log("Employee to add: ")
         console.log(employee)
         let serviceProviderId = 1; // TODO: get id from currently logged user
         fetch('http://localhost:8080/rest/addEmployee/' + serviceProviderId, {
@@ -181,14 +181,28 @@ class Employees extends Component {
                     <Button className="employees-button-secondary shadow-none"
                             onClick={() => this.setState({showModalDelete: false})}>Cancel</Button>
                     <Button className="employees-button-primary shadow-none"
-                            onClick={() => {
-                                console.log(`Deleted employee [${this.state.selectedEmployee.name}]`)
-                                this.setState({showModalDelete: false})
-                            }}>Delete</Button>
+                            onClick={this.onDeleteClicked}>Delete</Button>
                 </Modal.Footer>
             </Modal>
         );
     }
+
+    onDeleteClicked = () => {
+        let serviceProviderId = 1; // TODO: get id from currently logged user
+        fetch('http://localhost:8080/rest/deleteEmployee/' + serviceProviderId, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                name: this.state.selectedEmployee.name
+            })
+        }).then(() => console.log(`Deleted employee [${this.state.selectedEmployee.name}]`))
+            .catch(error => console.log(error));
+        // console.log(`Deleted employee [${this.state.selectedEmployee.name}]`)
+        this.setState({showModalDelete: false})
+    };
 }
 
 export default Employees;

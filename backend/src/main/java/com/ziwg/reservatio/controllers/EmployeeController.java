@@ -4,6 +4,7 @@ import com.ziwg.reservatio.entity.Employee;
 import com.ziwg.reservatio.entity.Service;
 import com.ziwg.reservatio.entity.ServiceProvider;
 import com.ziwg.reservatio.pojos.EmployeeToAdd;
+import com.ziwg.reservatio.pojos.EmployeeToDelete;
 import com.ziwg.reservatio.repository.EmployeeRepository;
 import com.ziwg.reservatio.repository.ServiceProviderRepository;
 import com.ziwg.reservatio.repository.ServiceRepository;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
-@CrossOrigin(methods = RequestMethod.POST)
+@CrossOrigin
 @RestController
 @RequestMapping("${spring.data.rest.base-path}")
 public class EmployeeController {
@@ -31,7 +32,7 @@ public class EmployeeController {
     }
 
     @PostMapping("addEmployee/{serviceProviderId}")
-    public ResponseEntity<Object> addEmployee(@PathVariable Long serviceProviderId, @RequestBody EmployeeToAdd employeeToAdd) {
+    public ResponseEntity<HttpStatus> addEmployee(@PathVariable Long serviceProviderId, @RequestBody EmployeeToAdd employeeToAdd) {
         Optional<ServiceProvider> serviceProvider = serviceProviderRepository.findById(serviceProviderId);
         if (serviceProvider.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -45,4 +46,15 @@ public class EmployeeController {
         employeeRepository.save(employee);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @DeleteMapping("deleteEmployee/{serviceProviderId}")
+    public ResponseEntity<HttpStatus> deleteEmployee(@PathVariable Long serviceProviderId, @RequestBody EmployeeToDelete employeeToDelete) {
+        String[] splitName = employeeToDelete.getName().split("\\s+");
+        Optional<Employee> employee = employeeRepository.findByFirstNameAndLastNameAndServiceProviderId(splitName[0], splitName[1], serviceProviderId);
+        if (employee.isEmpty())
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        employeeRepository.delete(employee.get());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
+
