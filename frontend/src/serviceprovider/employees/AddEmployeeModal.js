@@ -45,7 +45,6 @@ export class AddEmployeeModal extends Component {
     }
 
     render() {
-        // const services = [{name: "Service A"}, {name: "Service B"}, {name: "Service C"}]
         return (
             <Modal
                 show={this.props.show}
@@ -83,17 +82,27 @@ export class AddEmployeeModal extends Component {
                     <Button className="employees-button-secondary shadow-none"
                             onClick={this.props.onHide}>Cancel</Button>
                     <Button className="employees-button-primary shadow-none"
-                            onClick={() => this.props.onClick(this.state)}>Add</Button>
+                            onClick={this.handleAddClicked}>Add</Button>
                 </Modal.Footer>
             </Modal>
         );
     }
 
+    handleAddClicked = () => {
+        let employeeToAdd = {
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            services: Array.from(this.state.checkedServices)
+        }
+        this.props.onClick(employeeToAdd);
+        this.setState({checkedServices: new Set()})
+    };
+
     renderServices() {
         if (this.state.error) {
-            return <Form.Control plaintext readOnly defaultValue="Error" />
+            return <Form.Control plaintext readOnly defaultValue="Error"/>
         } else if (!this.state.isLoaded) {
-            return <Form.Control plaintext readOnly defaultValue="Loading..." />
+            return <Form.Control plaintext readOnly defaultValue="Loading..."/>
         } else {
             return this.state.services.map(service =>
                 <Form.Check id={service.name} key={service.name} className="employees-form-checkbox"

@@ -140,13 +140,25 @@ class Employees extends Component {
         return (
             <AddEmployeeModal show={this.state.showModalAdd}
                               onHide={() => this.setState({showModalAdd: false})}
-                              onClick={employee => {
-                                  console.log("Added employee")
-                                  console.log(employee)
-                                  this.setState({showModalAdd: false})
-                              }}/>
+                              onClick={this.onAddClick}/>
         );
     }
+
+    onAddClick = employee => {
+        console.log("Added employee")
+        console.log(employee)
+        let serviceProviderId = 1; // TODO: get id from currently logged user
+        fetch('http://localhost:8080/rest/addEmployee/' + serviceProviderId, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(employee)
+        }).then(() => console.log("Employee added successfully"))
+            .catch(error => console.log(error));
+        this.setState({showModalAdd: false});
+    };
 
     deleteEmployeeModal() {
         return (
