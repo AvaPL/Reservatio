@@ -17,6 +17,10 @@ public class ServiceProviderEmployeesView {
 
     @Id
     private Long id;
+
+    @OneToMany(mappedBy = "serviceProviderView")
+    private List<ServiceProviderServiceView> services;
+
     @OneToMany(mappedBy = "serviceProviderView")
     private List<EmployeeView> employees;
 }

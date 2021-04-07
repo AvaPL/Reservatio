@@ -9,16 +9,11 @@ class Employees extends Component {
     constructor(props, context) {
         super(props, context);
         let state = {
-            serviceProviderId: 1, //TODO: get from currently logged user
             employees: [
                 {
                     name: "John Doe",
                     services: ["Service A", "Service B", "Service C"]
-                },
-                // {
-                //     name: "Another John",
-                //     services: ["Service B", "Service C"]
-                // }
+                }
             ],
             error: null,
             isLoaded: false,
@@ -35,7 +30,9 @@ class Employees extends Component {
     }
 
     fetchEmployees() {
-        return fetch("http://localhost:8080/rest/serviceProviderEmployeesViews/" + this.state.serviceProviderId + "/employees")
+        //TODO: get from currently logged user
+        let serviceProviderId = 1;
+        return fetch("http://localhost:8080/rest/serviceProviderEmployeesViews/" + serviceProviderId + "/employees")
             .then(res => res.json()).then(res => res._embedded.employeeViews);
     }
 
