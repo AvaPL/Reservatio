@@ -81,8 +81,8 @@ class Registration extends Component {
             },
             body: JSON.stringify(this.state.form)
         }
-        const endpoint = this.state.salonButtonClicked ? 'register-service-provider' : 'register-customer' // TODO: Load from env
-        fetch('http://localhost:8080/' + endpoint, requestOptions) // TODO: Load host from env
+        const endpoint = this.state.salonButtonClicked ? '/register-service-provider' : '/register-customer' // TODO: Load from env
+        fetch('http://localhost:8080' + endpoint, requestOptions) // TODO: Load host from env
             .then(response => {
                 if (!response.ok)
                     throw new Error(response.statusText)
