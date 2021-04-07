@@ -158,6 +158,7 @@ class Employees extends Component {
         }).then(() => console.log("Employee added successfully"))
             .catch(error => console.log(error));
         this.setState({showModalAdd: false});
+        window.location.reload(false);
     };
 
     deleteEmployeeModal() {
@@ -200,8 +201,8 @@ class Employees extends Component {
             })
         }).then(() => console.log(`Deleted employee [${this.state.selectedEmployee.name}]`))
             .catch(error => console.log(error));
-        // console.log(`Deleted employee [${this.state.selectedEmployee.name}]`)
-        this.setState({showModalDelete: false})
+        this.setState({showModalDelete: false});
+        window.location.reload(false);
     };
 }
 
