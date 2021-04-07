@@ -8,7 +8,6 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.Optional;
 
 @Controller
@@ -35,10 +33,10 @@ public class ExampleImageUploadController {
     @SneakyThrows
     public ResponseEntity<ImageModel> upload(@RequestParam("image") MultipartFile file) {
         val filename = Optional.ofNullable(file.getOriginalFilename()).orElse("");
-        val tempFile = File.createTempFile("reservatio", filename);
-        file.transferTo(tempFile);
-        val response = minioUploader.upload(tempFile, filename);
-        return toImageModelResponse(response);
+        try (val inputStream = file.getInputStream()) {
+            val response = minioUploader.upload(inputStream, filename, file.getContentType());
+            return toImageModelResponse(response);
+        }
     }
 
     private ResponseEntity<ImageModel> toImageModelResponse(ObjectWriteResponse response) {
