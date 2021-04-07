@@ -18,5 +18,5 @@ public class ServiceProviderEmployeesView {
     @Id
     private Long id;
     @OneToMany(mappedBy = "serviceProviderView")
-    private List<EmployeeView> employeeViews;
+    private List<EmployeeView> employees;
 }

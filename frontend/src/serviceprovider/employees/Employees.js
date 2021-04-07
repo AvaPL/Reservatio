@@ -9,28 +9,61 @@ class Employees extends Component {
     constructor(props, context) {
         super(props, context);
         let state = {
+            serviceProviderId: 1, //TODO: get from currently logged user
             employees: [
                 {
                     name: "John Doe",
                     services: ["Service A", "Service B", "Service C"]
                 },
-                {
-                    name: "Another John",
-                    services: ["Service B", "Service C"]
-                }
+                // {
+                //     name: "Another John",
+                //     services: ["Service B", "Service C"]
+                // }
             ],
+            error: null,
+            isLoaded: false,
+            linkHasBeenClicked: false,
             showModalAdd: false,
             showModalDelete: false,
         }
-        state.selectedEmployee = state.employees[0]
-        this.state = state
+        this.state = state;
+        state.selectedEmployee = state.employees[0];
+    }
+
+    componentDidMount() {
+        this.fetchEmployees().then(this.processEmployees(), this.handleError());
+    }
+
+    fetchEmployees() {
+        return fetch("http://localhost:8080/rest/serviceProviderEmployeesViews/" + this.state.serviceProviderId + "/employees")
+            .then(res => res.json()).then(res => res._embedded.employeeViews);
+    }
+
+    processEmployees() {
+        return employees => {
+            this.setState({
+                isLoaded: true,
+                employees: employees,
+                selectedEmployee: employees[0]
+            });
+        };
+    }
+
+    handleError() {
+        return error => {
+            this.setState({
+                isLoaded: true,
+                error: error
+            })
+            console.log(error);
+        }
     }
 
     render() {
         return (
             <div>
                 <div className="employees-text m-4 m-lg-5">
-                    <Tab.Container defaultActiveKey={this.state.selectedEmployee.name}>
+                    <Tab.Container defaultActiveKey={0}>
                         <Row>
                             <Col className="align-self-center">
                                 <h1 className="float-left employees-text font-weight-bold">Employee</h1>
@@ -61,41 +94,49 @@ class Employees extends Component {
     }
 
     employeesNamesPanel() {
-        return (
-            <Nav variant="pills" className="flex-column">
-                {
-                    this.state.employees.map(employee =>
-                        <Nav.Item key={employee.name}>
-                            <Nav.Link eventKey={employee.name} className="employees-tab"
-                                      onSelect={() => this.setState({selectedEmployee: employee})}>{employee.name}</Nav.Link>
-                        </Nav.Item>
-                    )
-                }
-            </Nav>
-        );
+        if (this.state.error) {
+            return <span>Error</span>
+        } else if (!this.state.isLoaded) {
+            return <span>Loading...</span>
+        } else {
+            return (
+                <Nav variant="pills" className="flex-column">
+                    {
+                        this.state.employees.map((employee, i) =>
+                            <Nav.Item key={i}>
+                                <Nav.Link eventKey={i} className="employees-tab"
+                                          onSelect={() => this.setState({selectedEmployee: employee})}>{employee.name}</Nav.Link>
+                            </Nav.Item>
+                        )
+                    }
+                </Nav>
+            );
+        }
     }
 
     employeeServicesPanel() {
-        return (
-            <Tab.Content>
-                {
-                    this.state.employees.map(employee =>
-                        <Tab.Pane key={employee.name} eventKey={employee.name}>
-                            <span className="font-weight-bold" style={{fontSize: "150%"}}>Services:</span>
-                            {
-                                <ul>
-                                    {
-                                        employee.services.map(service =>
-                                            <li key={service}>{service}</li>
-                                        )
-                                    }
-                                </ul>
-                            }
-                        </Tab.Pane>
-                    )
-                }
-            </Tab.Content>
-        );
+        if (!this.state.error && this.state.isLoaded) {
+            return (
+                <Tab.Content>
+                    {
+                        this.state.employees.map((employee, i) =>
+                            <Tab.Pane key={i} eventKey={i}>
+                                <span className="font-weight-bold" style={{fontSize: "150%"}}>Services:</span>
+                                {
+                                    <ul>
+                                        {
+                                            employee.services.map(service =>
+                                                <li key={service.name}>{service.name}</li>
+                                            )
+                                        }
+                                    </ul>
+                                }
+                            </Tab.Pane>
+                        )
+                    }
+                </Tab.Content>
+            );
+        }
     }
 
     addEmployeeModal() {

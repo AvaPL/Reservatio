@@ -22,5 +22,5 @@ public class EmployeeView {
     private ServiceProviderEmployeesView serviceProviderView;
 
     @OneToMany(mappedBy = "employeeView")
-    private List<EmployeeServiceView> serviceViews;
+    private List<EmployeeServiceView> services;
 }
