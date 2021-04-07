@@ -5,6 +5,7 @@ import CustomerRegistrationForm from "./CustomerRegistrationForm";
 import ServiceProviderRegistrationForm from "./ServiceProviderRegistrationForm";
 import "../stylesheets/Authentication.scss";
 import Carousel from "react-bootstrap/Carousel";
+import {Alert} from "react-bootstrap";
 
 let notClickedButtonColor = '#FDAAAF';
 let clickedButtonColor = '#F85F6A';
@@ -28,7 +29,8 @@ class Registration extends Component {
                 name: "Another salon",
                 imageUrl: "https://www.triss.com.pl/wp-content/uploads/granat-2768U-1.jpg"
             }
-        ]
+        ],
+        showError: false
     };
 
     updateDimensions = () => {
@@ -82,13 +84,14 @@ class Registration extends Component {
         const endpoint = this.state.salonButtonClicked ? 'register-service-provider' : 'register-customer' // TODO: Load from env
         fetch('http://localhost:8080/' + endpoint, requestOptions) // TODO: Load host from env
             .then(response => {
-                if (response.ok)
-                    return response.json() // TODO: Register does not return json
-                else
+                if (!response.ok)
                     throw new Error(response.statusText)
             })
-            .then(response => console.log("Redirect to login page")) // TODO: Redirect
-            .catch(error => console.log(error))
+            .then(() => this.props.history.push("/login"))
+            .catch(error => {
+                console.log(error)
+                this.setState({showError: true})
+            })
     };
 
     render() {
@@ -139,6 +142,13 @@ class Registration extends Component {
                         <ServiceProviderRegistrationForm handleChange={this.handleChange}
                                                          handleKeyDown={this.handleKeyDown}/> :
                         <CustomerRegistrationForm handleChange={this.handleChange} handleKeyDown={this.handleKeyDown}/>
+                    }
+                    {
+                        this.state.showError &&
+                        <Alert variant="danger" onClose={() => this.setState({showError: false})} dismissible>
+                            <span>The registration could not be performed. Please contact us at </span>
+                            <a href="mailto:customer-support@reservatio.com">customer-support@reservatio.com</a>.
+                        </Alert>
                     }
                     <Button className="btn-reservatio shadow-none" type="submit"
                             onClick={this.handleSignUpClicked}>
