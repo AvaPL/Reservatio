@@ -7,4 +7,5 @@ COPY package-lock.json ./
 RUN npm ci
 COPY public public
 COPY src src
+# TODO: Add config env variables
 CMD ["npm", "start"]

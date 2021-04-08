@@ -3,6 +3,8 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Carousel from "react-bootstrap/Carousel";
 import "../stylesheets/Authentication.scss";
+import {authService} from "../auth/AuthService";
+import {Alert} from "react-bootstrap";
 
 class Login extends Component {
 
@@ -22,7 +24,8 @@ class Login extends Component {
                 name: "Another salon",
                 imageUrl: "https://www.triss.com.pl/wp-content/uploads/granat-2768U-1.jpg"
             }
-        ]
+        ],
+        showError: false
     };
 
     updateDimensions = () => {
@@ -48,7 +51,13 @@ class Login extends Component {
     };
 
     handleSignInClicked = () => {
-        console.log(this.state);
+        const login = authService.login(this.state.email, this.state.password)
+        login.then(loggedIn => {
+            if (loggedIn)
+                this.props.history.push("/")
+            else
+                this.setState({showError: true})
+        })
     };
 
     render() {
@@ -98,6 +107,14 @@ class Login extends Component {
                                           onKeyDown={this.handleKeyDown}/>
                         </Form.Group>
                     </Form>
+                    {
+                        this.state.showError &&
+                        <Alert variant="danger" onClose={() => this.setState({showError: false})} dismissible>
+                            <span>Invalid username or password. For support contact us at </span>
+                            <a href="mailto:support@reservatio.com">support@reservatio.com</a>
+                            <span>.</span>
+                        </Alert>
+                    }
                     <Button className="btn-reservatio shadow-none" type="submit" onClick={this.handleSignInClicked}>
                         Sign in
                     </Button>

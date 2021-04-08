@@ -89,7 +89,7 @@ class Registration extends Component {
             })
             .then(() => this.props.history.push("/login"))
             .catch(error => {
-                console.log(error)
+                console.log('error', error)
                 this.setState({showError: true})
             })
     };
@@ -146,8 +146,9 @@ class Registration extends Component {
                     {
                         this.state.showError &&
                         <Alert variant="danger" onClose={() => this.setState({showError: false})} dismissible>
-                            <span>The registration could not be performed. Please contact us at </span>
-                            <a href="mailto:customer-support@reservatio.com">customer-support@reservatio.com</a>.
+                            <span>The registration could not be performed. For support contact us at </span>
+                            <a href="mailto:support@reservatio.com">support@reservatio.com</a>
+                            <span>.</span>
                         </Alert>
                     }
                     <Button className="btn-reservatio shadow-none" type="submit"

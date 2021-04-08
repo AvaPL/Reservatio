@@ -1,3 +1,4 @@
+# TODO: Change to openjdk-11 (maybe alpine if available?)
 FROM maven:3-openjdk-15-slim as build
 COPY pom.xml .
 # Cache dependencies

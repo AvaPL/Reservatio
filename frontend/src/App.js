@@ -13,6 +13,7 @@ import Profile from "./serviceprovider/profile/Profile";
 import Services from "./serviceprovider/services/Services";
 import Statistics from "./serviceprovider/statistics/Statistics";
 import {Component} from "react";
+import {authService} from "./auth/AuthService";
 
 class App extends Component {
 
@@ -30,6 +31,10 @@ class App extends Component {
                     <Switch>
                         <Route exact path="/not-found" component={PageNotFound}/>
                         <Route exact path="/login" component={Login}/>
+                        <Route exact path="/logout">
+                            {authService.logout()}
+                            <Redirect to="/"/>
+                        </Route>
                         <Route exact path="/register" component={Registration}/>
                         {this.chooseRoutes()}
                     </Switch>
