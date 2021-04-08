@@ -105,10 +105,8 @@ export default function BookingCalendarConsumer() {
                 <div className={styles.calendarTable} >
                     <div>
                         <label className={styles.rectangle}>
-                            <text>
                                 {`${state.serviceName}
                         ${state.name} ${state.price}`}
-                            </text>
                         </label>
                     </div>
                     <div>
@@ -118,7 +116,7 @@ export default function BookingCalendarConsumer() {
                         />
                     </div>
                 </div>
-                <row className={styles.row}>
+                <Row className={styles.row}>
                     {state.terms.filter(term => term.date.getTime() === selectedDate.getTime() && term.available === 1).map((term) => (
                         <Col sm={12} md={6} lg={4} className={cn(styles.marginBottom, styles.paddingTop)} key={term.id}>
                             <AvailableService
@@ -128,7 +126,7 @@ export default function BookingCalendarConsumer() {
                             />
                         </Col>
                     ))}
-                </row>
+                </Row>
             </Container>
         </>
     );
@@ -136,7 +134,6 @@ export default function BookingCalendarConsumer() {
 
 function AvailableService({ time, serviceid, serviceproviderid }) {
     return (
-            <Col>
                 <Button
                     className={cn(styles.button, styles.serviceCardPriceInfoCol)}
                     variant="primary"
@@ -144,6 +141,5 @@ function AvailableService({ time, serviceid, serviceproviderid }) {
                 >
                     {time}
                 </Button>
-            </Col>
     );
 }
