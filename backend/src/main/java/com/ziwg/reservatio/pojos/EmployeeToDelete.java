@@ -5,5 +5,6 @@ import lombok.Data;
 @Data
 public class EmployeeToDelete {
 
-    private String name;
+    private String firstName;
+    private String lastName;
 }

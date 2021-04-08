@@ -1,4 +1,4 @@
-package com.ziwg.reservatio.views;
+package com.ziwg.reservatio.views.employeesviews;
 
 import lombok.Data;
 import org.hibernate.annotations.Immutable;
@@ -15,7 +15,8 @@ public class EmployeeView {
 
     @Id
     private Long id;
-    private String name;
+    private String firstName;
+    private String lastName;
 
     @ManyToOne
     @JoinColumn(name = "service_provider_id")

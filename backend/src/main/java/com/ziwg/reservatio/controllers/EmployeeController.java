@@ -49,8 +49,7 @@ public class EmployeeController {
 
     @DeleteMapping("deleteEmployee/{serviceProviderId}")
     public ResponseEntity<HttpStatus> deleteEmployee(@PathVariable Long serviceProviderId, @RequestBody EmployeeToDelete employeeToDelete) {
-        String[] splitName = employeeToDelete.getName().split("\\s+");
-        Optional<Employee> employee = employeeRepository.findByFirstNameAndLastNameAndServiceProviderId(splitName[0], splitName[1], serviceProviderId);
+        Optional<Employee> employee = employeeRepository.findByFirstNameAndLastNameAndServiceProviderId(employeeToDelete.getFirstName(), employeeToDelete.getLastName(), serviceProviderId);
         if (employee.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         employeeRepository.delete(employee.get());

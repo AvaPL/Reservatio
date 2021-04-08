@@ -11,7 +11,8 @@ class Employees extends Component {
         let state = {
             employees: [
                 {
-                    name: "John Doe",
+                    firstName: "John",
+                    lastName: "Doe",
                     services: ["Service A", "Service B", "Service C"]
                 }
             ],
@@ -102,7 +103,7 @@ class Employees extends Component {
                         this.state.employees.map((employee, i) =>
                             <Nav.Item key={i}>
                                 <Nav.Link eventKey={i} className="employees-tab"
-                                          onSelect={() => this.setState({selectedEmployee: employee})}>{employee.name}</Nav.Link>
+                                          onSelect={() => this.setState({selectedEmployee: employee})}>{employee.firstName} {employee.lastName}</Nav.Link>
                             </Nav.Item>
                         )
                     }
@@ -176,7 +177,7 @@ class Employees extends Component {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    Are you sure you want to delete {this.state.selectedEmployee.name}?
+                    Are you sure you want to delete {this.state.selectedEmployee.firstName} {this.state.selectedEmployee.lastName}?
                 </Modal.Body>
                 <Modal.Footer>
                     <Button className="employees-button-secondary shadow-none"
@@ -197,9 +198,10 @@ class Employees extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                name: this.state.selectedEmployee.name
+                firstName: this.state.selectedEmployee.firstName,
+                lastName: this.state.selectedEmployee.lastName
             })
-        }).then(() => console.log(`Deleted employee [${this.state.selectedEmployee.name}]`))
+        }).then(() => console.log(`Deleted employee [${this.state.selectedEmployee.firstName}] [${this.state.selectedEmployee.lastName}]`))
             .catch(error => console.log(error));
         this.setState({showModalDelete: false});
         window.location.reload(false);
