@@ -61,17 +61,20 @@ class Appointments extends Component {
             <>
                 &nbsp;
                 <Nav
+                    fill
                     defaultActiveKey="Past"
-                    variant="pills danger"
+                    variant="tabs"
                     className="justify-content-center"
                 >
                     <Nav.Link
+                        className="test"
                         eventKey="Past"
                         action onClick={() => this.showPast()}
                     >
                         Past
                     </Nav.Link>
                     <Nav.Link
+                        className="test"
                         eventKey="Upcoming"
                         action onClick={() => this.showUpcoming()}
                     >
