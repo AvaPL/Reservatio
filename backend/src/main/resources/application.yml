@@ -13,7 +13,7 @@ spring:
     rest:
       base-path: /rest
 reservatio:
-  loadData: true
+  loadTestData: true
   minio:
     endpoint: http://localhost:9000
     username: reservatio

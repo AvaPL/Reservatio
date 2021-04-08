@@ -1,4 +1,4 @@
-package com.ziwg.reservatio;
+package com.ziwg.reservatio.minio;
 
 import io.minio.MinioClient;
 import org.mockito.Mockito;

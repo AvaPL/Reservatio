@@ -1,17 +1,18 @@
-package com.ziwg.reservatio.loadtestdata;
+package com.ziwg.reservatio.testdata;
 
 import com.ziwg.reservatio.entity.*;
 import com.ziwg.reservatio.minio.MinioUploader;
 import com.ziwg.reservatio.repository.*;
 import lombok.SneakyThrows;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.ResourceUtils;
 
 import java.io.File;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.Random;
@@ -39,7 +40,10 @@ public class LoadTestData {
     private final MinioUploader minioUploader;
 
     @Autowired
-    public LoadTestData(CustomerRepository customerRepository, AddressRepository addressRepository, ServiceProviderRepository serviceProviderRepository, EmployeeRepository employeeRepository, ServiceRepository serviceRepository, ReservationRepository reservationRepository, ReviewRepository reviewRepository, MinioUploader minioUploader) {
+    public LoadTestData(CustomerRepository customerRepository, AddressRepository addressRepository,
+                        ServiceProviderRepository serviceProviderRepository, EmployeeRepository employeeRepository,
+                        ServiceRepository serviceRepository, ReservationRepository reservationRepository,
+                        ReviewRepository reviewRepository, MinioUploader minioUploader) {
         this.customerRepository = customerRepository;
         this.addressRepository = addressRepository;
         this.serviceProviderRepository = serviceProviderRepository;
@@ -51,7 +55,7 @@ public class LoadTestData {
     }
 
     @Bean
-    public CommandLineRunner initDatabase(@Value("${reservatio.loadData}") String loadData) {
+    public CommandLineRunner initDatabase(@Value("${reservatio.loadTestData}") String loadData) {
         if (Boolean.parseBoolean(loadData)) {
             return args -> {
                 fillCustomers();
@@ -99,13 +103,17 @@ public class LoadTestData {
                     "serviceprovider" + i,
                     "+48" + String.format("%-" + 9 + "s", i).replace(" ", "0"),
                     addressIterator.next());
-            File imageFile = ResourceUtils.getFile("classpath:images/" + serviceProvider.getName() + ".jpg");
-            if (imageFile.exists()) {
-                minioUploader.upload(imageFile, serviceProvider.getName() + ".jpg");
-                serviceProvider.setImageUrl(minioUploader.urlFor(serviceProvider.getName() + ".jpg"));
+            val filename = serviceProvider.getName() + ".jpg";
+            try (val imageStream = imageFromResources(filename)) {
+                minioUploader.upload(imageStream, filename, "image/jpeg");
+                serviceProvider.setImageUrl(minioUploader.urlFor(filename));
             }
             serviceProviderRepository.save(serviceProvider);
         }
+    }
+
+    private InputStream imageFromResources(String filename) {
+        return getClass().getClassLoader().getResourceAsStream("images" + File.separator + filename);
     }
 
     private void fillServices() {
