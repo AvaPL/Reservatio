@@ -7,12 +7,44 @@ export class AddEmployeeModal extends Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            checkedServices: new Set()
+            services: [],
+            checkedServices: new Set(),
+            error: null,
+            isLoaded: false
+        }
+    }
+
+    componentDidMount() {
+        this.fetchEmployees().then(this.processEmployees(), this.handleError());
+    }
+
+    fetchEmployees() {
+        //TODO: get from currently logged user
+        let serviceProviderId = 1;
+        return fetch("http://localhost:8080/rest/serviceProviderEmployeesViews/" + serviceProviderId)
+            .then(res => res.json()).then(res => res.services);
+    }
+
+    processEmployees() {
+        return services => {
+            this.setState({
+                isLoaded: true,
+                services: services
+            });
+        };
+    }
+
+    handleError() {
+        return error => {
+            this.setState({
+                isLoaded: true,
+                error: error
+            })
+            console.log(error);
         }
     }
 
     render() {
-        const services = [{name: "Service A"}, {name: "Service B"}, {name: "Service C"}]
         return (
             <Modal
                 show={this.props.show}
@@ -41,11 +73,7 @@ export class AddEmployeeModal extends Component {
                         <Form.Group controlId="services">
                             <Form.Label className="employees-form-label">Services</Form.Label>
                             {
-                                services.map(service =>
-                                    <Form.Check id={service.name} key={service.name} className="employees-form-checkbox"
-                                                type="checkbox" label={service.name}
-                                                onChange={event => this.handleServiceChange(event)}/>
-                                )
+                                this.renderServices()
                             }
                         </Form.Group>
                     </Form>
@@ -54,10 +82,34 @@ export class AddEmployeeModal extends Component {
                     <Button className="employees-button-secondary shadow-none"
                             onClick={this.props.onHide}>Cancel</Button>
                     <Button className="employees-button-primary shadow-none"
-                            onClick={() => this.props.onClick(this.state)}>Add</Button>
+                            onClick={this.handleAddClicked}>Add</Button>
                 </Modal.Footer>
             </Modal>
         );
+    }
+
+    handleAddClicked = () => {
+        let employeeToAdd = {
+            firstName: this.state.firstName,
+            lastName: this.state.lastName,
+            services: Array.from(this.state.checkedServices)
+        }
+        this.props.onClick(employeeToAdd);
+        this.setState({checkedServices: new Set()})
+    };
+
+    renderServices() {
+        if (this.state.error) {
+            return <Form.Control plaintext readOnly defaultValue="Error"/>
+        } else if (!this.state.isLoaded) {
+            return <Form.Control plaintext readOnly defaultValue="Loading..."/>
+        } else {
+            return this.state.services.map(service =>
+                <Form.Check id={service.name} key={service.name} className="employees-form-checkbox"
+                            type="checkbox" label={service.name}
+                            onChange={event => this.handleServiceChange(event)}/>
+            );
+        }
     }
 
     handleChange(event) {
