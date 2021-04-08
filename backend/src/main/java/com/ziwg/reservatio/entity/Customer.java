@@ -25,10 +25,10 @@ public class Customer {
     @Column(length = 20)
     private final String lastName;
     @NotNull
-    @Column(length = 12)
+    @Column(length = 12, unique = true)
     private final String phoneNumber;
     @NotNull
-    @Column(length = 45)
+    @Column(unique = true)
     private final String email;
 
     @OneToMany(mappedBy = "customer")

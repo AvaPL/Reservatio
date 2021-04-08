@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -35,6 +36,7 @@ public class Service {
 
     @ManyToOne
     private final ServiceProvider serviceProvider;
-    @ManyToMany(mappedBy = "services")
-    private List<Employee> employees;
+
+    @ManyToMany(mappedBy = "services", fetch = FetchType.EAGER)
+    private List<Employee> employees = new ArrayList<>();
 }

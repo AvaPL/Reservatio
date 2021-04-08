@@ -1,0 +1,62 @@
+$border: #FDC2C6;
+$button-primary: #F85F6A;
+$label: #F85F6A;
+$button-hover: #D9535D;
+
+.employees-text {
+  font-family: 'Asap', sans-serif;
+}
+
+.employees-border {
+  border: 2px solid $border;
+  border-radius: 10px;
+}
+
+.employees-button-primary {
+  background-color: $button-primary !important;
+  border: none !important;
+
+  &:hover {
+    background-color: $button-hover !important;
+  }
+
+  &:active {
+    background-color: $button-hover !important;
+  }
+}
+
+.employees-button-secondary {
+  background-color: transparent !important;
+  border: none !important;
+  color: black !important;
+}
+
+a.employees-tab {
+  color: black;
+
+  &:not(.active):hover {
+    color: $button-hover;
+  }
+
+  &.active {
+    background-color: $button-primary !important;
+  }
+}
+
+.employees-form-title {
+  font-family: 'Asap', sans-serif;
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.employees-form-label {
+  font-family: 'Asap', sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+  color: $label;
+}
+
+.employees-form-checkbox {
+  font-family: 'Asap', sans-serif;
+  font-size: 15px;
+}
