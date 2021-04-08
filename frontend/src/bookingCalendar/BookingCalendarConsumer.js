@@ -18,6 +18,8 @@ export default function BookingCalendarConsumer() {
         favourite: true,
         score: 0,
         name: "Nazwa salonu",
+        serviceName: "Strzyżenie",
+        price: "60 zł",
         address: "ul. Owaka 4, Wrocław",
         terms: [
             {
@@ -50,6 +52,36 @@ export default function BookingCalendarConsumer() {
                 date: new Date(2021, 3, 11),
                 available: 1,
             },
+            {
+                id: 6,
+                time: "11:45",
+                date: new Date(2021, 3, 11),
+                available: 1,
+            },
+            {
+                id: 7,
+                time: "12:30",
+                date: new Date(2021, 3, 11),
+                available: 1,
+            },
+            {
+                id: 8,
+                time: "14:45",
+                date: new Date(2021, 3, 11),
+                available: 1,
+            },
+            {
+                id: 9,
+                time: "15:30",
+                date: new Date(2021, 3, 11),
+                available: 1,
+            },
+            {
+                id: 10,
+                time: "16:15",
+                date: new Date(2021, 3, 11),
+                available: 1,
+            },
         ],
     });
 
@@ -69,22 +101,34 @@ export default function BookingCalendarConsumer() {
                     </div>
                 )}
             </div>
-            <Container className={styles.calendarTable}>
-                <Calendar value={selectedDate}
-                          onChange={setSelectedDate}
-                          className={cn(styles.calendarStyle, Calendar.css)}
-                />
-                <Row>
+            <Container>
+                <div className={styles.calendarTable} >
+                    <div>
+                        <label className={styles.rectangle}>
+                            <text>
+                                {`${state.serviceName}
+                        ${state.name} ${state.price}`}
+                            </text>
+                        </label>
+                    </div>
+                    <div>
+                        <Calendar value={selectedDate}
+                                  onChange={setSelectedDate}
+                                  className={cn(Calendar.css, styles.calendarStyle)}
+                        />
+                    </div>
+                </div>
+                <row className={styles.row}>
                     {state.terms.filter(term => term.date.getTime() === selectedDate.getTime() && term.available === 1).map((term) => (
-                        <Col sm={12} md={6} lg={4} key={term.id}>
+                        <Col sm={12} md={6} lg={4} className={cn(styles.marginBottom, styles.paddingTop)} key={term.id}>
                             <AvailableService
                                 {...term}
                                 serviceproviderid={serviceproviderid}
                                 serviceid={serviceid}
                             />
                         </Col>
-                            ))}
-                </Row>
+                    ))}
+                </row>
             </Container>
         </>
     );
@@ -92,17 +136,14 @@ export default function BookingCalendarConsumer() {
 
 function AvailableService({ time, serviceid, serviceproviderid }) {
     return (
-        <Card body className={styles.marginBottom}>
-            <Row>
-                <Col xs={5} sm={6} className={styles.serviceCardPriceInfoCol}>
-                    <Button
-                        variant="primary"
-                        // strzał do API (rezerwacja)
-                    >
-                        {time}
-                    </Button>
-                </Col>
-            </Row>
-        </Card>
+            <Col>
+                <Button
+                    className={cn(styles.button, styles.serviceCardPriceInfoCol)}
+                    variant="primary"
+                    // strzał do API (rezerwacja)
+                >
+                    {time}
+                </Button>
+            </Col>
     );
 }

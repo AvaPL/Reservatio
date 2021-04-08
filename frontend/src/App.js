@@ -35,6 +35,7 @@ class App extends Component {
                         <Route exact path="/login" component={Login}/>
                         <Route exact path="/register" component={Registration}/>
                         <Route path="/booking/:serviceproviderid/:serviceid" component={BookingCalendarConsumer}/>
+                        <Route path="/serviceprovider/:serviceproviderid/calendar" component={BookingCalendarProvider}/>
                         <Route path="/booking/:serviceproviderid" component={Booking}/>
                         {this.chooseRoutes()}
                     </Switch>

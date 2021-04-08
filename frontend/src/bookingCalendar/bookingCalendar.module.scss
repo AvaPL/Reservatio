@@ -9,14 +9,37 @@
 
 .calendarTable {
   position: absolute;
+  top: 45vh;
   left: 50%;
-  -webkit-transform: translateX(-50%);
-  transform: translateX(-50%);
-  top: 25vh;
+  transform: translate(-50%, -50%);
+}
+
+.rectangle {
+  position: relative;
+  alignment: center;
+  background: #F85F6A;
+  margin-bottom: 0;
+  width: 100%;
+  border: 1px solid grey;
+}
+
+.row {
+  position: absolute;
+  contain: size;
+  top: 66%;
+  left:0;
+  right:0;
+  margin:0 auto;
+  //transform: translate(-50%, -50%);
 }
 
 .calendarStyle {
-  background-color: transparent;
+  alignment: center;
+}
+
+.button {
+  background-color: #F85F6A !important;
+  border-color: #F85F6A !important;
 }
 
 .mainImg {
@@ -28,6 +51,7 @@
   object-fit: cover;
   object-position: center;
 }
+
 .mainBack {
   position: absolute;
   top: 0;
@@ -60,19 +84,4 @@
   display: flex;
   justify-content: flex-end;
   align-items: center;
-}
-
-.reviewCardImgWrapper {
-  position: relative;
-  padding-bottom: 100%;
-}
-
-.reviewCardImg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
-  object-position: center;
 }

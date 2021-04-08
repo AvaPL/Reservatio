@@ -11,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faStar as farStar } from "@fortawesome/free-regular-svg-icons";
 import cn from "classnames";
+import Explore from "../customer/explore/Explore";
 
 export default function Booking() {
   const { serviceproviderid } = useParams();
@@ -124,8 +125,9 @@ function ServiceCard({ name, price, serviceid, serviceproviderid }) {
         </Col>
         <Col xs={5} sm={6} className={styles.serviceCardPriceInfoCol}>
           <Button
-            variant="primary"
-            href={`/booking/${serviceproviderid}/${serviceid}`}
+              className={styles.button}
+              variant="primary"
+              href={`/booking/${serviceproviderid}/${serviceid}`}
           >
             {price} zł
           </Button>
@@ -153,7 +155,7 @@ function ReviewCard({ image, name, score, review }) {
               <StarRatings
                 starDimension="1rem"
                 rating={score}
-                starRatedColor="pink"
+                starRatedColor="#F85F6A"
                 numberOfStars={5}
                 name="rating"
               />
