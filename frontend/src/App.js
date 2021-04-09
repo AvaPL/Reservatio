@@ -14,7 +14,7 @@ import Services from "./serviceprovider/services/Services";
 import Statistics from "./serviceprovider/statistics/Statistics";
 import {Component} from "react";
 import Booking from "./booking/Booking";
-import BookingCalendarProvider from "./bookingCalendar/BookingCalendarProvider";
+import BookingCalendarServiceProvider from "./bookingCalendar/BookingCalendarServiceProvider";
 import BookingCalendarConsumer from "./bookingCalendar/BookingCalendarConsumer";
 
 class App extends Component {
@@ -35,7 +35,7 @@ class App extends Component {
                         <Route exact path="/login" component={Login}/>
                         <Route exact path="/register" component={Registration}/>
                         <Route path="/booking/:serviceproviderid/:serviceid" component={BookingCalendarConsumer}/>
-                        <Route path="/serviceprovider/:serviceproviderid/calendar" component={BookingCalendarProvider}/>
+                        <Route path="/serviceprovider/:serviceproviderid/calendar" component={BookingCalendarServiceProvider}/>
                         <Route path="/booking/:serviceproviderid" component={Booking}/>
                         {this.chooseRoutes()}
                     </Switch>

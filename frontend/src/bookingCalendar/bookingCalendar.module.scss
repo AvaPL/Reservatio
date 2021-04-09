@@ -30,7 +30,21 @@
   left:0;
   right:0;
   margin:0 auto;
-  //transform: translate(-50%, -50%);
+}
+
+.timeTable {
+  position: absolute;
+  contain: size;
+  top: 66%;
+  left:0;
+  right:0;
+  margin:0 auto;
+}
+
+.timeTableRow {
+  width: 50%;
+  left:25%;
+  right:25%;
 }
 
 .calendarStyle {
