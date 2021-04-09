@@ -55,23 +55,30 @@ class App extends Component {
                 <BrowserRouter>
                     <Switch>
                         <Route exact path="/not-found" component={PageNotFound}/>
-                        <Route exact path="/login"
-                               render={props => <Login {...props} onLogin={() => {
-                                   const newState = this.chooseRoutes()
-                                   this.setState(newState)
-                                   props.history.push("/")
-                               }
-                               }/>}/>
-                        <Route exact path="/logout">
-                            {authService.logout()}
-                            <Redirect to="/"/>
-                        </Route>
+                        <Route exact path="/login" render={props => this.renderLogin(props)}/>
+                        <Route exact path="/logout" render={props => this.renderLogout(props)}/>
                         <Route exact path="/register" component={Registration}/>
                         {this.routesWithNavigation()}
                     </Switch>
                 </BrowserRouter>
             </div>
         );
+    }
+
+    renderLogin(props) {
+        return <Login {...props} onLogin={() => {
+            const newState = this.chooseRoutes()
+            this.setState(newState)
+            props.history.push("/")
+        }
+        }/>;
+    }
+
+    renderLogout(props) {
+        authService.logout()
+        const newState = this.chooseRoutes()
+        this.setState(newState)
+        return <Redirect to="/"/>
     }
 
     homeRedirect(routes) {
