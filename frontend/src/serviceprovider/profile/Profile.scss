@@ -1,0 +1,159 @@
+/* Kontener bazowy */
+.base{
+  // Marginesy
+  margin-top: 100px;
+  margin-right: 500px;
+  margin-left: 500px;
+  margin-bottom: 50px;
+  // Pozycjonowanie
+  display: flex;
+  flex-direction: column;
+  // Ramka
+  border: 2px ridge black;
+}
+
+/* Kontener na nazwę i zdjęcie */
+.salon-name-photo{
+  display: flex;
+  flex-direction: column;
+}
+
+/* Kontener na nazwę salonu */
+.salon-name{
+  // Tekst
+  font-size: 60px;
+  font-weight: bold;
+  // Położenie
+  display: flex;
+  flex-direction: column;
+}
+
+/* Kontener na zdjęcie salonu */
+.salon-photo{
+  // Proporcja zdjęcia
+  aspect-ratio: 16 / 9;
+}
+
+/* Przycisk przy zdjęciu */
+.salon-photo-button{
+  // Kolory
+  background: #F85F6A;
+  color: white;
+  // Ramka
+  border: 1px solid #F85F6A;
+  border-radius: 4px;
+  // Pozycjonowanie
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // Czcionka
+  font-size: 2vw;
+  // Cień
+  //box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+  // Szerokość
+  min-width: 5vw;
+  // Długość
+  max-height: 5vw;
+}
+
+/* Kontener pozycjonujący przycisk na zdjęciu */
+.salon-photo-button-container{
+  // Położenie
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+/* Kontener danych adresowych */
+.salon-address{
+  // Położenie
+  display: flex;
+  flex-display: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Kontener na jeden wiersz danych adresowych */
+.salon-address-row{
+  // Położenie
+  display: flex;
+  margin-top: 20px;
+  flex-display: row;
+  // Szerokość
+  width: 100%;
+}
+
+/* Pusty konter żeby ładnie przesuwać */
+.salon-address-row-blank{
+  // Szerokość
+  width: 6%;
+}
+
+/* Kontener zawierający nazwy wartości */
+.salon-address-row-text{
+  // Położenie
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  // Szerokość
+  min-width: 46%;
+  // Tekst
+  font-size: 30px;
+}
+
+/* Kontener zawierający wartość adresu */
+.salon-address-row-value{
+  // Położenie
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  // Szerokość
+  min-width: 46%;
+}
+
+/* Wejście zmiennych wartości adresu */
+.salon-address-input{
+  // Położenie
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  // Szerokość
+  max-width: 100%;
+  // Tekst
+  font-size: 30px;
+  color: darkgray;
+  // Ramka
+  border-radius: 4px;
+}
+
+/* Położenie przycisku zmiany adresu */
+.salon-address-button-container{
+  // Położenie
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Przycisk zmiany adresu */
+.salon-address-button{
+  // Kolory
+  background: #F85F6A;
+  color: white;
+  // Ramka
+  border: 1px solid #F85F6A;
+  border-radius: 4px;
+  // Pozycjonowanie
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+  // Czcionka
+  font-size: 2vw;
+  // Cień
+  //box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+  // Szerokość
+  min-width: 5vw;
+  // Długość
+  max-height: 5vw;
+}
