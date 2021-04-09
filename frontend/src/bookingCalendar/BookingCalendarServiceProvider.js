@@ -114,8 +114,10 @@ export default function BookingCalendarConsumer() {
                 </div>
                 <Table className={styles.timeTable}>
                     <thead>
-                    <th className={styles.timeTableRow}>Czas</th>
-                    <th className={styles.timeTableRow}>Dostępność</th>
+                    <tr>
+                        <th className={styles.timeTableRow}>Czas</th>
+                        <th className={styles.timeTableRow}>Dostępność</th>
+                    </tr>
                     </thead>
                     <tbody>
                         {state.terms.filter(term => term.date.getTime() === selectedDate.getTime()).map((term) => (
