@@ -81,7 +81,7 @@ class Specification extends Component {
     /* Funkcja dodaje blok z komentarzami */
     AddComments(){
         return(
-            <div className="overflow-auto scrollbar" style={{height: '200px'}}>
+            <div className="overflow-auto scrollbar" style={{height: '15vw'}}>
 
                 <div className={'comment'}>
                     <div className={'comment-blank'} />
@@ -133,7 +133,7 @@ class Specification extends Component {
 
     AddServices(){
         return(
-            <div className="overflow-auto scrollbar" style={{height: '150px'}}>
+            <div className="overflow-auto scrollbar" style={{height: '10vw'}}>
 
                 <div className={'service-name-price-button'}>
                     <div className={'service-name'}>

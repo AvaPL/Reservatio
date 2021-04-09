@@ -1,9 +1,9 @@
 /* Kontener bazowy */
-.base{
+.baseprofile{
   // Marginesy
-  margin-top: 100px;
-  margin-right: 500px;
-  margin-left: 500px;
+  margin-top: 50px;
+  margin-right: 20%;
+  margin-left: 20%;
   margin-bottom: 50px;
   // Pozycjonowanie
   display: flex;
@@ -21,7 +21,7 @@
 /* Kontener na nazwę salonu */
 .salon-name{
   // Tekst
-  font-size: 60px;
+  font-size: 5vw;
   font-weight: bold;
   // Położenie
   display: flex;
@@ -97,9 +97,9 @@
   justify-content: flex-start;
   align-items: flex-start;
   // Szerokość
-  min-width: 46%;
+  min-width: 44%;
   // Tekst
-  font-size: 30px;
+  font-size: 3vw;
 }
 
 /* Kontener zawierający wartość adresu */
@@ -109,7 +109,7 @@
   justify-content: flex-start;
   align-items: flex-start;
   // Szerokość
-  min-width: 46%;
+  min-width: 44%;
 }
 
 /* Wejście zmiennych wartości adresu */
@@ -121,7 +121,7 @@
   // Szerokość
   max-width: 100%;
   // Tekst
-  font-size: 30px;
+  font-size: 3vw;
   color: darkgray;
   // Ramka
   border-radius: 4px;

@@ -47,6 +47,9 @@ class Profile extends Component {
                     <div className={'salon-address-row-value'}>
                         <input className={'salon-address-input'} id="street" type="text" value={this.state.street}/>
                     </div>
+                    <div className={'salon-address-row-blank'}>
+
+                    </div>
                 </div>
 
                 <div className={'salon-address-row'}>
@@ -58,6 +61,10 @@ class Profile extends Component {
                     </div>
                     <div className={'salon-address-row-value'}>
                         <input className={'salon-address-input'} id="phone" type="text" value={this.state.phone}/>
+                    </div>
+
+                    <div className={'salon-address-row-blank'}>
+
                     </div>
                 </div>
 
@@ -71,6 +78,9 @@ class Profile extends Component {
                     <div className={'salon-address-row-value'}>
                         <input className={'salon-address-input'} id="email" type="text" value={this.state.email}/>
                     </div>
+                    <div className={'salon-address-row-blank'}>
+
+                    </div>
                 </div>
 
                 <div className={'salon-address-row'}>
@@ -83,8 +93,10 @@ class Profile extends Component {
                     <div className={'salon-address-row-value'}>
                         <input className={'salon-address-input'} id="city" type="text" value={this.state.city}/>
                     </div>
-                </div>
+                    <div className={'salon-address-row-blank'}>
 
+                    </div>
+                </div>
                 <div className={'salon-address-button-container'}>
                     <button className={'salon-address-button'}> Change info </button>
                 </div>
@@ -94,7 +106,7 @@ class Profile extends Component {
 
     render() {
         return (
-            <div className={'base'}>
+            <div className={'baseprofile'}>
                 {this.AddNamePhoto()}
                 {this.AddAddress()}
             </div>
