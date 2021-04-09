@@ -1,0 +1,12 @@
+spring:
+  data:
+    rest:
+      base-path: /rest
+reservatio:
+  loadTestData: true
+  minio:
+    endpoint: mock
+    username: mock
+    password: mock
+    bucket: mock
+    bucketPolicy: mock

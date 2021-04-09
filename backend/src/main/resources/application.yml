@@ -2,10 +2,54 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create-drop # TODO: Temporary
-    show-sql: true
   datasource:
     url: jdbc:mysql://localhost:3306/reservatio
     username: reservatio
     password: reservatio
     hikari:
       initialization-fail-timeout: -1
+  data:
+    rest:
+      base-path: /rest
+reservatio:
+  loadTestData: true
+  minio:
+    endpoint: http://localhost:9000
+    username: reservatio
+    password: reservatio
+    bucket: reservatio
+    bucketPolicy: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "AWS": [
+                "*"
+              ]
+            },
+            "Action": [
+              "s3:ListBucket",
+              "s3:GetBucketLocation"
+            ],
+            "Resource": [
+              "arn:aws:s3:::${reservatio.minio.bucket}"
+            ]
+          },
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "AWS": [
+                "*"
+              ]
+            },
+            "Action": [
+              "s3:GetObject"
+            ],
+            "Resource": [
+              "arn:aws:s3:::${reservatio.minio.bucket}/*"
+            ]
+          }
+        ]
+      }
