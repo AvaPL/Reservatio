@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Button from "react-bootstrap/Button";
-import {useHistory, useParams} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import styles from "./bookingCalendar.module.scss";
 import {Container, Table} from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,7 +12,7 @@ import cn from "classnames";
 export default function BookingCalendarConsumer() {
     const history = useHistory();
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [state, setState] = useState({
+    const [state] = useState({
         image: "https://source.unsplash.com/1600x900/?barber",
         favourite: true,
         score: 0,

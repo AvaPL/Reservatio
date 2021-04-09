@@ -13,7 +13,7 @@ export default function BookingCalendarConsumer() {
     const { serviceproviderid, serviceid } = useParams();
     const history = useHistory();
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [state, setState] = useState({
+    const [state] = useState({
         image: "https://source.unsplash.com/1600x900/?barber",
         favourite: true,
         score: 0,

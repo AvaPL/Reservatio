@@ -11,7 +11,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faStar as farStar } from "@fortawesome/free-regular-svg-icons";
 import cn from "classnames";
-import Explore from "../customer/explore/Explore";
 
 export default function Booking() {
   const { serviceproviderid } = useParams();
