@@ -54,7 +54,7 @@ class Login extends Component {
         const login = authService.login(this.state.email, this.state.password)
         login.then(loggedIn => {
             if (loggedIn)
-                this.props.history.push("/")
+                this.props.onLogin()
             else
                 this.setState({showError: true})
         })

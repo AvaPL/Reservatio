@@ -1,6 +1,6 @@
 import jwtDecode from "jwt-decode";
 
-const authKey = 'reservatio-auth'
+const authStorageKey = 'reservatio-auth'
 
 class AuthService {
 
@@ -8,7 +8,7 @@ class AuthService {
         this.keycloakUrl = keycloakUrl
         this.realm = realm
         this.clientId = clientId
-        this.setToken(JSON.parse(localStorage.getItem(authKey)))
+        this.setToken(JSON.parse(localStorage.getItem(authStorageKey)))
     }
 
     setToken(token) {
@@ -52,7 +52,7 @@ class AuthService {
                 return response.json()
             })
             .then(token => {
-                localStorage.setItem(authKey, JSON.stringify(token))
+                localStorage.setItem(authStorageKey, JSON.stringify(token))
                 this.setToken(token)
                 return true
             })
@@ -70,11 +70,11 @@ class AuthService {
     }
 
     logout() {
-        localStorage.removeItem(authKey)
+        localStorage.removeItem(authStorageKey)
         this.token = null
     }
 
-    refresh() {
+    refreshToken() {
         if (!this.canTokenBeRefreshed())
             return Promise.resolve(false)
         const requestOptions = {
@@ -100,8 +100,33 @@ class AuthService {
         return Date.now() >= (this.token.exp - minValidity) * 1000
     }
 
-    hasRole(role) {
-        this.token?.roles.includes(role)
+    userHasRole(role) {
+        return this.token?.roles.includes(role)
+    }
+
+    fetchAuthenticated(input, init, onAuthFailure = () => Promise.reject(new Error("User not authenticated"))) {
+        if (!this.isUserAuthenticated())
+            return onAuthFailure()
+        const initAuthenticated = {
+            ...init,
+            headers: {
+                ...init.headers,
+                'Authorization': `${this.token.tokenType} ${this.token.accessToken}`
+            }
+        }
+        if (this.isTokenExpired() && this.canTokenBeRefreshed())
+            return this.refreshToken().then(refreshSuccess => {
+                if (refreshSuccess)
+                    return fetch(input, initAuthenticated)
+                else
+                    return onAuthFailure()
+            })
+        else
+            return fetch(input, initAuthenticated)
+    }
+
+    isUserAuthenticated() {
+        return this.token && (!this.isTokenExpired() || this.canTokenBeRefreshed())
     }
 }
 
