@@ -21,7 +21,7 @@ class AuthService {
             refreshToken: token.refresh_token,
             refreshExpiresIn: token.refresh_expires_in,
             tokenType: token.token_type,
-            exp: decodedAccessToken.exp,
+            expires: decodedAccessToken.exp,
             roles: decodedAccessToken.realm_access.roles,
             username: decodedAccessToken.preferred_username,
             email: decodedAccessToken.email
@@ -48,7 +48,7 @@ class AuthService {
         return fetch(`${this.keycloakUrl}/realms/${this.realm}/protocol/openid-connect/token`, requestOptions)
             .then(response => {
                 if (!response.ok)
-                    this.handleLoginError(response);
+                    this.onTokenFetchError(response);
                 return response.json()
             })
             .then(token => {
@@ -57,12 +57,12 @@ class AuthService {
                 return true
             })
             .catch(error => {
-                console.log('error', error)
+                console.log('Token fetch error', error)
                 return false
             })
     }
 
-    handleLoginError(response) {
+    onTokenFetchError(response) {
         if ([401, 403].indexOf(response.status) !== -1) {
             this.logout()
         }
@@ -93,11 +93,12 @@ class AuthService {
 
     canTokenBeRefreshed() {
         return this.token !== null &&
-            Date.now() <= (this.token.exp + this.token.refreshExpiresIn) * 1000
+            Date.now() <= (this.token.expires + this.token.refreshExpiresIn) * 1000
     }
 
     isTokenExpired(minValidity = 30) {
-        return Date.now() >= (this.token.exp - minValidity) * 1000
+        // TODO: Include token null check?
+        return Date.now() >= (this.token.expires - minValidity) * 1000
     }
 
     userHasRole(role) {
@@ -105,6 +106,7 @@ class AuthService {
     }
 
     fetchAuthenticated(input, init, onAuthFailure = () => Promise.reject(new Error("User not authenticated"))) {
+        // TODO: Simplify this method
         if (!this.isUserAuthenticated())
             return onAuthFailure()
         const initAuthenticated = {
@@ -117,6 +119,7 @@ class AuthService {
         if (this.isTokenExpired() && this.canTokenBeRefreshed())
             return this.refreshToken().then(refreshSuccess => {
                 if (refreshSuccess)
+                    // TODO: initAuthenticated will have old token here, to be fixed
                     return fetch(input, initAuthenticated)
                 else
                     return onAuthFailure()
