@@ -38,22 +38,6 @@ $auth-dark: #d9535d;
   font-family: 'Asap', sans-serif;
   margin: 5% 10%;
   text-align: left;
-
-  a:link {
-    color: $auth-primary;
-  }
-
-  a:visited {
-    color: $auth-dark;
-  }
-
-  a:hover {
-    color: $auth-dark !important;
-  }
-
-  a:active {
-    color: $auth-dark !important;
-  }
 }
 
 .Auth-form-title {
@@ -119,6 +103,22 @@ $auth-dark: #d9535d;
   font-size: 14px;
   margin-bottom: 15%;
   color: black;
+
+  a:link {
+    color: $auth-primary;
+  }
+
+  a:visited {
+    color: $auth-dark;
+  }
+
+  a:hover {
+    color: $auth-dark !important;
+  }
+
+  a:active {
+    color: $auth-dark !important;
+  }
 }
 
 .scrollbar {

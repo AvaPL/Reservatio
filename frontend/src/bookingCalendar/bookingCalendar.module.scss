@@ -21,6 +21,7 @@
   margin-bottom: 0;
   width: 100%;
   border: 1px solid grey;
+  text-align: center;
 }
 
 .row {
@@ -30,6 +31,7 @@
   left:0;
   right:0;
   margin:0 auto;
+  text-align: center;
 }
 
 .timeTable {
@@ -39,6 +41,8 @@
   left:0;
   right:0;
   margin:0 auto;
+  text-align: center;
+  //transform: translate(-50%, -50%);
 }
 
 .timeTableRow {

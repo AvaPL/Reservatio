@@ -108,7 +108,7 @@ class Registration extends Component {
                     <ButtonGroup className="Auth-btn-group">
                         <Button className="Auth-btn-group-btn shadow-none"
                                 onClick={this.handleClientClick}
-                                style={{backgroundColor: this.state.salonButtonClicked ? notClickedButtonColor : clickedButtonColor}}>Client</Button>
+                                style={{backgroundColor: this.state.salonButtonClicked ? notClickedButtonColor : clickedButtonColor}}>Customer</Button>
                         <Button className="Auth-btn-group-btn shadow-none"
                                 onClick={this.handleSalonClick}
                                 style={{backgroundColor: this.state.salonButtonClicked ? clickedButtonColor : notClickedButtonColor}}>Salon</Button>
