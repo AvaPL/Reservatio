@@ -22,7 +22,7 @@ class App extends Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            isCustomer: false // TODO: Temporary
+            isCustomer: true // TODO: Temporary
         }
     }
 

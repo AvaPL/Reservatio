@@ -130,7 +130,7 @@ class Appointments extends Component {
                         </div>
                         <div className="row">
                             <div className="col"></div>
-                            <div className="col-6">
+                            <div className="col">
                                 {item.serviceProvider}
                             </div>
                             <div className="col"></div>
@@ -179,7 +179,7 @@ class Appointments extends Component {
                         </div>
                         <div className="row">
                             <div className="col"></div>
-                            <div className="col-6 top">
+                            <div className="col top">
                                 {item.serviceProvider}
                             </div>
                             <div className="col"></div>
