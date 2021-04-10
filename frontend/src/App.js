@@ -16,13 +16,14 @@ import {Component} from "react";
 import Booking from "./booking/Booking";
 import BookingCalendarServiceProvider from "./bookingCalendar/BookingCalendarServiceProvider";
 import BookingCalendarConsumer from "./bookingCalendar/BookingCalendarConsumer";
+import Specification from "./customer/specification/Specification";
 
 class App extends Component {
 
     constructor(props, context) {
         super(props, context);
         this.state = {
-            isCustomer: false // TODO: Temporary
+            isCustomer: true // TODO: Temporary
         }
     }
 
@@ -37,6 +38,7 @@ class App extends Component {
                         <Route exact path="/booking/:serviceproviderid/:serviceid" component={BookingCalendarConsumer}/>
                         <Route exact path="/serviceprovider/:serviceproviderid/calendar" component={BookingCalendarServiceProvider}/>
                         <Route exact path="/booking/:serviceproviderid" component={Booking}/>
+                        <Route exact path="/specification" component={Specification}/>
                         {this.chooseRoutes()}
                     </Switch>
                 </BrowserRouter>

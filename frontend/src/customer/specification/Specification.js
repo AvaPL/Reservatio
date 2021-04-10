@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import './Specification.scss'
+import StarRatings from "react-star-ratings";
 
 class Specification extends Component {
     constructor(props) {
@@ -12,7 +13,7 @@ class Specification extends Component {
             name: "Nazwa salonu",
             street: "Owaka 4",
             city: "Wrocław",
-            person: "Michałek dirty",
+            person: "Michałek",
             servicename: "Fryzjer damski",
             serviceprice: 60
         };
@@ -95,11 +96,15 @@ class Specification extends Component {
                                 {this.state.person}
                             </div>
                             <div className={'comment-note'}>
-
+                                <StarRatings
+                                    rating={5}
+                                    starDimension="2vw"
+                                    starSpacing="15px"
+                                />
                             </div>
                         </div>
                         <div className={'comment-comment'}>
-                            Naprawdę nie mam pomysłu co ciekawego mogłoby się tu znaleźć
+                            Bardzo miły i przyjemny salon
                         </div>
                     </div>
                     <div className={'comment-blank'} />
@@ -117,11 +122,15 @@ class Specification extends Component {
                                 {this.state.person}
                             </div>
                             <div className={'comment-note'}>
-                                Dodać to jakoś nie wiem
+                                <StarRatings
+                                    rating={5}
+                                    starDimension="2vw"
+                                    starSpacing="15px"
+                                />
                             </div>
                         </div>
                         <div className={'comment-comment'}>
-                            Naprawdę nie mam pomysłu co ciekawego mogłoby się tu znaleźć
+                            Bardzo miły i przyjemny salon
                         </div>
                     </div>
                     <div className={'comment-blank'} />
