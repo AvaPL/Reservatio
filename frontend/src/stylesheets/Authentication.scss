@@ -27,6 +27,7 @@ $auth-dark: #d9535d;
 }
 
 .Auth-company-name {
+  text-align: center;
   font-family: 'Brush Script MT', sans-serif;
   font-weight: bold;
   font-size: 60px;
@@ -98,27 +99,28 @@ $auth-dark: #d9535d;
 }
 
 .Auth-link {
+  text-align: center;
   font-family: 'Asap', sans-serif;
   font-weight: bold;
   font-size: 14px;
   margin-bottom: 15%;
   color: black;
-}
 
-a:link {
-  color: $auth-primary;
-}
+  a:link {
+    color: $auth-primary;
+  }
 
-a:visited {
-  color: $auth-dark;
-}
+  a:visited {
+    color: $auth-dark;
+  }
 
-a:hover {
-  color: $auth-dark !important;
-}
+  a:hover {
+    color: $auth-dark !important;
+  }
 
-a:active {
-  color: $auth-dark !important;
+  a:active {
+    color: $auth-dark !important;
+  }
 }
 
 .scrollbar {
