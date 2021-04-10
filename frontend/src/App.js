@@ -12,15 +12,17 @@ import Employees from "./serviceprovider/employees/Employees";
 import Profile from "./serviceprovider/profile/Profile";
 import Services from "./serviceprovider/services/Services";
 import Statistics from "./serviceprovider/statistics/Statistics";
-import Specification from "./customer/specification/Specification";
 import {Component} from "react";
+import Booking from "./booking/Booking";
+import BookingCalendarServiceProvider from "./bookingCalendar/BookingCalendarServiceProvider";
+import BookingCalendarConsumer from "./bookingCalendar/BookingCalendarConsumer";
 
 class App extends Component {
 
     constructor(props, context) {
         super(props, context);
         this.state = {
-            isCustomer: true // TODO: Temporary
+            isCustomer: false // TODO: Temporary
         }
     }
 
@@ -32,7 +34,9 @@ class App extends Component {
                         <Route exact path="/not-found" component={PageNotFound}/>
                         <Route exact path="/login" component={Login}/>
                         <Route exact path="/register" component={Registration}/>
-                        <Route exact path="/specification" component={Specification}/>
+                        <Route exact path="/booking/:serviceproviderid/:serviceid" component={BookingCalendarConsumer}/>
+                        <Route exact path="/serviceprovider/:serviceproviderid/calendar" component={BookingCalendarServiceProvider}/>
+                        <Route exact path="/booking/:serviceproviderid" component={Booking}/>
                         {this.chooseRoutes()}
                     </Switch>
                 </BrowserRouter>
