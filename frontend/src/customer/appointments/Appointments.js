@@ -11,7 +11,7 @@ class Appointments extends Component {
         this.showPast.bind(this);
         this.showUpcoming.bind(this);
         this.state = {
-            navigation: "past",
+            //navigation: "past",
             dataP: [
                 {
                     id:1,
@@ -51,10 +51,13 @@ class Appointments extends Component {
         let page;
         switch (tab){
             case "past":
-                page = this.renderPast()
+                page = this.renderPast();
                 break
             case "upcoming":
                 page = this.renderUpcoming();
+                break
+            default:
+                page = this.renderPast();
                 break
         }
         return (
