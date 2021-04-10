@@ -51,9 +51,11 @@ $navigation-primary-active: #F85F6A;
 .test{
 
   background-color: $navigation-primary;
+  color: black;
 
   &:hover{
     background-color: $navigation-primary-hover;
+    color: black;
   }
 
   &:active{
