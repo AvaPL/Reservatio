@@ -1,98 +1,88 @@
 @import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css');
 
-/* Kontener bazowy */
 .base{
-  // Marginesy
+  // Margin
   margin-top: 50px;
   margin-left: 20%;
   margin-right: 20%;
   margin-bottom: 50px;
-  // Pozycjonowanie
+  // Positioning
   display: flex;
   flex-direction: column;
-  // Ramka
+  // Frame
   border: 2px ridge black;
 }
 
-/* Kontener na zdjęcie salonu */
 .photo-container{
-  // Proporcja zdjęcia
+  // Photo proportion
   aspect-ratio: 16 / 9;
 }
 
-/* Kontener na zdjęciu z sercem */
 .photo-overlay-container-star{
-  // Pozycjonowanie
+  // Positioning
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;
-  // Rozmiar
+  // Size
   height: 50%;
   width: 100%;
 }
 
-/* Kontener na zdjęciu ze średnią */
 .photo-overlay-container-value{
-  // Pozycjonowanie
+  // Positioning
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;
-  // Rozmiar
+  // Size
   height: 50%;
   width: 100%;
 }
 
-/* Kontener z gwizdką */
 .photo-star{
-  // Pozycjonowanie
+  // Positioning
   align-self: flex-start;
   display: flex;
   justify-content: center;
   align-items: center;
-  // Szerokość
+  // Width
   width: 15%;
 }
 
-/* Gwiazda */
 .star{
-  // Pozycjonowanie
+  // Positioning
   display: flex;
   justify-content: center;
   align-items: center;
-  // Nie wiem czemu to nie działa, w pewnym momencie przestało
+  // Size
   font-size: 5vw;
 }
 
-/* Okno ze średnią */
 .photo-value{
-  // Tło
+  // Background
   background: rgba(255,255,255,0.7);
-  // Czcionka
+  // Text
   font-size: 4vw;
-  // Pozycjonowanie
+  // Positioning
   align-self: flex-end;
   display: flex;
   justify-content: center;
   align-items: center;
-  // Szerokość
+  // Width
   width: 15%;
-  // Ramka
+  // Frame
   border: 2px solid black;
 }
 
-/* Kontener na nazwę salonu */
 .name-container{
-  // Tekst
+  // Text
   font-size: 3vw;
 }
 
-/* Kontener na adres salonu */
 .address-container{
-  // Tekst
+  // Text
   font-size: 3vw;
 }
 
-/* Upiększacze do scrollbara */
 .scrollbar {
   overflow-y: scroll;
   border: 1px solid black;
@@ -107,180 +97,161 @@
   border-radius: 1rem;
   background-color: #F85F6A;
 }
-/* Nie wiem nie robiłem tego */
 
-/* Kontener na komentarz */
 .comment{
-  // Rozmiar
+  // Size
   width: 100%;
   height: 15vw;
-  // Położenie
+  // Positioning
   display: flex;
   flex-direction: row;
-  // Ramka
+  // Frame
   border-style: solid;
   border-bottom-color: black;
   border-radius: 5px;
 }
 
-/* Kontener pusty na przesunięcie */
 .comment-blank{
-  // Rozmiar
+  // Size
   width: 2%;
 }
 
-// Parametry zdjęcia z komentarza */
 .comment-photo{
-  // Rozmiar
+  // Size
   width: 80%;
   height: 80%;
-  //aspect-ratio: 16 / 9;
 }
 
-/* Kontener na zdjęcie z komentarza */
 .comment-photo-container{
-  // Rozmiar
+  // Size
   width: 18%;
   height: 100%;
-  // Położenie
+  // Positioning
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* Kontener na Imię ocenę i komentarz */
 .comment-name-note-comment{
-  // Pozycjonowanie
+  // Positioning
   display: flex;
   flex-direction: column;
-  // Rozmiar
+  // Size
   width: 76%;
 }
 
-/* Kontener na imię i ocenę */
 .comment-name-note{
-  // Pozycjonowanie
+  // Positioning
   display: flex;
   flex-direction: row;
-  // Rozmiar
+  // Size
   height: 40%;
 }
 
-/* Kontener na imię w komentarzu */
 .comment-name{
-  // Tekst
+  // Text
   font-size: 2vw;
   font-weight: bold;
-  // Rozmiar
+  // Size
   width: 50%;
-  // Pozycjonowanie
+  // Positioning
   display: flex;
   //justify-content: center;
   align-self: center;
 }
 
-/* Kontener na gwiazdki w komentarzu */
 .comment-note{
-  // Rozmiar bloku
+  // Size
   width: 50%;
-  // Rozmiar gwiazdek
   font-size: 2vw;
-  // Pozycjonowanie
+  // Positioning
   display: flex;
   //justify-content: center;
   align-self: center;
 }
 
-/* Kontener na wypowiedź w komentarzu */
 .comment-comment{
-  // Tekst
+  // Text
   font-size: 1.2vw;
-  // Pozycjonowanie
+  // Positioning
   display: flex;
   justify-content: flex-start;
   align-self: flex-start;
-  // Rozmiar
+  // Size
   width: 100%;
   height: 50%;
-  // Ramka
+  // Frame
   border: 2px solid black;
   border-radius: 10px;
 }
 
-/* Kontener na serwis */
 .service-name-price-button{
-  // Pozycjonowanie
+  // Positioning
   display: flex;
   flex-direction: row;
-  // Rozmiar
+  // Size
   width: 100%;
   height: 100%;
-  // Ramka
+  // Frame
   border-style: solid;
   border-bottom-color: black;
   border-radius: 5px;
 }
 
-/* Kontener na nazwę serwisu */
 .service-name{
-  // Pozycjonowanie
+  // Positioning
   display: flex;
   justify-content: center;
   align-self: center;
-  // Tekst
+  // Text
   font-size: 2vw;
-  // Wielkość
+  // Width
   width: 50%;
 }
 
-/* Kontener na cenę i przycisk */
 .service-price-button{
-  // Pozycjonowanie
+  // Positioning
   display: flex;
   flex-direction: column;
-  // Rozmiar
+  // Size
   width: 50%;
   height: 100%;
 }
 
-/* Kontener z ceną serwisu */
 .service-price{
-  // Pozycjonowanie
+  // Positioning
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   align-items: center;
-  // Tekst
+  // Text
   font-size: 1.5vw;
-  // Rozmiar
+  // Size
   width: 100%;
   height: 50%;
 }
 
-/* Kontener na przycisk serwisu */
 .service-button{
-  // Pozycjonowanie
+  // Positioning
   display: flex;
   justify-content: center;
   align-items: center;
-  // Rozmiar
+  // Size
   width: 100%;
   height: 50%;
 }
 
-/* Przycisk z serwisu */
 .service-button-button{
-  // Pozycjonowanie
+  // Positioning
   display: flex;
   justify-content: center;
   align-items: center;
-  // Rozmiar
+  // Size
   width: 60%;
   height: 60%;
-
-  // Tekst
+  // Text
   font-size: 1.2vw;
   color: white;
-  // Tło
+  // Background
   background: #d9535d;
 }

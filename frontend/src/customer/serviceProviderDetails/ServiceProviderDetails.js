@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import './Specification.scss'
+import './ServiceProviderDetails..scss'
 import StarRatings from "react-star-ratings";
 
-class Specification extends Component {
+class ServiceProviderDetails extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -19,8 +19,7 @@ class Specification extends Component {
         };
     }
 
-    /* Sprawdza czy gwiazdka jest biała czy czerwona */
-    CheckStar(){
+    checkStar(){
         if (this.state.star === 1.0){
             return(
                 <div className={'photo-star'}>
@@ -41,14 +40,13 @@ class Specification extends Component {
         }
     }
 
-    /* Funkcja dodaje zdjęcie z dodatkami */
-    AddPhoto(){
+    addPhoto(){
         return(
             <div className="card bg-dark">
                 <img className="card-img photo-container" src={this.state.source} alt={this.state.alt}/>
                 <div className="card-img-overlay">
                     <div className={'photo-overlay-container-star'}>
-                        {this.CheckStar()}
+                        {this.checkStar()}
                     </div>
 
                     <div className={'photo-overlay-container-value'}>
@@ -61,8 +59,7 @@ class Specification extends Component {
         );
     }
 
-    /* Funkcja dodaje nazwę salonu */
-    AddName(){
+    addName(){
         return(
             <div className={'name-container'}>
                 {this.state.name}
@@ -70,8 +67,7 @@ class Specification extends Component {
         );
     }
 
-    /* Funkcja dodaje adres salonu */
-    AddAddress(){
+    addAddress(){
         return(
             <div className={'address-container'}>
                 ul. {this.state.street}, {this.state.city}
@@ -79,8 +75,7 @@ class Specification extends Component {
         );
     }
 
-    /* Funkcja dodaje blok z komentarzami */
-    AddComments(){
+    addComments(){
         return(
             <div className="overflow-auto scrollbar" style={{height: '15vw'}}>
 
@@ -99,7 +94,7 @@ class Specification extends Component {
                                 <StarRatings
                                     rating={5}
                                     starDimension="2vw"
-                                    starSpacing="15px"
+                                    starSpacing="1vw"
                                 />
                             </div>
                         </div>
@@ -125,7 +120,7 @@ class Specification extends Component {
                                 <StarRatings
                                     rating={5}
                                     starDimension="2vw"
-                                    starSpacing="15px"
+                                    starSpacing="1vw"
                                 />
                             </div>
                         </div>
@@ -140,7 +135,7 @@ class Specification extends Component {
         );
     }
 
-    AddServices(){
+    addServices(){
         return(
             <div className="overflow-auto scrollbar" style={{height: '10vw'}}>
 
@@ -183,14 +178,14 @@ class Specification extends Component {
     render() {
         return (
             <div className={'base'}>
-                {this.AddPhoto()}
-                {this.AddName()}
-                {this.AddAddress()}
-                {this.AddComments()}
-                {this.AddServices()}
+                {this.addPhoto()}
+                {this.addName()}
+                {this.addAddress()}
+                {this.addComments()}
+                {this.addServices()}
             </div>
         );
     }
 }
 
-export default Specification;
+export default ServiceProviderDetails;

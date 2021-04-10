@@ -15,8 +15,7 @@ class Profile extends Component {
         };
     }
 
-    /* Funkcja dodaje blok z nazwą, zdjęciem i przyciskiem */
-    AddNamePhoto() {
+    addNamePhoto() {
         return (
             <div className={'salon-name-photo'}>
                 <div className={'salon-name'}>
@@ -33,8 +32,7 @@ class Profile extends Component {
         );
     }
 
-    /* Funkcja dodaje adres salonu z przyciskiem zmiany */
-    AddAddress(){
+    addAddress(){
         return(
             <div className={'salon-address'}>
                 <div className={'salon-address-row'}>
@@ -107,8 +105,8 @@ class Profile extends Component {
     render() {
         return (
             <div className={'baseprofile'}>
-                {this.AddNamePhoto()}
-                {this.AddAddress()}
+                {this.addNamePhoto()}
+                {this.addAddress()}
             </div>
         );
     }
