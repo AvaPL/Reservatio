@@ -13,6 +13,9 @@ import Profile from "./serviceprovider/profile/Profile";
 import Services from "./serviceprovider/services/Services";
 import Statistics from "./serviceprovider/statistics/Statistics";
 import {Component} from "react";
+import Booking from "./booking/Booking";
+import BookingCalendarServiceProvider from "./bookingCalendar/BookingCalendarServiceProvider";
+import BookingCalendarConsumer from "./bookingCalendar/BookingCalendarConsumer";
 
 class App extends Component {
 
@@ -31,6 +34,9 @@ class App extends Component {
                         <Route exact path="/not-found" component={PageNotFound}/>
                         <Route exact path="/login" component={Login}/>
                         <Route exact path="/register" component={Registration}/>
+                        <Route exact path="/booking/:serviceproviderid/:serviceid" component={BookingCalendarConsumer}/>
+                        <Route exact path="/serviceprovider/:serviceproviderid/calendar" component={BookingCalendarServiceProvider}/>
+                        <Route exact path="/booking/:serviceproviderid" component={Booking}/>
                         {this.chooseRoutes()}
                     </Switch>
                 </BrowserRouter>
