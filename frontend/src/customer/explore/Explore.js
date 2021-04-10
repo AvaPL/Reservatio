@@ -68,13 +68,13 @@ class Explore extends Component {
                             <img className="card-img-top" style={{aspectRatio: "16/9"}} src="https://welpmagazine.com/wp-content/uploads/2020/10/Filament-hair-salon1.jpg" alt="Card cap"/>
                             <div className="card-img-overlay">
                                 <div className="row">
-                                    <div className="card"style={{width: "20%", background: "rgba(255,255,255,0.7)"}}>
+                                    <div className="card" style={{width: "20%", background: "rgba(255,255,255,0.7)"}}>
                                         <h2>5.0</h2>
                                     </div>
-                                    <div className="card"style={{width: "60%", background: "transparent"}}>
+                                    <div className="card" style={{width: "60%", background: "transparent"}}>
                                     </div>
-                                    <div className="card"style={{width: "20%", background: "transparent"}}>
-                                        <h2><i className="bi bi-star-fill"  style={{color: "white"}}> </i></h2>
+                                    <div className="card" style={{width: "20%", background: "transparent"}}>
+                                        <h2><i className="bi bi-star-fill" style={{color: "white"}}> </i></h2>
                                     </div>
                                 </div>
                             </div>
@@ -86,10 +86,10 @@ class Explore extends Component {
                             <img className="card-img-top" style={{aspectRatio: "16/9"}} src="https://pliki.propertydesign.pl/i/11/75/94/117594_r0_1140.jpg" alt="Card cap"/>
                             <div className="card-img-overlay">
                                 <div className="row">
-                                    <div className="card"style={{width: "20%", background: "rgba(255,255,255,0.7)"}}>
+                                    <div className="card" style={{width: "20%", background: "rgba(255,255,255,0.7)"}}>
                                         <h2>5.0</h2>
                                     </div>
-                                    <div className="card"style={{width: "60%", background: "transparent"}}>
+                                    <div className="card" style={{width: "60%", background: "transparent"}}>
                                     </div>
                                     <div className="card"style={{width: "20%", background: "transparent"}}>
                                         <h2><i className="bi bi-star-fill"  style={{color: "white"}}> </i></h2>
@@ -104,13 +104,13 @@ class Explore extends Component {
                             <img className="card-img-top" style={{aspectRatio: "16/9"}} src="https://www.triss.com.pl/wp-content/uploads/granat-2768U-1.jpg" alt="Card cap" />
                             <div className="card-img-overlay">
                                 <div className="row">
-                                    <div className="card"style={{width: "20%", background: "rgba(255,255,255,0.7)"}}>
+                                    <div className="card" style={{width: "20%", background: "rgba(255,255,255,0.7)"}}>
                                         <h2>5.0</h2>
                                     </div>
-                                    <div className="card"style={{width: "60%", background: "transparent"}}>
+                                    <div className="card" style={{width: "60%", background: "transparent"}}>
                                     </div>
-                                    <div className="card"style={{width: "20%", background: "transparent"}}>
-                                        <h2><i className="bi bi-star-fill"  style={{color: "white"}}> </i></h2>
+                                    <div className="card" style={{width: "20%", background: "transparent"}}>
+                                        <h2><i className="bi bi-star-fill" style={{color: "white"}}> </i></h2>
                                     </div>
                                 </div>
                             </div>
@@ -122,13 +122,13 @@ class Explore extends Component {
                             <img className="card-img-top" style={{aspectRatio: "16/9"}} src="https://pliki.propertydesign.pl/i/11/75/94/117594_r0_1140.jpg" alt="Card cap"/>
                             <div className="card-img-overlay">
                                 <div className="row">
-                                    <div className="card"style={{width: "20%", background: "rgba(255,255,255,0.7)"}}>
+                                    <div className="card" style={{width: "20%", background: "rgba(255,255,255,0.7)"}}>
                                         <h2>5.0</h2>
                                     </div>
-                                    <div className="card"style={{width: "60%", background: "transparent"}}>
+                                    <div className="card" style={{width: "60%", background: "transparent"}}>
                                     </div>
-                                    <div className="card"style={{width: "20%", background: "transparent"}}>
-                                        <h2><i className="bi bi-star-fill"  style={{color: "white"}}> </i></h2>
+                                    <div className="card" style={{width: "20%", background: "transparent"}}>
+                                        <h2><i className="bi bi-star-fill" style={{color: "white"}}> </i></h2>
                                     </div>
                                 </div>
                             </div>
