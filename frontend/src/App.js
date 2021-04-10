@@ -14,19 +14,17 @@ import Services from "./serviceprovider/services/Services";
 import Statistics from "./serviceprovider/statistics/Statistics";
 import {Component} from "react";
 import {authService} from "./auth/AuthService";
+import Unauthorized from "./unauthorized/Unauthorized";
 
-const customerRoutes = [
-    {name: "Explore", path: "/explore", component: Explore},
-    {name: "Favorites", path: "/favorites", component: Favorites},
-    {name: "Search", path: "/search", component: Search},
-    {name: "Appointments", path: "/appointments", component: Appointments}
-]
-
-const serviceProviderRoutes = [
-    {name: "Statistics", path: "/statistics", component: Statistics},
-    {name: "Services", path: "/services", component: Services},
-    {name: "Employees", path: "/employees", component: Employees},
-    {name: "Profile", path: "/profile", component: Profile}
+const routes = [
+    {name: "Explore", path: "/explore", component: Explore, requiredRole: "customer"},
+    {name: "Favorites", path: "/favorites", component: Favorites, requiredRole: "customer"},
+    {name: "Search", path: "/search", component: Search, requiredRole: "customer"},
+    {name: "Appointments", path: "/appointments", component: Appointments, requiredRole: "customer"},
+    {name: "Statistics", path: "/statistics", component: Statistics, requiredRole: "service_provider"},
+    {name: "Services", path: "/services", component: Services, requiredRole: "service_provider"},
+    {name: "Employees", path: "/employees", component: Employees, requiredRole: "service_provider"},
+    {name: "Profile", path: "/profile", component: Profile, requiredRole: "service_provider"}
 ]
 
 class App extends Component {
@@ -37,16 +35,30 @@ class App extends Component {
     }
 
     chooseRoutes() {
-        const routes = []
-        if (authService.userHasRole('customer'))
-            routes.push(...customerRoutes)
-        if (authService.userHasRole('service_provider'))
-            routes.push(...serviceProviderRoutes)
-        const homeRedirect = this.homeRedirect(routes)
+        const accessibleRoutes = routes.filter(r => authService.userHasRole(r.requiredRole))
+        const inaccessibleRoutes = routes.filter(r => !authService.userHasRole(r.requiredRole))
+        const homeRedirect = this.homeRedirect(accessibleRoutes)
+        const inaccessibleRouteRedirect = this.inaccessibleRouteRedirect()
         return {
-            routes: routes,
-            homeRedirect: homeRedirect
+            accessibleRoutes: accessibleRoutes,
+            inaccessibleRoutes: inaccessibleRoutes,
+            homeRedirect: homeRedirect,
+            inaccessibleRouteRedirect: inaccessibleRouteRedirect
         }
+    }
+
+    homeRedirect(accessibleRoutes) {
+        if (!authService.isUserAuthenticated())
+            return "/login"
+        if (accessibleRoutes.length > 0)
+            return accessibleRoutes[0].path
+        return "/unauthorized"
+    }
+
+    inaccessibleRouteRedirect() {
+        if (!authService.isUserAuthenticated())
+            return "/login"
+        return "/unauthorized"
     }
 
     render() {
@@ -55,9 +67,10 @@ class App extends Component {
                 <BrowserRouter>
                     <Switch>
                         <Route exact path="/not-found" component={PageNotFound}/>
+                        <Route exact path="/unauthorized" component={Unauthorized}/>
                         <Route exact path="/login" render={props => this.renderLogin(props)}/>
                         <Route exact path="/logout" render={props => this.renderLogout(props)}/>
-                        <Route exact path="/register" component={Registration}/>
+                        <Route exact path="/register" render={props => this.renderRegister(props)}/>
                         {this.routesWithNavigation()}
                     </Switch>
                 </BrowserRouter>
@@ -66,6 +79,8 @@ class App extends Component {
     }
 
     renderLogin(props) {
+        if (authService.isUserAuthenticated())
+            return <Redirect {...props} to="/"/>
         return <Login {...props} onLogin={() => {
             const newState = this.chooseRoutes()
             this.setState(newState)
@@ -78,28 +93,41 @@ class App extends Component {
         authService.logout()
         const newState = this.chooseRoutes()
         this.setState(newState)
-        return <Redirect to="/"/>
+        return <Redirect {...props} to="/"/>
     }
 
-    homeRedirect(routes) {
-        if (!authService.isUserAuthenticated())
-            return "/login"
-        if (routes.length > 0)
-            return routes[0].path
-        return "/not-found"
+    renderRegister(props) {
+        if (authService.isUserAuthenticated())
+            return <Redirect {...props} to="/"/>
+        return <Registration {...props}/>
     }
 
     routesWithNavigation() {
         return (
             <Route>
-                <Navigation routes={this.state.routes}/>
+                <Navigation routes={this.state.accessibleRoutes}/>
                 <Switch>
                     <Route exact path="/">
                         <Redirect to={this.state.homeRedirect}/>
                     </Route>
-                    {this.state.routes.map(r => <Route exact path={r.path} component={r.component} key={r.name}/>)}
+                    {this.accessibleRoutes()}
+                    {this.inaccessibleRoutes()}
                     <Redirect to="/not-found"/>
                 </Switch>
+            </Route>
+        );
+    }
+
+    accessibleRoutes() {
+        return this.state.accessibleRoutes.map(r =>
+            <Route exact path={r.path} component={r.component} key={r.name}/>
+        );
+    }
+
+    inaccessibleRoutes() {
+        return this.state.inaccessibleRoutes.map(r =>
+            <Route exact path={r.path} key={r.name}>
+                <Redirect to={this.state.inaccessibleRouteRedirect}/>
             </Route>
         );
     }
