@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import "../../stylesheets/Customer.scss";
 
 class Search extends Component {
 
