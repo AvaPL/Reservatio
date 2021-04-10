@@ -92,40 +92,42 @@ class AuthService {
     }
 
     canTokenBeRefreshed() {
-        return this.token !== null &&
+        return this.token &&
             Date.now() <= (this.token.expires + this.token.refreshExpiresIn) * 1000
     }
 
     isTokenExpired(minValidity = 30) {
-        // TODO: Include token null check?
-        return Date.now() >= (this.token.expires - minValidity) * 1000
+        return this.token == null ||
+            Date.now() >= (this.token.expires - minValidity) * 1000
     }
 
     userHasRole(role) {
         return this.token?.roles.includes(role)
     }
 
-    fetchAuthenticated(input, init, onAuthFailure = () => Promise.reject(new Error("User not authenticated"))) {
-        // TODO: Simplify this method
-        if (!this.isUserAuthenticated())
+    fetchAuthenticated(input, init, onAuthFailure = () => Promise.reject(new Error("Auth failure"))) {
+        if (!this.token)
             return onAuthFailure()
-        const initAuthenticated = {
+        if (!this.isTokenExpired())
+            return fetch(input, this.authenticatedFetchInit(init))
+        if (this.canTokenBeRefreshed())
+            return this.refreshToken().then(refreshSuccess => {
+                if (refreshSuccess)
+                    return fetch(input, this.authenticatedFetchInit(init))
+                else
+                    return onAuthFailure()
+            })
+        return onAuthFailure()
+    }
+
+    authenticatedFetchInit(init) {
+        return {
             ...init,
             headers: {
                 ...init.headers,
                 'Authorization': `${this.token.tokenType} ${this.token.accessToken}`
             }
         }
-        if (this.isTokenExpired() && this.canTokenBeRefreshed())
-            return this.refreshToken().then(refreshSuccess => {
-                if (refreshSuccess)
-                    // TODO: initAuthenticated will have old token here, to be fixed
-                    return fetch(input, initAuthenticated)
-                else
-                    return onAuthFailure()
-            })
-        else
-            return fetch(input, initAuthenticated)
     }
 
     isUserAuthenticated() {
