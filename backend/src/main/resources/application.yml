@@ -64,6 +64,7 @@ keycloak:
   public-client: true
   realm: reservatio
   resource: reservatio
+  cors: true
   security-constraints:
     - security-collections:
         - patterns:
@@ -73,7 +74,7 @@ keycloak:
         - admin
       security-collections:
         - patterns:
-            - /*
+            - /**
     - auth-roles:
         - customer
       security-collections:

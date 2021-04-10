@@ -85,7 +85,7 @@ class AuthService {
             body: new URLSearchParams({
                 'client_id': this.clientId,
                 'grant_type': 'refresh_token',
-                'username': this.token.refreshToken,
+                'refresh_token': this.token.refreshToken,
             })
         }
         return this.fetchToken(requestOptions)
