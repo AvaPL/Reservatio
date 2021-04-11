@@ -6,9 +6,10 @@ import ServiceProviderRegistrationForm from "./ServiceProviderRegistrationForm";
 import "../stylesheets/Authentication.scss";
 import Carousel from "react-bootstrap/Carousel";
 import {Alert} from "react-bootstrap";
+import {backendHost} from "../Config";
 
-let notClickedButtonColor = '#FDAAAF';
-let clickedButtonColor = '#F85F6A';
+const notClickedButtonColor = '#FDAAAF';
+const clickedButtonColor = '#F85F6A';
 
 class Registration extends Component {
 
@@ -82,7 +83,7 @@ class Registration extends Component {
             body: JSON.stringify(this.state.form)
         }
         const endpoint = this.state.salonButtonClicked ? '/register-service-provider' : '/register-customer' // TODO: Load from env
-        fetch('http://localhost:8080' + endpoint, requestOptions) // TODO: Load host from env
+        fetch(`${backendHost}${endpoint}`, requestOptions)
             .then(response => {
                 if (!response.ok)
                     throw new Error(response.statusText)

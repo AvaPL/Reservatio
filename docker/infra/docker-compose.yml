@@ -33,7 +33,7 @@ services:
       DB_PASSWORD: ${MYSQL_KEYCLOAK_PASSWORD}
       KEYCLOAK_IMPORT: /tmp/${KEYCLOAK_REALM}-realm.json
     ports:
-      - 8180:8080
+      - ${KEYCLOAK_EXPOSED_PORT}:8080
     volumes:
       - ../keycloak/${KEYCLOAK_REALM}-realm.json:/tmp/${KEYCLOAK_REALM}-realm.json
     restart: on-failure

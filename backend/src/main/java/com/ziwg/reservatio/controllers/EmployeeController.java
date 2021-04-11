@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @CrossOrigin
 @RestController
-// TODO Change path to ${spring.data.rest.base-path}/service-provider/{serviceProviderId} (?)
+// TODO Change path to /service-provider/{serviceProviderId} (?)
 @RequestMapping("${spring.data.rest.base-path}")
 public class EmployeeController {
 

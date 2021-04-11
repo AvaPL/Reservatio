@@ -1,4 +1,5 @@
 import jwtDecode from "jwt-decode";
+import {keycloakAuthServerUrl, keycloakClientId, keycloakRealm} from "../Config";
 
 const authStorageKey = 'reservatio-auth'
 
@@ -135,5 +136,4 @@ class AuthService {
     }
 }
 
-// TODO: Load params from env
-export const authService = new AuthService('http://localhost:8180/auth', 'reservatio', 'reservatio')
+export const authService = new AuthService(keycloakAuthServerUrl, keycloakRealm, keycloakClientId)
