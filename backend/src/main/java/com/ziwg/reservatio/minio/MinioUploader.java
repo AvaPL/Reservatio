@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
 import java.io.File;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -27,17 +28,18 @@ public class MinioUploader {
     }
 
     public ObjectWriteResponse upload(Path filepath, String key) {
-        if (!bucketExists()) {
-            log.info("Bucket '" + minioBucket + "' does not exist");
-            makeBucket();
-        }
+        createBucketIfNotExists();
         return uploadObject(filepath, key);
     }
 
     @SneakyThrows
-    private boolean bucketExists() {
+    private void createBucketIfNotExists() {
         val args = BucketExistsArgs.builder().bucket(minioBucket).build();
-        return minioClient.bucketExists(args);
+        val bucketExists = minioClient.bucketExists(args);
+        if (!bucketExists) {
+            log.info("Bucket '" + minioBucket + "' does not exist");
+            makeBucket();
+        }
     }
 
     @SneakyThrows
@@ -56,7 +58,21 @@ public class MinioUploader {
         val args = UploadObjectArgs.builder().bucket(minioBucket).object(key).filename(absolutePathString)
                 .contentType(contentType).build();
         val response = minioClient.uploadObject(args);
+        logObjectUploaded(key);
+        return response;
+    }
+
+    private void logObjectUploaded(String key) {
         log.info("Uploaded new object '" + key + "' to bucket '" + minioBucket + "'");
+    }
+
+    @SneakyThrows
+    public ObjectWriteResponse upload(InputStream inputStream, String key, String contentType) {
+        createBucketIfNotExists();
+        val args = PutObjectArgs.builder().bucket(minioBucket).object(key).stream(inputStream, -1, 10 * 1024 * 1024)
+                .contentType(contentType).build();
+        val response = minioClient.putObject(args);
+        logObjectUploaded(key);
         return response;
     }
 
