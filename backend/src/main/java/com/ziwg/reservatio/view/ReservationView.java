@@ -24,4 +24,8 @@ public class ReservationView {
     private String duration;
     private String providerName;
 
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private CustomerReservationView customerReservationView;
+
 }

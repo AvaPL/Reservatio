@@ -38,6 +38,13 @@ class Appointments extends Component {
         };
     }
 
+    getData(){
+        let customerId = 9;
+        return fetch("http://localhost:8080/rest/customerReservationViews/5/reservations")
+            .then(response => console.log(response));
+        //"http://localhost:8080/rest/serviceProviderEmployeesViews/1/employees"
+    }
+
     showPast(){
         this.setState({navigation: "past"});
     }
@@ -47,6 +54,7 @@ class Appointments extends Component {
     }
 
     render() {
+        console.log("test");
         const tab = this.state.navigation;
         let page;
         switch (tab){
