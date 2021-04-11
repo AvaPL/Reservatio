@@ -13,6 +13,9 @@ spring:
       base-path: /rest
 reservatio:
   loadTestData: true
+  cors:
+    allowed-origins:
+      - http://localhost:3000
   minio:
     endpoint: http://localhost:9000
     username: reservatio
