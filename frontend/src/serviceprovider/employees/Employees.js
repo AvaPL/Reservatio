@@ -9,6 +9,7 @@ class Employees extends Component {
 
     constructor(props, context) {
         super(props, context);
+        // TODO: Should be simplified
         let state = {
             employees: [
                 {
@@ -28,6 +29,7 @@ class Employees extends Component {
     }
 
     componentDidMount() {
+        // TODO: Predefined employees can't be deleted for some reason
         this.fetchEmployees().then(this.processEmployees(), this.handleError());
     }
 
@@ -35,6 +37,7 @@ class Employees extends Component {
         //TODO: get from currently logged user
         const serviceProviderId = 1;
         return authService.fetchAuthenticated("http://localhost:8080/rest/serviceProviderEmployeesViews/" + serviceProviderId + "/employees")
+            // TODO: Check response status here
             .then(res => res.json()).then(res => res._embedded.employeeViews);
     }
 
@@ -158,8 +161,10 @@ class Employees extends Component {
             },
             body: JSON.stringify(employee)
         }).then(() => console.log("Employee added successfully"))
+            // TODO: Check response status here
             .catch(error => console.log(error));
         this.setState({showModalAdd: false});
+        // TODO: Use state instead of reloading the window
         window.location.reload(false);
     };
 
@@ -204,8 +209,10 @@ class Employees extends Component {
                 lastName: this.state.selectedEmployee.lastName
             })
         }).then(() => console.log(`Deleted employee [${this.state.selectedEmployee.firstName}] [${this.state.selectedEmployee.lastName}]`))
+            // TODO: Check response status here
             .catch(error => console.log(error));
         this.setState({showModalDelete: false});
+        // TODO: Use state instead of reloading the window
         window.location.reload(false);
     };
 }

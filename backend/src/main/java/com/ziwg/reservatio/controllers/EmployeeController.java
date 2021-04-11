@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @CrossOrigin
 @RestController
-// TODO: Change path to /service-provider
+// TODO Change path to ${spring.data.rest.base-path}/service-provider/{serviceProviderId} (?)
 @RequestMapping("${spring.data.rest.base-path}")
 public class EmployeeController {
 
@@ -32,13 +32,14 @@ public class EmployeeController {
         this.serviceRepository = serviceRepository;
     }
 
-    // TODO: Use email from URL argument instead of id
     @PostMapping("addEmployee/{serviceProviderId}")
     public ResponseEntity<HttpStatus> addEmployee(@PathVariable Long serviceProviderId, @RequestBody EmployeeToAdd employeeToAdd) {
         Optional<ServiceProvider> serviceProvider = serviceProviderRepository.findById(serviceProviderId);
         if (serviceProvider.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         Employee employee = new Employee(employeeToAdd.getFirstName(), employeeToAdd.getLastName(), serviceProvider.get());
+        // TODO: Services may be fetched from serviceProvider
+        // TODO: N+1 problem
         for (String serviceName : employeeToAdd.getServices()) {
             Optional<Service> service = serviceRepository.findByNameAndServiceProviderId(serviceName, serviceProviderId);
             if (service.isEmpty())
@@ -50,7 +51,7 @@ public class EmployeeController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    // TODO: Use email from URL argument instead of id
+    // TODO: This can be handled via a repository method
     @DeleteMapping("deleteEmployee/{serviceProviderId}")
     public ResponseEntity<HttpStatus> deleteEmployee(@PathVariable Long serviceProviderId, @RequestBody EmployeeToDelete employeeToDelete) {
         Optional<Employee> employee = employeeRepository.findByFirstNameAndLastNameAndServiceProviderId(employeeToDelete.getFirstName(), employeeToDelete.getLastName(), serviceProviderId);

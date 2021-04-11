@@ -12,7 +12,7 @@ class AuthService {
     }
 
     setToken(token) {
-        if (token == null)
+        if (!token)
             return
         const accessToken = token.access_token
         const decodedAccessToken = jwtDecode(accessToken)

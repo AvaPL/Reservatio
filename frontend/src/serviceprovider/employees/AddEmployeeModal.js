@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {Button, Modal} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
+import {authService} from "../../auth/AuthService";
 
 export class AddEmployeeModal extends Component {
 
@@ -20,8 +21,9 @@ export class AddEmployeeModal extends Component {
 
     fetchEmployees() {
         //TODO: get from currently logged user
-        let serviceProviderId = 1;
-        return fetch("http://localhost:8080/rest/serviceProviderEmployeesViews/" + serviceProviderId)
+        const serviceProviderId = 1;
+        return authService.fetchAuthenticated("http://localhost:8080/rest/serviceProviderEmployeesViews/" + serviceProviderId)
+            // TODO: Check response status here
             .then(res => res.json()).then(res => res.services);
     }
 
