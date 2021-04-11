@@ -1,6 +1,6 @@
 import './App.scss';
 import {Navigation} from "./navigation/Navigation";
-import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
+import {BrowserRouter, Switch, Route, Redirect} from "react-router-dom";
 import Appointments from "./customer/appointments/Appointments";
 import Explore from "./customer/explore/Explore";
 import Favorites from "./customer/favorites/Favorites";
@@ -13,6 +13,10 @@ import Profile from "./serviceprovider/profile/Profile";
 import Services from "./serviceprovider/services/Services";
 import Statistics from "./serviceprovider/statistics/Statistics";
 import {Component} from "react";
+import Booking from "./booking/Booking";
+import BookingCalendarServiceProvider from "./bookingCalendar/BookingCalendarServiceProvider";
+import BookingCalendarConsumer from "./bookingCalendar/BookingCalendarConsumer";
+import ServiceProviderDetails from "./customer/serviceProviderDetails/ServiceProviderDetails";
 import {authService} from "./auth/AuthService";
 import Unauthorized from "./unauthorized/Unauthorized";
 
@@ -71,6 +75,10 @@ class App extends Component {
                         <Route exact path="/login" render={props => this.renderLogin(props)}/>
                         <Route exact path="/logout" render={props => this.renderLogout(props)}/>
                         <Route exact path="/register" render={props => this.renderRegister(props)}/>
+                        <Route exact path="/booking/:serviceproviderid/:serviceid" component={BookingCalendarConsumer}/>
+                        <Route exact path="/serviceprovider/:serviceproviderid/calendar" component={BookingCalendarServiceProvider}/>
+                        <Route exact path="/booking/:serviceproviderid" component={Booking}/>
+                        <Route exact path="/serviceproviderdetails" component={ServiceProviderDetails}/>
                         {this.routesWithNavigation()}
                     </Switch>
                 </BrowserRouter>

@@ -1,0 +1,105 @@
+.booking {
+  text-align: left;
+}
+
+.mainImgWrapper {
+  position: relative;
+  height: 30vh;
+}
+
+.calendarTable {
+  position: absolute;
+  top: 45vh;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.rectangle {
+  position: relative;
+  alignment: center;
+  background: #F85F6A;
+  margin-bottom: 0;
+  width: 100%;
+  border: 1px solid grey;
+  text-align: center;
+}
+
+.row {
+  position: absolute;
+  contain: size;
+  top: 66%;
+  left:0;
+  right:0;
+  margin:0 auto;
+  text-align: center;
+}
+
+.timeTable {
+  position: absolute;
+  contain: size;
+  top: 66%;
+  left:0;
+  right:0;
+  margin:0 auto;
+  text-align: center;
+  //transform: translate(-50%, -50%);
+}
+
+.timeTableRow {
+  width: 50%;
+  left:25%;
+  right:25%;
+}
+
+.calendarStyle {
+  alignment: center;
+}
+
+.button {
+  background-color: #F85F6A !important;
+  border-color: #F85F6A !important;
+}
+
+.mainImg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.mainBack {
+  position: absolute;
+  top: 0;
+  left: 0;
+  color: white;
+  margin-left: 1rem;
+  margin-top: 1rem;
+}
+
+.squareBox {
+  width: 6vmin;
+  height: 6vmin;
+  min-width: 3rem;
+  min-height: 3rem;
+}
+
+.paddingTop {
+  padding-top: 0.5rem;
+}
+
+.marginBottom {
+  margin-bottom: 1rem;
+}
+
+.serviceCardTitle {
+  word-break: break-word;
+}
+
+.serviceCardPriceInfoCol {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}

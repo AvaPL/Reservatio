@@ -1,0 +1,142 @@
+.baseprofile{
+  // Margin
+  margin-top: 50px;
+  margin-right: 20%;
+  margin-left: 20%;
+  margin-bottom: 50px;
+  // Positioning
+  display: flex;
+  flex-direction: column;
+  // Frame
+  border: 2px ridge black;
+}
+
+.salon-name-photo{
+  // Positioning
+  display: flex;
+  flex-direction: column;
+}
+
+.salon-name{
+  // Text
+  font-size: 5vw;
+  font-weight: bold;
+  // Positioning
+  display: flex;
+  flex-direction: column;
+}
+
+.salon-photo{
+  // Photo proportion
+  aspect-ratio: 16 / 9;
+}
+
+.salon-photo-button{
+  // Colors
+  background: #F85F6A;
+  color: white;
+  // Frame
+  border: 1px solid #F85F6A;
+  border-radius: 4px;
+  // Positioning
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // Text
+  font-size: 2vw;
+  // Width
+  min-width: 5vw;
+  // Height
+  max-height: 5vw;
+}
+
+.salon-photo-button-container{
+  // Positioning
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.salon-address{
+  // Positioning
+  display: flex;
+  flex-display: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.salon-address-row{
+  // Positioning
+  display: flex;
+  margin-top: 20px;
+  flex-display: row;
+  // Width
+  width: 100%;
+}
+
+.salon-address-row-blank{
+  // Width
+  width: 6%;
+}
+
+.salon-address-row-text{
+  // Positioning
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  // Width
+  min-width: 44%;
+  // Text
+  font-size: 3vw;
+}
+
+.salon-address-row-value{
+  // Positioning
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  // Width
+  min-width: 44%;
+}
+
+.salon-address-input{
+  // Positioning
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  // Width
+  max-width: 100%;
+  // Text
+  font-size: 3vw;
+  color: darkgray;
+  // Frame
+  border-radius: 4px;
+}
+
+.salon-address-button-container{
+  // Positioning
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.salon-address-button{
+  // Colors
+  background: #F85F6A;
+  color: white;
+  // Frame
+  border: 1px solid #F85F6A;
+  border-radius: 4px;
+  // Positioning
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px;
+  // Size
+  font-size: 2vw;
+  // Width
+  min-width: 5vw;
+  // Height
+  max-height: 5vw;
+}

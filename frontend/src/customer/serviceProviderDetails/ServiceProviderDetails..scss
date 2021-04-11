@@ -1,0 +1,257 @@
+@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css');
+
+.base{
+  // Margin
+  margin-top: 50px;
+  margin-left: 20%;
+  margin-right: 20%;
+  margin-bottom: 50px;
+  // Positioning
+  display: flex;
+  flex-direction: column;
+  // Frame
+  border: 2px ridge black;
+}
+
+.photo-container{
+  // Photo proportion
+  aspect-ratio: 16 / 9;
+}
+
+.photo-overlay-container-star{
+  // Positioning
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  // Size
+  height: 50%;
+  width: 100%;
+}
+
+.photo-overlay-container-value{
+  // Positioning
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  // Size
+  height: 50%;
+  width: 100%;
+}
+
+.photo-star{
+  // Positioning
+  align-self: flex-start;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // Width
+  width: 15%;
+}
+
+.star{
+  // Positioning
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // Size
+  font-size: 5vw;
+}
+
+.photo-value{
+  // Background
+  background: rgba(255,255,255,0.7);
+  // Text
+  font-size: 4vw;
+  // Positioning
+  align-self: flex-end;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // Width
+  width: 15%;
+  // Frame
+  border: 2px solid black;
+}
+
+.name-container{
+  // Text
+  font-size: 3vw;
+}
+
+.address-container{
+  // Text
+  font-size: 3vw;
+}
+
+.scrollbar {
+  overflow-y: scroll;
+  border: 1px solid black;
+}
+.scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+.scrollbar::-webkit-scrollbar-track {
+  background: #FDAAAF;
+}
+.scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 1rem;
+  background-color: #F85F6A;
+}
+
+.comment{
+  // Size
+  width: 100%;
+  height: 15vw;
+  // Positioning
+  display: flex;
+  flex-direction: row;
+  // Frame
+  border-style: solid;
+  border-bottom-color: black;
+  border-radius: 5px;
+}
+
+.comment-blank{
+  // Size
+  width: 2%;
+}
+
+.comment-photo{
+  // Size
+  width: 80%;
+  height: 80%;
+}
+
+.comment-photo-container{
+  // Size
+  width: 18%;
+  height: 100%;
+  // Positioning
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.comment-name-note-comment{
+  // Positioning
+  display: flex;
+  flex-direction: column;
+  // Size
+  width: 76%;
+}
+
+.comment-name-note{
+  // Positioning
+  display: flex;
+  flex-direction: row;
+  // Size
+  height: 40%;
+}
+
+.comment-name{
+  // Text
+  font-size: 2vw;
+  font-weight: bold;
+  // Size
+  width: 50%;
+  // Positioning
+  display: flex;
+  //justify-content: center;
+  align-self: center;
+}
+
+.comment-note{
+  // Size
+  width: 50%;
+  font-size: 2vw;
+  // Positioning
+  display: flex;
+  //justify-content: center;
+  align-self: center;
+}
+
+.comment-comment{
+  // Text
+  font-size: 1.2vw;
+  // Positioning
+  display: flex;
+  justify-content: flex-start;
+  align-self: flex-start;
+  // Size
+  width: 100%;
+  height: 50%;
+  // Frame
+  border: 2px solid black;
+  border-radius: 10px;
+}
+
+.service-name-price-button{
+  // Positioning
+  display: flex;
+  flex-direction: row;
+  // Size
+  width: 100%;
+  height: 100%;
+  // Frame
+  border-style: solid;
+  border-bottom-color: black;
+  border-radius: 5px;
+}
+
+.service-name{
+  // Positioning
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  // Text
+  font-size: 2vw;
+  // Width
+  width: 50%;
+}
+
+.service-price-button{
+  // Positioning
+  display: flex;
+  flex-direction: column;
+  // Size
+  width: 50%;
+  height: 100%;
+}
+
+.service-price{
+  // Positioning
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  // Text
+  font-size: 1.5vw;
+  // Size
+  width: 100%;
+  height: 50%;
+}
+
+.service-button{
+  // Positioning
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // Size
+  width: 100%;
+  height: 50%;
+}
+
+.service-button-button{
+  // Positioning
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // Size
+  width: 60%;
+  height: 60%;
+  // Text
+  font-size: 1.2vw;
+  color: white;
+  // Background
+  background: #d9535d;
+}
