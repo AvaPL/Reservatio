@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
 import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
-import {Modal, ToggleButton, ToggleButtonGroup} from "react-bootstrap";
-import Form from "react-bootstrap/Form";
-
 
 import './Appointments.scss'
 
@@ -41,13 +38,11 @@ class Appointments extends Component {
         };
     }
 
-    componentDidMount(){
-        fetch("http://localhost:8080/rest/customerReservationViews/5/reservations")
-            .then(res => res.json()).then(res => res._embedded.reservationViews)
-            .then(reservations => {this.setState({dataP:reservations});});
-        //for(var i=0;i<this.state.dataP.length;i++){
-            console.log(this.state.dataP);
-        //}
+    getData(){
+        let customerId = 9;
+        return fetch("http://localhost:8080/rest/customerReservationViews/5/reservations")
+            .then(response => console.log(response));
+        //"http://localhost:8080/rest/serviceProviderEmployeesViews/1/employees"
     }
 
     showPast(){
@@ -59,8 +54,8 @@ class Appointments extends Component {
     }
 
     render() {
+        console.log("test");
         const tab = this.state.navigation;
-
         let page;
         switch (tab){
             case "past":
@@ -103,14 +98,6 @@ class Appointments extends Component {
         );
     }
 
-    show(){
-        this.setState({open: true});
-    }
-
-    hide(){
-        this.setState({open: false})
-    }
-
     renderPast() {
         return this.state.dataP.map((item, index) => (
             <>
@@ -134,17 +121,17 @@ class Appointments extends Component {
                                 </div>
                             </div>
                             <div className="col">
-                                {item.serviceName}
+                                {item.service}
                             </div>
                             <div className="col"></div>
                         </div>
                         <div className="row">
                             <div className="col"></div>
                             <div className="col top ">
-                                {item.dateTime}
+                                {item.time}
                             </div>
                             <div className="col">
-                                <Button variant="danger" onClick={()=>this.show()}>
+                                <Button variant="danger">
                                     Add review
                                 </Button>
                             </div>
@@ -152,46 +139,13 @@ class Appointments extends Component {
                         <div className="row">
                             <div className="col"></div>
                             <div className="col">
-                                {item.providerName}
+                                {item.serviceProvider}
                             </div>
                             <div className="col"></div>
                         </div>
                     </div>
                 </div>
                 <div className="break"></div>
-
-                <Modal show={this.state.open} onHide={()=>this.hide()}
-                       size="lg"
-                       aria-labelledby="contained-modal-title-vcenter"
-                       centered
-                       className="mod"
-                >
-                    <Modal.Header closeButton>
-                        <Modal.Title>Review</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form.Group controlId="exampleForm.ControlTextarea1">
-                            <Form.Label>
-                                <ToggleButtonGroup className="mod" type="radio"  name="options" defaultValue={1}>
-                                    <ToggleButton variant="danger" value={1}>1</ToggleButton>
-                                    <ToggleButton variant="danger" value={2}>2</ToggleButton>
-                                    <ToggleButton variant="danger" value={3}>3</ToggleButton>
-                                    <ToggleButton variant="danger" value={4}>4</ToggleButton>
-                                    <ToggleButton variant="danger" value={5}>5</ToggleButton>
-                                </ToggleButtonGroup>
-                            </Form.Label>
-                            <Form.Control as="textarea" rows={10} />
-                        </Form.Group>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={()=>this.hide()}>
-                            Close
-                        </Button>
-                        <Button variant="danger" onClick={()=>this.hide()}>
-                            Save Changes
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
             </>
         ));
     }
