@@ -38,11 +38,10 @@ class Appointments extends Component {
         };
     }
 
-    getData(){
-        let customerId = 9;
-        return fetch("http://localhost:8080/rest/customerReservationViews/5/reservations")
-            .then(response => console.log(response));
-        //"http://localhost:8080/rest/serviceProviderEmployeesViews/1/employees"
+    componentDidMount(){
+        fetch("http://localhost:8080/rest/customerReservationViews/5/reservations")
+            .then(res => res.json()).then(res => res._embedded.reservationViews)
+            .then(reservations => {this.setState({dataP:reservations});});
     }
 
     showPast(){
@@ -54,7 +53,6 @@ class Appointments extends Component {
     }
 
     render() {
-        console.log("test");
         const tab = this.state.navigation;
         let page;
         switch (tab){
@@ -121,14 +119,14 @@ class Appointments extends Component {
                                 </div>
                             </div>
                             <div className="col">
-                                {item.service}
+                                {item.serviceName}
                             </div>
                             <div className="col"></div>
                         </div>
                         <div className="row">
                             <div className="col"></div>
                             <div className="col top ">
-                                {item.time}
+                                {item.dateTime}
                             </div>
                             <div className="col">
                                 <Button variant="danger">
@@ -139,7 +137,7 @@ class Appointments extends Component {
                         <div className="row">
                             <div className="col"></div>
                             <div className="col">
-                                {item.serviceProvider}
+                                {item.providerName}
                             </div>
                             <div className="col"></div>
                         </div>
