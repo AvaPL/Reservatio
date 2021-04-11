@@ -35,10 +35,10 @@ class App extends Component {
                         <Route exact path="/not-found" component={PageNotFound}/>
                         <Route exact path="/login" component={Login}/>
                         <Route exact path="/register" component={Registration}/>
-                        <Route exact path="/booking/:serviceproviderid/:serviceid" component={BookingCalendarConsumer}/>
-                        <Route exact path="/serviceprovider/:serviceproviderid/calendar" component={BookingCalendarServiceProvider}/>
-                        <Route exact path="/booking/:serviceproviderid" component={Booking}/>
-                        <Route exact path="/serviceproviderdetails" component={ServiceProviderDetails}/>
+                        <Route exact path="/customer/booking/:serviceproviderid" component={Booking}/>
+                        <Route exact path="/customer/booking/:serviceproviderid/:serviceid" component={BookingCalendarConsumer}/>
+                        <Route exact path="/serviceProvider/:serviceproviderid/calendar" component={BookingCalendarServiceProvider}/>
+                        <Route exact path="/customer/serviceproviderdetails" component={ServiceProviderDetails}/>
                         {this.chooseRoutes()}
                     </Switch>
                 </BrowserRouter>
@@ -55,20 +55,20 @@ class App extends Component {
 
     customerRoutes() {
         const routes = [
-            {name: "Explore", path: "/explore", component: Explore},
-            {name: "Favorites", path: "/favorites", component: Favorites},
-            {name: "Search", path: "/search", component: Search},
-            {name: "Appointments", path: "/appointments", component: Appointments}
+            {name: "Explore", path: "/customer/explore", component: Explore},
+            {name: "Favorites", path: "/customer/favorites", component: Favorites},
+            {name: "Search", path: "/customer/search", component: Search},
+            {name: "Appointments", path: "/customer/appointments", component: Appointments}
         ]
-        return this.routesWithNavigation(routes)
+        return this.routesWithNavigation("/customer", routes)
     }
 
-    routesWithNavigation(routes) {
+    routesWithNavigation(basePath, routes) {
         return (
             <Route>
                 <Navigation routes={routes}/>
                 <Switch>
-                    <Route exact path="/"><Redirect to={routes[0].path}/></Route>
+                    <Route exact path={basePath}><Redirect to={routes[0].path}/></Route>
                     {routes.map(r => <Route exact path={r.path} component={r.component} key={r.name}/>)}
                     <Redirect to="/not-found"/>
                 </Switch>
@@ -76,14 +76,15 @@ class App extends Component {
         );
     }
 
+
     serviceProviderRoutes() {
         const routes = [
-            {name: "Statistics", path: "/statistics", component: Statistics},
-            {name: "Services", path: "/services", component: Services},
-            {name: "Employees", path: "/employees", component: Employees},
-            {name: "Profile", path: "/profile", component: Profile}
+            {name: "Statistics", path: "/serviceProvider/statistics", component: Statistics},
+            {name: "Services", path: "/serviceProvider/services", component: Services},
+            {name: "Employees", path: "/serviceProvider/employees", component: Employees},
+            {name: "Profile", path: "/serviceProvider/profile", component: Profile}
         ]
-        return this.routesWithNavigation(routes)
+        return this.routesWithNavigation("/serviceProvider", routes)
     }
 }
 

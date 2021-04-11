@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import './ServiceProviderDetails..scss'
+import './ServiceProviderDetails.scss'
 import StarRatings from "react-star-ratings";
 
 class ServiceProviderDetails extends Component {
@@ -19,18 +19,17 @@ class ServiceProviderDetails extends Component {
         };
     }
 
-    checkStar(){
-        if (this.state.star === 1.0){
-            return(
+    checkStar() {
+        if (this.state.star === 1.0) {
+            return (
                 <div className={'photo-star'}>
                     <button className={'btn'}>
                         <i className={'bi bi-star-fill star'} style={{color: "red"}}></i>
                     </button>
                 </div>
             );
-        }
-        else {
-            return(
+        } else {
+            return (
                 <div className={'photo-star'}>
                     <button className={'btn'}>
                         <i className={'bi bi-star-fill star'} style={{color: "white"}}></i>
@@ -40,8 +39,8 @@ class ServiceProviderDetails extends Component {
         }
     }
 
-    addPhoto(){
-        return(
+    addPhoto() {
+        return (
             <div className="card bg-dark">
                 <img className="card-img photo-container" src={this.state.source} alt={this.state.alt}/>
                 <div className="card-img-overlay">
@@ -59,84 +58,86 @@ class ServiceProviderDetails extends Component {
         );
     }
 
-    addName(){
-        return(
+    addName() {
+        return (
             <div className={'name-container'}>
                 {this.state.name}
             </div>
         );
     }
 
-    addAddress(){
-        return(
+    addAddress() {
+        return (
             <div className={'address-container'}>
                 ul. {this.state.street}, {this.state.city}
             </div>
         );
     }
 
-    addComments(){
-        return(
-            <div className="overflow-auto scrollbar" style={{height: '15vw'}}>
+    addComments() {
+        return (
+            <div className="comments">
+                <div className="overflow-auto scrollbar" style={{height: '15vw'}}>
 
-                <div className={'comment'}>
-                    <div className={'comment-blank'} />
-                    <div className={'comment-photo-container'}>
-                        <img className="card-img comment-photo" src={this.state.source} alt={this.state.alt}/>
-                    </div>
-                    <div className={'comment-blank'} />
-                    <div className={'comment-name-note-comment'}>
-                        <div className={'comment-name-note'}>
-                            <div className={'comment-name'}>
-                                {this.state.person}
+                    <div className={'comment'}>
+                        <div className={'comment-blank'}/>
+                        <div className={'comment-photo-container'}>
+                            <img className="card-img comment-photo" src={this.state.source} alt={this.state.alt}/>
+                        </div>
+                        <div className={'comment-blank'}/>
+                        <div className={'comment-name-note-comment'}>
+                            <div className={'comment-name-note'}>
+                                <div className={'comment-name'}>
+                                    {this.state.person}
+                                </div>
+                                <div className={'comment-note'}>
+                                    <StarRatings
+                                        rating={5}
+                                        starDimension="2vw"
+                                        starSpacing="1vw"
+                                    />
+                                </div>
                             </div>
-                            <div className={'comment-note'}>
-                                <StarRatings
-                                    rating={5}
-                                    starDimension="2vw"
-                                    starSpacing="1vw"
-                                />
+                            <div className={'comment-comment'}>
+                                Bardzo miły i przyjemny salon
                             </div>
                         </div>
-                        <div className={'comment-comment'}>
-                            Bardzo miły i przyjemny salon
-                        </div>
+                        <div className={'comment-blank'}/>
                     </div>
-                    <div className={'comment-blank'} />
+
+                    <div className={'comment'}>
+                        <div className={'comment-blank'}/>
+                        <div className={'comment-photo-container'}>
+                            <img className="card-img comment-photo" src={this.state.source} alt={this.state.alt}/>
+                        </div>
+                        <div className={'comment-blank'}/>
+                        <div className={'comment-name-note-comment'}>
+                            <div className={'comment-name-note'}>
+                                <div className={'comment-name'}>
+                                    {this.state.person}
+                                </div>
+                                <div className={'comment-note'}>
+                                    <StarRatings
+                                        rating={5}
+                                        starDimension="2vw"
+                                        starSpacing="1vw"
+                                    />
+                                </div>
+                            </div>
+                            <div className={'comment-comment'}>
+                                Bardzo miły i przyjemny salon
+                            </div>
+                        </div>
+                        <div className={'comment-blank'}/>
+                    </div>
+
                 </div>
-
-                <div className={'comment'}>
-                    <div className={'comment-blank'} />
-                    <div className={'comment-photo-container'}>
-                        <img className="card-img comment-photo" src={this.state.source} alt={this.state.alt}/>
-                    </div>
-                    <div className={'comment-blank'} />
-                    <div className={'comment-name-note-comment'}>
-                        <div className={'comment-name-note'}>
-                            <div className={'comment-name'}>
-                                {this.state.person}
-                            </div>
-                            <div className={'comment-note'}>
-                                <StarRatings
-                                    rating={5}
-                                    starDimension="2vw"
-                                    starSpacing="1vw"
-                                />
-                            </div>
-                        </div>
-                        <div className={'comment-comment'}>
-                            Bardzo miły i przyjemny salon
-                        </div>
-                    </div>
-                    <div className={'comment-blank'} />
-                </div>
-
             </div>
         );
     }
 
-    addServices(){
-        return(
+    addServices() {
+        return (
             <div className="overflow-auto scrollbar" style={{height: '10vw'}}>
 
                 <div className={'service-name-price-button'}>

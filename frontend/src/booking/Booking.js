@@ -45,8 +45,8 @@ export default function Booking() {
       {
         id: 124,
         image: "https://source.unsplash.com/600x600/?man,woman",
-        name: "XDD",
-        review: "Trololol super fryzjer.",
+        name: "Name",
+        review: "Tu jest super fryzjer.",
         score: 2,
       },
     ],
@@ -126,7 +126,7 @@ function ServiceCard({ name, price, serviceid, serviceproviderid }) {
           <Button
               className={styles.button}
               variant="primary"
-              href={`/booking/${serviceproviderid}/${serviceid}`}
+              href={`/customer/booking/${serviceproviderid}/${serviceid}`}
           >
             {price} zł
           </Button>
