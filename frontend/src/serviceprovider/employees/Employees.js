@@ -3,6 +3,7 @@ import {Button, Col, Modal, Nav, Row, Tab} from "react-bootstrap";
 
 import './Employees.scss'
 import {AddEmployeeModal} from "./AddEmployeeModal";
+import {authService} from "../../auth/AuthService";
 
 class Employees extends Component {
 
@@ -32,8 +33,8 @@ class Employees extends Component {
 
     fetchEmployees() {
         //TODO: get from currently logged user
-        let serviceProviderId = 1;
-        return fetch("http://localhost:8080/rest/serviceProviderEmployeesViews/" + serviceProviderId + "/employees")
+        const serviceProviderId = 1;
+        return authService.fetchAuthenticated("http://localhost:8080/rest/serviceProviderEmployeesViews/" + serviceProviderId + "/employees")
             .then(res => res.json()).then(res => res._embedded.employeeViews);
     }
 
@@ -148,8 +149,8 @@ class Employees extends Component {
     onAddClick = employee => {
         console.log("Employee to add: ")
         console.log(employee)
-        let serviceProviderId = 1; // TODO: get id from currently logged user
-        fetch('http://localhost:8080/rest/addEmployee/' + serviceProviderId, {
+        const serviceProviderId = 1; // TODO: get id from currently logged user
+        authService.fetchAuthenticated('http://localhost:8080/rest/addEmployee/' + serviceProviderId, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -177,7 +178,8 @@ class Employees extends Component {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    Are you sure you want to delete {this.state.selectedEmployee.firstName} {this.state.selectedEmployee.lastName}?
+                    Are you sure you want to
+                    delete {this.state.selectedEmployee.firstName} {this.state.selectedEmployee.lastName}?
                 </Modal.Body>
                 <Modal.Footer>
                     <Button className="employees-button-secondary shadow-none"
@@ -190,8 +192,8 @@ class Employees extends Component {
     }
 
     onDeleteClicked = () => {
-        let serviceProviderId = 1; // TODO: get id from currently logged user
-        fetch('http://localhost:8080/rest/deleteEmployee/' + serviceProviderId, {
+        const serviceProviderId = 1; // TODO: get id from currently logged user
+        authService.fetchAuthenticated('http://localhost:8080/rest/deleteEmployee/' + serviceProviderId, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',

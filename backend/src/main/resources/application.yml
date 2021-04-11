@@ -78,7 +78,7 @@ keycloak:
         - admin
       security-collections:
         - patterns:
-            - /**
+            - /*
     - auth-roles:
         - customer
       security-collections:

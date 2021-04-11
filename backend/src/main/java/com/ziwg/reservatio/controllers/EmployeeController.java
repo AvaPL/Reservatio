@@ -17,6 +17,7 @@ import java.util.Optional;
 
 @CrossOrigin
 @RestController
+// TODO: Change path to /service-provider
 @RequestMapping("${spring.data.rest.base-path}")
 public class EmployeeController {
 
@@ -31,6 +32,7 @@ public class EmployeeController {
         this.serviceRepository = serviceRepository;
     }
 
+    // TODO: Use email from URL argument instead of id
     @PostMapping("addEmployee/{serviceProviderId}")
     public ResponseEntity<HttpStatus> addEmployee(@PathVariable Long serviceProviderId, @RequestBody EmployeeToAdd employeeToAdd) {
         Optional<ServiceProvider> serviceProvider = serviceProviderRepository.findById(serviceProviderId);
@@ -44,15 +46,18 @@ public class EmployeeController {
             employee.getServices().add(service.get());
         }
         employeeRepository.save(employee);
+        // TODO: Should return 201 with created entity
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    // TODO: Use email from URL argument instead of id
     @DeleteMapping("deleteEmployee/{serviceProviderId}")
     public ResponseEntity<HttpStatus> deleteEmployee(@PathVariable Long serviceProviderId, @RequestBody EmployeeToDelete employeeToDelete) {
         Optional<Employee> employee = employeeRepository.findByFirstNameAndLastNameAndServiceProviderId(employeeToDelete.getFirstName(), employeeToDelete.getLastName(), serviceProviderId);
         if (employee.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         employeeRepository.delete(employee.get());
+        // TODO: Should return 204 or 200 with link to remaining employees endpoint
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

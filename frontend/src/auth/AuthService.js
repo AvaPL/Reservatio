@@ -124,7 +124,7 @@ class AuthService {
         return {
             ...init,
             headers: {
-                ...init.headers,
+                ...init?.headers,
                 'Authorization': `${this.token.tokenType} ${this.token.accessToken}`
             }
         }

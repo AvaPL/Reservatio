@@ -75,6 +75,7 @@ class App extends Component {
                         <Route exact path="/login" render={props => this.renderLogin(props)}/>
                         <Route exact path="/logout" render={props => this.renderLogout(props)}/>
                         <Route exact path="/register" render={props => this.renderRegister(props)}/>
+                        {/* TODO: Paths below should have a hierarchy originating from navbar routes */}
                         <Route exact path="/booking/:serviceproviderid/:serviceid" component={BookingCalendarConsumer}/>
                         <Route exact path="/serviceprovider/:serviceproviderid/calendar" component={BookingCalendarServiceProvider}/>
                         <Route exact path="/booking/:serviceproviderid" component={Booking}/>
@@ -98,6 +99,7 @@ class App extends Component {
     }
 
     renderLogout(props) {
+        // TODO: Render should not update state, create a new component for this purpose
         authService.logout()
         const newState = this.chooseRoutes()
         this.setState(newState)
