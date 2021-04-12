@@ -44,12 +44,12 @@ public class RegistrationController {
     }
 
     @PostMapping("/register-customer")
-    public ResponseEntity<?> registerCustomer(@RequestBody CustomerRegistrationForm registrationForm) {
+    public ResponseEntity<Customer> registerCustomer(@RequestBody CustomerRegistrationForm registrationForm) {
         val customer = saveCustomerInDatabase(registrationForm);
         saveCustomerInKeycloak(registrationForm, customer.getId());
         log.info("Registered new customer '" + registrationForm.getFirstName() + " " +
                 registrationForm.getLastName() + " <" + registrationForm.getEmail() + ">'");
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(customer);
     }
 
     private Customer saveCustomerInDatabase(CustomerRegistrationForm registrationForm) {
@@ -68,12 +68,12 @@ public class RegistrationController {
     }
 
     @PostMapping("/register-service-provider")
-    public ResponseEntity<?> registerServiceProvider(@RequestBody ServiceProviderRegistrationForm registrationForm) {
+    public ResponseEntity<ServiceProvider> registerServiceProvider(@RequestBody ServiceProviderRegistrationForm registrationForm) {
         val serviceProvider = saveServiceProviderInDatabase(registrationForm);
         saveServiceProviderInKeycloak(registrationForm, serviceProvider.getId());
         log.info("Registered new service provider '" + registrationForm.getName() + " <" +
                 registrationForm.getEmail() + ">'");
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(serviceProvider);
     }
 
     private ServiceProvider saveServiceProviderInDatabase(ServiceProviderRegistrationForm registrationForm) {

@@ -21,8 +21,7 @@ export class AddEmployeeModal extends Component {
     }
 
     fetchEmployees() {
-        //TODO: get from currently logged user
-        const serviceProviderId = 1;
+        const serviceProviderId = authService.token?.entityId;
         return authService.fetchAuthenticated(`${backendHost}/rest/serviceProviderEmployeesViews/${serviceProviderId}`)
             // TODO: Check response status here
             .then(res => res.json()).then(res => res.services);

@@ -35,8 +35,7 @@ class Employees extends Component {
     }
 
     fetchEmployees() {
-        //TODO: get from currently logged user
-        const serviceProviderId = 1;
+        const serviceProviderId = authService.token?.entityId;
         return authService.fetchAuthenticated(`${backendHost}/rest/serviceProviderEmployeesViews/${serviceProviderId}/employees`)
             // TODO: Check response status here
             .then(res => res.json()).then(res => res._embedded.employeeViews);
@@ -153,7 +152,7 @@ class Employees extends Component {
     onAddClick = employee => {
         console.log("Employee to add: ")
         console.log(employee)
-        const serviceProviderId = 1; // TODO: get id from currently logged user
+        const serviceProviderId = authService.token?.entityId;
         authService.fetchAuthenticated(`${backendHost}/rest/addEmployee/${serviceProviderId}`, {
             method: 'POST',
             headers: {
@@ -198,7 +197,7 @@ class Employees extends Component {
     }
 
     onDeleteClicked = () => {
-        const serviceProviderId = 1; // TODO: get id from currently logged user
+        const serviceProviderId = authService.token?.entityId;
         authService.fetchAuthenticated(`${backendHost}/rest/deleteEmployee/${serviceProviderId}`, {
             method: 'DELETE',
             headers: {

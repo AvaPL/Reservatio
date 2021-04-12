@@ -25,7 +25,8 @@ class AuthService {
             expires: decodedAccessToken.exp,
             roles: decodedAccessToken.realm_access.roles,
             username: decodedAccessToken.preferred_username,
-            email: decodedAccessToken.email
+            email: decodedAccessToken.email,
+            entityId: decodedAccessToken.entity?.id
         }
     }
 
