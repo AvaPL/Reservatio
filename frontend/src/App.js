@@ -19,6 +19,7 @@ import BookingCalendarConsumer from "./bookingCalendar/BookingCalendarConsumer";
 import ServiceProviderDetails from "./customer/serviceProviderDetails/ServiceProviderDetails";
 import {authService} from "./auth/AuthService";
 import Unauthorized from "./unauthorized/Unauthorized";
+import Logout from "./logout/Logout";
 
 const routes = [
     {name: "Explore", path: "/explore", component: Explore, requiredRole: "customer"},
@@ -77,7 +78,8 @@ class App extends Component {
                         <Route exact path="/register" render={props => this.renderRegister(props)}/>
                         {/* TODO: Paths below should have a hierarchy originating from navbar routes */}
                         <Route exact path="/booking/:serviceproviderid/:serviceid" component={BookingCalendarConsumer}/>
-                        <Route exact path="/serviceprovider/:serviceproviderid/calendar" component={BookingCalendarServiceProvider}/>
+                        <Route exact path="/serviceprovider/:serviceproviderid/calendar"
+                               component={BookingCalendarServiceProvider}/>
                         <Route exact path="/booking/:serviceproviderid" component={Booking}/>
                         <Route exact path="/serviceproviderdetails" component={ServiceProviderDetails}/>
                         {this.routesWithNavigation()}
@@ -99,11 +101,12 @@ class App extends Component {
     }
 
     renderLogout(props) {
-        // TODO: Render should not update state, create a new component for this purpose
-        authService.logout()
-        const newState = this.chooseRoutes()
-        this.setState(newState)
-        return <Redirect {...props} to="/"/>
+        return <Logout {...props} onLogout={() => {
+            const newState = this.chooseRoutes()
+            this.setState(newState)
+            props.history.push("/")
+        }
+        }/>
     }
 
     renderRegister(props) {
