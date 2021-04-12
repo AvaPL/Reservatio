@@ -12,7 +12,6 @@ import java.util.ArrayList;
 
 @TestProfile
 @Configuration
-@Profile("test")
 public class KeycloakClientConfigMock {
 
     @Bean

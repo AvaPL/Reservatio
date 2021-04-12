@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Profile;
 
 @TestProfile
 @Configuration
-@Profile("test")
 public class MinioUploaderConfigMock {
 
     @Bean
