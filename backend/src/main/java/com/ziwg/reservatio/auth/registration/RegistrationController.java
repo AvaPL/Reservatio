@@ -27,6 +27,8 @@ import java.util.Set;
 @Slf4j
 public class RegistrationController {
 
+    private static final String ENTITY_ID_ATTRIBUTE_KEY = "entity_id";
+
     private final CustomerRepository customerRepository;
     private final AddressRepository addressRepository;
     private final ServiceProviderRepository serviceProviderRepository;
@@ -43,49 +45,51 @@ public class RegistrationController {
 
     @PostMapping("/register-customer")
     public ResponseEntity<?> registerCustomer(@RequestBody CustomerRegistrationForm registrationForm) {
-        saveCustomerInDatabase(registrationForm);
-        saveCustomerInKeycloak(registrationForm);
+        val customer = saveCustomerInDatabase(registrationForm);
+        saveCustomerInKeycloak(registrationForm, customer.getId());
         log.info("Registered new customer '" + registrationForm.getFirstName() + " " +
                 registrationForm.getLastName() + " <" + registrationForm.getEmail() + ">'");
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    private void saveCustomerInDatabase(CustomerRegistrationForm registrationForm) {
+    private Customer saveCustomerInDatabase(CustomerRegistrationForm registrationForm) {
         val customer = new Customer(registrationForm.getFirstName(), registrationForm.getLastName(), registrationForm
                 .getPhoneNumber(), registrationForm.getEmail());
-        customerRepository.save(customer);
+        return customerRepository.save(customer);
     }
 
-    private void saveCustomerInKeycloak(CustomerRegistrationForm registrationForm) {
+    private void saveCustomerInKeycloak(CustomerRegistrationForm registrationForm, Long entityId) {
         Set<String> roles = Collections.singleton(Roles.CUSTOMER.getKeycloakRoleName());
         val userRepresentation = SimpleUserRepresentation.builder().email(registrationForm.getEmail())
                 .password(registrationForm.getPassword()).username(registrationForm.getEmail())
-                .firstName(registrationForm.getFirstName()).lastName(registrationForm.getLastName()).build();
+                .firstName(registrationForm.getFirstName()).lastName(registrationForm.getLastName())
+                .attribute(ENTITY_ID_ATTRIBUTE_KEY, entityId.toString()).build();
         keycloakClient.createUser(userRepresentation, roles);
     }
 
     @PostMapping("/register-service-provider")
     public ResponseEntity<?> registerServiceProvider(@RequestBody ServiceProviderRegistrationForm registrationForm) {
-        saveServiceProviderInDatabase(registrationForm);
-        saveServiceProviderInKeycloak(registrationForm);
+        val serviceProvider = saveServiceProviderInDatabase(registrationForm);
+        saveServiceProviderInKeycloak(registrationForm, serviceProvider.getId());
         log.info("Registered new service provider '" + registrationForm.getName() + " <" +
                 registrationForm.getEmail() + ">'");
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    private void saveServiceProviderInDatabase(ServiceProviderRegistrationForm registrationForm) {
+    private ServiceProvider saveServiceProviderInDatabase(ServiceProviderRegistrationForm registrationForm) {
         val address = new Address(registrationForm.getStreet(), registrationForm.getPropertyNumber(), registrationForm
                 .getCity(), registrationForm.getPostCode());
         val savedAddress = addressRepository.save(address);
         val serviceProvider = new ServiceProvider(registrationForm.getEmail(), registrationForm
                 .getName(), registrationForm.getPhoneNumber(), savedAddress);
-        serviceProviderRepository.save(serviceProvider);
+        return serviceProviderRepository.save(serviceProvider);
     }
 
-    private void saveServiceProviderInKeycloak(ServiceProviderRegistrationForm registrationForm) {
+    private void saveServiceProviderInKeycloak(ServiceProviderRegistrationForm registrationForm, Long entityId) {
         Set<String> roles = Collections.singleton(Roles.SERVICE_PROVIDER.getKeycloakRoleName());
         val userRepresentation = SimpleUserRepresentation.builder().email(registrationForm.getEmail())
-                .password(registrationForm.getPassword()).username(registrationForm.getName()).build();
+                .password(registrationForm.getPassword()).username(registrationForm.getName())
+                .attribute(ENTITY_ID_ATTRIBUTE_KEY, entityId.toString()).build();
         keycloakClient.createUser(userRepresentation, roles);
     }
 }
