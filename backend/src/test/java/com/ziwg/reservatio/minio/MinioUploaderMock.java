@@ -1,6 +1,5 @@
 package com.ziwg.reservatio.minio;
 
-import com.ziwg.reservatio.minio.MinioUploader;
 import io.minio.MinioClient;
 import io.minio.ObjectWriteResponse;
 import okhttp3.Headers;

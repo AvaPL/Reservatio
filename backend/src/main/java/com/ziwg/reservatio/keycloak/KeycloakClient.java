@@ -14,14 +14,12 @@ import java.util.stream.Collectors;
 
 public class KeycloakClient {
 
-    private final Keycloak keycloak;
     private final UsersResource usersResource;
     private final List<RoleRepresentation> availableRoles;
 
-    public KeycloakClient(Keycloak keycloak, String realm) {
-        this.keycloak = keycloak;
-        this.usersResource = keycloak.realm(realm).users();
-        this.availableRoles = keycloak.realm(realm).roles().list();
+    public KeycloakClient(UsersResource usersResource, List<RoleRepresentation> availableRoles) {
+        this.usersResource = usersResource;
+        this.availableRoles = availableRoles;
     }
 
     public void createUser(UserRepresentation userRepresentation, Set<String> roles) {

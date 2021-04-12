@@ -1,5 +1,6 @@
 package com.ziwg.reservatio.minio;
 
+import com.ziwg.reservatio.profiles.ProdProfile;
 import io.minio.MinioClient;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@ProdProfile
 @Configuration
 @ConfigurationProperties(prefix = "reservatio.minio")
 @Getter

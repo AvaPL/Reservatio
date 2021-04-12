@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: test
   data:
     rest:
       base-path: /rest
@@ -10,3 +12,11 @@ reservatio:
     password: mock
     bucket: mock
     bucketPolicy: mock
+  keycloak:
+    server-url: mock
+    username: mock
+    password: mock
+    realm: mock
+    client-id: mock
+keycloak:
+  enabled: false

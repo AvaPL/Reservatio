@@ -1,5 +1,6 @@
 package com.ziwg.reservatio.mvc;
 
+import com.ziwg.reservatio.profiles.ProdProfile;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
@@ -11,6 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
+@ProdProfile
 @Configuration
 @ConfigurationProperties(prefix = "reservatio.cors")
 @Getter
