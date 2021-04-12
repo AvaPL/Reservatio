@@ -7,7 +7,7 @@ class CustomerRegistrationForm extends Component {
         return (
             <div>
                 <Form className="Auth-form">
-                    <Form.Group controlId="name">
+                    <Form.Group controlId="firstName">
                         <Form.Label className="Auth-form-label">First name</Form.Label>
                         <Form.Control type="text" placeholder="Enter your name" onChange={this.props.handleChange}
                                       onKeyDown={this.props.handleKeyDown}/>

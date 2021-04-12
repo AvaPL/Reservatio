@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: prod
   jpa:
     hibernate:
       ddl-auto: create-drop # TODO: Temporary
@@ -14,6 +16,9 @@ spring:
       base-path: /rest
 reservatio:
   loadTestData: true
+  cors:
+    allowed-origins:
+      - http://localhost:3000
   minio:
     endpoint: http://localhost:9000
     username: reservatio
@@ -54,3 +59,37 @@ reservatio:
           }
         ]
       }
+  keycloak:
+    server-url: ${keycloak.auth-server-url}
+    username: reservatio
+    password: reservatio
+    realm: ${keycloak.realm}
+    client-id: ${keycloak.resource}
+keycloak:
+  auth-server-url: http://localhost:8180/auth
+  public-client: true
+  realm: reservatio
+  resource: reservatio
+  cors: true
+  security-constraints:
+    - security-collections:
+        - patterns:
+            - /register-customer
+            - /register-service-provider
+    - auth-roles:
+        - admin
+      security-collections:
+        - patterns:
+            - /*
+    - auth-roles:
+        - customer
+      security-collections:
+        - patterns:
+            - /rest/customer/* # TODO: Remove after creating first customer path
+    - auth-roles:
+        - service_provider
+      security-collections:
+        - patterns:
+            - /rest/serviceProviderEmployeesViews/*
+            - /rest/addEmployee/*
+            - /rest/deleteEmployee/*

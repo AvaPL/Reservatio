@@ -17,14 +17,53 @@ import Booking from "./booking/Booking";
 import BookingCalendarServiceProvider from "./bookingCalendar/BookingCalendarServiceProvider";
 import BookingCalendarConsumer from "./bookingCalendar/BookingCalendarConsumer";
 import ServiceProviderDetails from "./customer/serviceProviderDetails/ServiceProviderDetails";
+import {authService} from "./auth/AuthService";
+import Unauthorized from "./unauthorized/Unauthorized";
+import Logout from "./logout/Logout";
+
+const routes = [
+    {name: "Explore", path: "/explore", component: Explore, requiredRole: "customer"},
+    {name: "Favorites", path: "/favorites", component: Favorites, requiredRole: "customer"},
+    {name: "Search", path: "/search", component: Search, requiredRole: "customer"},
+    {name: "Appointments", path: "/appointments", component: Appointments, requiredRole: "customer"},
+    {name: "Statistics", path: "/statistics", component: Statistics, requiredRole: "service_provider"},
+    {name: "Services", path: "/services", component: Services, requiredRole: "service_provider"},
+    {name: "Employees", path: "/employees", component: Employees, requiredRole: "service_provider"},
+    {name: "Profile", path: "/profile", component: Profile, requiredRole: "service_provider"}
+]
 
 class App extends Component {
 
     constructor(props, context) {
         super(props, context);
-        this.state = {
-            isCustomer: true // TODO: Temporary
+        this.state = this.chooseRoutes()
+    }
+
+    chooseRoutes() {
+        const accessibleRoutes = routes.filter(r => authService.userHasRole(r.requiredRole))
+        const inaccessibleRoutes = routes.filter(r => !authService.userHasRole(r.requiredRole))
+        const homeRedirect = this.homeRedirect(accessibleRoutes)
+        const inaccessibleRouteRedirect = this.inaccessibleRouteRedirect()
+        return {
+            accessibleRoutes: accessibleRoutes,
+            inaccessibleRoutes: inaccessibleRoutes,
+            homeRedirect: homeRedirect,
+            inaccessibleRouteRedirect: inaccessibleRouteRedirect
         }
+    }
+
+    homeRedirect(accessibleRoutes) {
+        if (!authService.isUserAuthenticated())
+            return "/login"
+        if (accessibleRoutes.length > 0)
+            return accessibleRoutes[0].path
+        return "/unauthorized"
+    }
+
+    inaccessibleRouteRedirect() {
+        if (!authService.isUserAuthenticated())
+            return "/login"
+        return "/unauthorized"
     }
 
     render() {
@@ -33,57 +72,77 @@ class App extends Component {
                 <BrowserRouter>
                     <Switch>
                         <Route exact path="/not-found" component={PageNotFound}/>
-                        <Route exact path="/login" component={Login}/>
-                        <Route exact path="/register" component={Registration}/>
+                        <Route exact path="/unauthorized" component={Unauthorized}/>
+                        <Route exact path="/login" render={props => this.renderLogin(props)}/>
+                        <Route exact path="/logout" render={props => this.renderLogout(props)}/>
+                        <Route exact path="/register" render={props => this.renderRegister(props)}/>
+                        {/* TODO: Paths below should have a hierarchy originating from navbar routes */}
                         <Route exact path="/booking/:serviceproviderid/:serviceid" component={BookingCalendarConsumer}/>
-                        <Route exact path="/serviceprovider/:serviceproviderid/calendar" component={BookingCalendarServiceProvider}/>
+                        <Route exact path="/serviceprovider/:serviceproviderid/calendar"
+                               component={BookingCalendarServiceProvider}/>
                         <Route exact path="/booking/:serviceproviderid" component={Booking}/>
                         <Route exact path="/serviceproviderdetails" component={ServiceProviderDetails}/>
-                        {this.chooseRoutes()}
+                        {this.routesWithNavigation()}
                     </Switch>
                 </BrowserRouter>
             </div>
         );
     }
 
-    chooseRoutes() {
-        if (this.state.isCustomer)
-            return this.customerRoutes()
-        else
-            return this.serviceProviderRoutes()
+    renderLogin(props) {
+        if (authService.isUserAuthenticated())
+            return <Redirect {...props} to="/"/>
+        return <Login {...props} onLogin={() => {
+            const newState = this.chooseRoutes()
+            this.setState(newState)
+            props.history.push("/")
+        }
+        }/>;
     }
 
-    customerRoutes() {
-        const routes = [
-            {name: "Explore", path: "/explore", component: Explore},
-            {name: "Favorites", path: "/favorites", component: Favorites},
-            {name: "Search", path: "/search", component: Search},
-            {name: "Appointments", path: "/appointments", component: Appointments}
-        ]
-        return this.routesWithNavigation(routes)
+    renderLogout(props) {
+        return <Logout {...props} onLogout={() => {
+            const newState = this.chooseRoutes()
+            this.setState(newState)
+            props.history.push("/")
+        }
+        }/>
     }
 
-    routesWithNavigation(routes) {
+    renderRegister(props) {
+        if (authService.isUserAuthenticated())
+            return <Redirect {...props} to="/"/>
+        return <Registration {...props}/>
+    }
+
+    routesWithNavigation() {
         return (
             <Route>
-                <Navigation routes={routes}/>
+                <Navigation routes={this.state.accessibleRoutes}/>
                 <Switch>
-                    <Route exact path="/"><Redirect to={routes[0].path}/></Route>
-                    {routes.map(r => <Route exact path={r.path} component={r.component} key={r.name}/>)}
+                    <Route exact path="/">
+                        <Redirect to={this.state.homeRedirect}/>
+                    </Route>
+                    {this.accessibleRoutes()}
+                    {this.inaccessibleRoutes()}
                     <Redirect to="/not-found"/>
                 </Switch>
             </Route>
         );
     }
 
-    serviceProviderRoutes() {
-        const routes = [
-            {name: "Statistics", path: "/statistics", component: Statistics},
-            {name: "Services", path: "/services", component: Services},
-            {name: "Employees", path: "/employees", component: Employees},
-            {name: "Profile", path: "/profile", component: Profile}
-        ]
-        return this.routesWithNavigation(routes)
+    accessibleRoutes() {
+        return this.state.accessibleRoutes.map(r =>
+            <Route exact path={r.path} component={r.component} key={r.name}/>
+        );
+    }
+
+    inaccessibleRoutes() {
+        return this.state.inaccessibleRoutes.map(r =>
+            <Route exact path={r.path} key={r.name}>
+                <Redirect to={this.state.inaccessibleRouteRedirect}/>
+            </Route>
+        );
     }
 }
 

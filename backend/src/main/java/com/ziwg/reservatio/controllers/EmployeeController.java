@@ -17,6 +17,7 @@ import java.util.Optional;
 
 @CrossOrigin
 @RestController
+// TODO Change path to /service-provider/{serviceProviderId} (?)
 @RequestMapping("${spring.data.rest.base-path}")
 public class EmployeeController {
 
@@ -37,6 +38,8 @@ public class EmployeeController {
         if (serviceProvider.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         Employee employee = new Employee(employeeToAdd.getFirstName(), employeeToAdd.getLastName(), serviceProvider.get());
+        // TODO: Services may be fetched from serviceProvider
+        // TODO: N+1 problem
         for (String serviceName : employeeToAdd.getServices()) {
             Optional<Service> service = serviceRepository.findByNameAndServiceProviderId(serviceName, serviceProviderId);
             if (service.isEmpty())
@@ -44,15 +47,18 @@ public class EmployeeController {
             employee.getServices().add(service.get());
         }
         employeeRepository.save(employee);
+        // TODO: Should return 201 with created entity
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    // TODO: This can be handled via a repository method
     @DeleteMapping("deleteEmployee/{serviceProviderId}")
     public ResponseEntity<HttpStatus> deleteEmployee(@PathVariable Long serviceProviderId, @RequestBody EmployeeToDelete employeeToDelete) {
         Optional<Employee> employee = employeeRepository.findByFirstNameAndLastNameAndServiceProviderId(employeeToDelete.getFirstName(), employeeToDelete.getLastName(), serviceProviderId);
         if (employee.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         employeeRepository.delete(employee.get());
+        // TODO: Should return 204 or 200 with link to remaining employees endpoint
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

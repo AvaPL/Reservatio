@@ -55,6 +55,7 @@ public class LoadTestData {
     }
 
     @Bean
+    // TODO: Invalid way of loading a boolean (https://stackoverflow.com/a/48818436/9134945)
     public CommandLineRunner initDatabase(@Value("${reservatio.loadTestData}") String loadData) {
         if (Boolean.parseBoolean(loadData)) {
             return args -> {
