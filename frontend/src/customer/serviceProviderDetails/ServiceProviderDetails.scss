@@ -83,19 +83,21 @@
   font-size: 3vw;
 }
 
-.scrollbar {
-  overflow-y: scroll;
-  border: 1px solid black;
-}
-.scrollbar::-webkit-scrollbar {
-  width: 5px;
-}
-.scrollbar::-webkit-scrollbar-track {
-  background: #FDAAAF;
-}
-.scrollbar::-webkit-scrollbar-thumb {
-  border-radius: 1rem;
-  background-color: #F85F6A;
+.comments {
+  .scrollbar {
+    overflow-y: scroll;
+    border: 1px solid black;
+  }
+  .scrollbar::-webkit-scrollbar {
+    width: 5px;
+  }
+  .scrollbar::-webkit-scrollbar-track {
+    background: #FDAAAF;
+  }
+  .scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 1rem;
+    background-color: #F85F6A;
+  }
 }
 
 .comment{

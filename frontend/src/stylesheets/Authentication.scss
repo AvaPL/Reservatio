@@ -16,7 +16,6 @@ $auth-dark: #d9535d;
 
 .carousel-item {
   width: 100%;
-
 }
 
 .Auth-desktop-form {
@@ -24,6 +23,23 @@ $auth-dark: #d9535d;
   margin-right: 5%;
   width: 25%;
   float: right;
+
+  .scrollbar {
+    overflow-y: scroll;
+  }
+
+  .scrollbar::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    background: $auth-light;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 1rem;
+    background-color: $auth-primary;
+  }
 }
 
 .Auth-company-name {
@@ -121,21 +137,4 @@ $auth-dark: #d9535d;
   a:active {
     color: $auth-dark !important;
   }
-}
-
-.scrollbar {
-  overflow-y: scroll;
-}
-
-.scrollbar::-webkit-scrollbar {
-  width: 5px;
-}
-
-.scrollbar::-webkit-scrollbar-track {
-  background: $auth-light;
-}
-
-.scrollbar::-webkit-scrollbar-thumb {
-  border-radius: 1rem;
-  background-color: $auth-primary;
 }
