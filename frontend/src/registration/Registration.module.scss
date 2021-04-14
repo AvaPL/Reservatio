@@ -1,0 +1,32 @@
+$reg-darker-light: #fc848b;
+
+@import url('https://fonts.googleapis.com/css2?family=Asap&display=swap');
+
+.btnGroup {
+  width: 70%;
+  margin: 5% 15%;
+  //border: none !important;
+}
+
+.btnGroupBtn {
+  border: none !important;
+  color: #ffffff;
+
+  &:hover {
+    background-color: $reg-darker-light !important;
+  }
+
+  &.active.focus,
+  &.active:focus,
+  &.focus,
+  &.focus:active,
+  &:active:focus,
+  &:focus {
+    box-shadow: none !important;
+  }
+}
+
+.checkbox {
+  font-family: 'Asap', sans-serif;
+  font-size: 12px;
+}

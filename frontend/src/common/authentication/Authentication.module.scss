@@ -5,7 +5,13 @@ $auth-dark: #d9535d;
 
 @import url('https://fonts.googleapis.com/css2?family=Asap&display=swap');
 
-.Auth-picture-box {
+.checkbox {
+  color: red;
+  font-family: 'Asap', sans-serif;
+  font-size: 25px;
+}
+
+.pictureBox {
   margin-top: 5%;
   margin-left: 5%;
   margin-right: 5%;
@@ -14,19 +20,32 @@ $auth-dark: #d9535d;
   height: 90%;
 }
 
-.carousel-item {
-  width: 100%;
-
-}
-
-.Auth-desktop-form {
+.desktopForm {
   margin-top: 5%;
   margin-right: 5%;
   width: 25%;
   float: right;
+  overflow: auto;
+
+  .scrollbar {
+    overflow-y: scroll;
+  }
+
+  .scrollbar::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .scrollbar::-webkit-scrollbar-track {
+    background: $auth-light;
+  }
+
+  .scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 1rem;
+    background-color: $auth-primary;
+  }
 }
 
-.Auth-company-name {
+.companyName {
   text-align: center;
   font-family: 'Brush Script MT', sans-serif;
   font-weight: bold;
@@ -35,55 +54,30 @@ $auth-dark: #d9535d;
   margin-top: 20%;
 }
 
-.Auth-form-box {
+.formBox {
   font-family: 'Asap', sans-serif;
   margin: 5% 10%;
   text-align: left;
 }
 
-.Auth-form-title {
+.formTitle {
   font-family: 'Asap', sans-serif;
   font-weight: bold;
   font-size: 30px;
 }
 
-.Auth-form-subtitle {
-  font-family: 'Asap', sans-serif;
-  font-size: 18px;
-  color: #abb5be;
-}
-
-.Auth-form {
+.form {
   margin-top: 5%;
 }
 
-.Auth-form-label {
+.formLabel {
   font-family: 'Asap', sans-serif;
   font-weight: bold;
   font-size: 14px;
   color: $auth-primary;
 }
 
-.Auth-btn-group {
-  width: 70%;
-  margin: 5% 15%;
-}
-
-.Auth-btn-group-btn {
-  border: none !important;
-  color: #ffffff;
-
-  &:hover {
-    background-color: $auth-darker-light !important;
-  }
-}
-
-.Auth-checkbox {
-  font-family: 'Asap', sans-serif;
-  font-size: 11px;
-}
-
-.btn-reservatio {
+.button {
   background-color: $auth-primary !important;
   border: none !important;
   color: #ffffff;
@@ -96,9 +90,18 @@ $auth-dark: #d9535d;
   &:active {
     background-color: $auth-dark !important;
   }
+
+  &.active.focus,
+  &.active:focus,
+  &.focus,
+  &.focus:active,
+  &:active:focus,
+  &:focus {
+    box-shadow: none !important;
+  }
 }
 
-.Auth-link {
+.link {
   text-align: center;
   font-family: 'Asap', sans-serif;
   font-weight: bold;
@@ -121,21 +124,4 @@ $auth-dark: #d9535d;
   a:active {
     color: $auth-dark !important;
   }
-}
-
-.scrollbar {
-  overflow-y: scroll;
-}
-
-.scrollbar::-webkit-scrollbar {
-  width: 5px;
-}
-
-.scrollbar::-webkit-scrollbar-track {
-  background: $auth-light;
-}
-
-.scrollbar::-webkit-scrollbar-thumb {
-  border-radius: 1rem;
-  background-color: $auth-primary;
 }

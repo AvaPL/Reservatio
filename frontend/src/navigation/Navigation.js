@@ -1,6 +1,5 @@
 import {Component} from "react";
 import {Nav, Navbar} from "react-bootstrap";
-
 import './Navigation.scss'
 import {NavLink} from "react-router-dom";
 
@@ -11,6 +10,9 @@ export class Navigation extends Component {
             <Navbar.Collapse id="responsive-navbar-nav">
                 <Nav className="nav-fill w-100">
                     {this.props.routes.map(r => this.navLink(r.name, r.path))}
+                </Nav>
+                <Nav>
+                    <Nav.Link className="nav-auth-button" as={NavLink} to={"/logout"}>Logout</Nav.Link>
                 </Nav>
             </Navbar.Collapse>
         </Navbar>

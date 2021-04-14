@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import './ServiceProviderDetails..scss'
+import './ServiceProviderDetails.scss'
 import StarRatings from "react-star-ratings";
 
 class ServiceProviderDetails extends Component {
@@ -77,6 +77,7 @@ class ServiceProviderDetails extends Component {
 
     addComments(){
         return(
+            <div className="comments">
             <div className="overflow-auto scrollbar" style={{height: '15vw'}}>
 
                 <div className={'comment'}>
@@ -131,6 +132,7 @@ class ServiceProviderDetails extends Component {
                     <div className={'comment-blank'} />
                 </div>
 
+            </div>
             </div>
         );
     }
