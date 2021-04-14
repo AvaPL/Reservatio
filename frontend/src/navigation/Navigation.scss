@@ -1,6 +1,7 @@
 $navigation-primary: #FDC2C6;
 $navigation-primary-hover: #FDAAAF;
 $navigation-primary-active: #F85F6A;
+$navigation-dark: #d9535d;
 
 nav.navigation-navbar {
   background-color: $navigation-primary;
@@ -27,5 +28,31 @@ a.navigation-nav-link {
   &.active {
     background-color: $navigation-primary-active;
     color: white !important;
+  }
+}
+
+.nav-auth-button {
+  margin: 5px 10px;
+  background-color: $navigation-primary-active !important;
+  border: none !important;
+  border-radius: 5px !important;
+  color: #ffffff !important;
+  text-align: center;
+
+  &:hover {
+    background-color: $navigation-dark !important;
+  }
+
+  &:active {
+    background-color: $navigation-dark !important;
+  }
+
+  &.active.focus,
+  &.active:focus,
+  &.focus,
+  &.focus:active,
+  &:active:focus,
+  &:focus {
+    box-shadow: none !important;
   }
 }
