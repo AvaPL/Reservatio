@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Carousel from "react-bootstrap/Carousel";
-import "../stylesheets/Authentication.scss";
+import styles from "./Login.module.scss"
+import authStyles from "../common/authentication/Authentication.module.scss";
 import {authService} from "../auth/AuthService";
 import {Alert} from "react-bootstrap";
 
@@ -63,10 +64,10 @@ class Login extends Component {
     render() {
         if (this.state.width > 900) {
             return <div>
-                <Carousel className="Auth-picture-box">
+                <Carousel className={authStyles.pictureBox}>
                     {this.state.featuredSalons.map(salon => this.getCarouselItem(salon.name, salon.imageUrl))}
                 </Carousel>
-                <div className="Auth-desktop-form">
+                <div className={authStyles.desktopForm}>
                     {this.getLoginForm()}
                 </div>
             </div>
@@ -91,18 +92,18 @@ class Login extends Component {
     getLoginForm() {
         return (
             <div>
-                <div className="Auth-company-name">Reservatio</div>
-                <div className="Auth-form-box">
-                    <div className="Auth-form-title">Sign in</div>
-                    <div className="Auth-form-subtitle">Hi there! Nice to see you again.</div>
-                    <Form className="Auth-form">
+                <div className={authStyles.companyName}>Reservatio</div>
+                <div className={authStyles.formBox}>
+                    <div className={authStyles.formTitle}>Sign in</div>
+                    <div className={styles.formSubtitle}>Hi there! Nice to see you again.</div>
+                    <Form className={authStyles.form}>
                         <Form.Group controlId="email">
-                            <Form.Label className="Auth-form-label">Email address</Form.Label>
+                            <Form.Label className={authStyles.formLabel}>Email address</Form.Label>
                             <Form.Control type="email" placeholder="Enter email" onChange={this.handleChange}
                                           onKeyDown={this.handleKeyDown}/>
                         </Form.Group>
                         <Form.Group controlId="password">
-                            <Form.Label className="Auth-form-label">Password</Form.Label>
+                            <Form.Label className={authStyles.formLabel}>Password</Form.Label>
                             <Form.Control type="password" placeholder="Password" onChange={this.handleChange}
                                           onKeyDown={this.handleKeyDown}/>
                         </Form.Group>
@@ -115,11 +116,11 @@ class Login extends Component {
                             <span>.</span>
                         </Alert>
                     }
-                    <Button className="btn-reservatio shadow-none" type="submit" onClick={this.handleSignInClicked}>
+                    <Button className={authStyles.button} type="submit" onClick={this.handleSignInClicked}>
                         Sign in
                     </Button>
                 </div>
-                <div className="Auth-link"><a href={"/register"}>Sign up</a></div>
+                <div className={authStyles.link}><a href={"/register"}>Sign up</a></div>
             </div>
         );
     }
