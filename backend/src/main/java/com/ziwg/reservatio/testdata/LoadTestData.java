@@ -4,6 +4,7 @@ import com.ziwg.reservatio.entity.*;
 import com.ziwg.reservatio.minio.MinioUploader;
 import com.ziwg.reservatio.repository.*;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 
 @Configuration
+@Slf4j
 public class LoadTestData {
 
     private static final int numberOfCustomers = 20;
@@ -55,10 +57,9 @@ public class LoadTestData {
     }
 
     @Bean
-    // TODO: Invalid way of loading a boolean (https://stackoverflow.com/a/48818436/9134945)
-    public CommandLineRunner initDatabase(@Value("${reservatio.loadTestData}") String loadData) {
-        if (Boolean.parseBoolean(loadData)) {
-            return args -> {
+    public CommandLineRunner initDatabase(@Value("#{new Boolean('${reservatio.load-test-data}')}") Boolean loadTestData) {
+        return args -> {
+            if (loadTestData) {
                 fillCustomers();
                 fillAddresses();
                 fillServiceProviders();
@@ -67,9 +68,7 @@ public class LoadTestData {
                 fillReservations();
                 fillReviews();
                 joinEmployeesAndServices();
-            };
-        }
-        return args -> {
+            }
         };
     }
 
@@ -77,19 +76,24 @@ public class LoadTestData {
         Random random = new Random();
         for (int i = 1; i <= LoadTestData.numberOfCustomers; i++) {
             int randomPhoneNumber = 100000000 + random.nextInt(900000000);
-            customerRepository.save(new Customer("name" + i,
+            val customer = new Customer("name" + i,
                     "lastname" + i,
                     "+48" + randomPhoneNumber,
-                    "customer" + i + "@gmail.com"));
+                    "customer" + i + "@gmail.com");
+            customerRepository.save(customer);
+            log.info("Loaded test customer '" + customer.getFirstName() + " " + customer.getLastName() + "'");
         }
     }
 
     private void fillAddresses() {
         for (int i = 1; i <= LoadTestData.numberOfServiceProviders; i++) {
-            addressRepository.save(new Address("street" + i,
+            val address = new Address("street" + i,
                     String.valueOf(i),
                     "city" + i,
-                    "00-" + ThreadLocalRandom.current().nextInt(100, 999 + 1)));
+                    "00-" + ThreadLocalRandom.current().nextInt(100, 999 + 1));
+            addressRepository.save(address);
+            log.info("Loaded test address '" + address.getStreet() + " " + address.getPropertyNumber() + ", " +
+                    address.getPostCode() + " " + address.getCity() + "'");
         }
     }
 
@@ -100,7 +104,7 @@ public class LoadTestData {
             if (!addressIterator.hasNext())
                 addressIterator = addressRepository.findAll().iterator();
 
-            ServiceProvider serviceProvider = new ServiceProvider("serviceprovider" + i + "@gmail.com",
+            val serviceProvider = new ServiceProvider("serviceprovider" + i + "@gmail.com",
                     "serviceprovider" + i,
                     "+48" + String.format("%-" + 9 + "s", i).replace(" ", "0"),
                     addressIterator.next());
@@ -110,6 +114,7 @@ public class LoadTestData {
                 serviceProvider.setImageUrl(minioUploader.urlFor(filename));
             }
             serviceProviderRepository.save(serviceProvider);
+            log.info("Loaded test service provider '" + serviceProvider.getName() + "'");
         }
     }
 
@@ -122,11 +127,13 @@ public class LoadTestData {
         for (int i = 1; i <= LoadTestData.numberOfServices; i++) {
             if (!serviceProviderIterator.hasNext())
                 serviceProviderIterator = serviceProviderRepository.findAll().iterator();
-            serviceRepository.save(new Service("service" + i,
+            val service = new Service("service" + i,
                     (float) i,
                     i * 10,
                     "description" + i,
-                    serviceProviderIterator.next()));
+                    serviceProviderIterator.next());
+            serviceRepository.save(service);
+            log.info("Loaded test service '" + service.getName() + "'");
         }
     }
 
@@ -135,10 +142,11 @@ public class LoadTestData {
         for (int i = 1; i <= LoadTestData.numberOfEmployees; i++) {
             if (!serviceProviderIterator.hasNext())
                 serviceProviderIterator = serviceProviderRepository.findAll().iterator();
-            employeeRepository.save(new Employee("employee" + i,
+            val employee = new Employee("employee" + i,
                     "lastname" + i,
-                    serviceProviderIterator.next()));
-
+                    serviceProviderIterator.next());
+            employeeRepository.save(employee);
+            log.info("Loaded test employee '" + employee.getFirstName() + " " + employee.getLastName() + "'");
         }
     }
 
@@ -153,10 +161,13 @@ public class LoadTestData {
                 serviceIterator = serviceRepository.findAll().iterator();
             if (!employeeIterator.hasNext())
                 employeeIterator = employeeRepository.findAll().iterator();
-            reservationRepository.save(new Reservation(LocalDateTime.now(),
+            val reservation = new Reservation(LocalDateTime.now(),
                     customerIterator.next(),
                     serviceIterator.next(),
-                    employeeIterator.next()));
+                    employeeIterator.next());
+            reservationRepository.save(reservation);
+            log.info("Loaded test reservation 'ID " + reservation.getId() + " (" + reservation
+                    .getDateTime() + ")'");
         }
     }
 
@@ -169,7 +180,7 @@ public class LoadTestData {
             Review review = new Review(i, "review" + i, reservation);
             reservation.setReview(review);
             reviewRepository.save(review);
-            reservationRepository.save(reservation);
+            log.info("Loaded test review '" + review.getMessage() + "'");
         }
     }
 
@@ -183,8 +194,9 @@ public class LoadTestData {
                 employee.getServices().add(service);
                 service.getEmployees().add(employee);
                 serviceRepository.save(service);
+                log.info("Linked test employee '" + employee.getFirstName() + " " +
+                        employee.getLastName() + "' with test service '" + service.getName() + "'");
             }
-            employeeRepository.save(employee);
         }
     }
 }
