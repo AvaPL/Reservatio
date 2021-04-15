@@ -3,7 +3,8 @@ import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
 import CustomerRegistrationForm from "./CustomerRegistrationForm";
 import ServiceProviderRegistrationForm from "./ServiceProviderRegistrationForm";
-import "../stylesheets/Authentication.scss";
+import styles from "./Registration.module.scss";
+import authStyles from "../common/authentication/Authentication.module.scss";
 import Carousel from "react-bootstrap/Carousel";
 import {Alert} from "react-bootstrap";
 import {backendHost} from "../Config";
@@ -98,11 +99,11 @@ class Registration extends Component {
     render() {
         if (this.state.width > 900) {
             return <div>
-                <Carousel className="Auth-picture-box">
+                <Carousel className={authStyles.pictureBox}>
                     {this.state.featuredSalons.map(salon => this.getCarouselItem(salon.name, salon.imageUrl))}
                 </Carousel>
-                <div className="Auth-desktop-form">
-                    <div className="overflow-auto scrollbar" style={{height: '600px'}}>
+                <div className={authStyles.desktopForm}>
+                    <div className={authStyles.scrollbar} style={{height: '600px'}}>
                         {this.getRegistrationForm()}
                     </div>
                 </div>
@@ -128,14 +129,14 @@ class Registration extends Component {
     getRegistrationForm() {
         return (
             <div>
-                <div className="Auth-company-name">Reservatio</div>
-                <div className="Auth-form-box">
-                    <div className="Auth-form-title">Sign up</div>
-                    <ButtonGroup className="Auth-btn-group">
-                        <Button className="Auth-btn-group-btn shadow-none"
+                <div className={authStyles.companyName}>Reservatio</div>
+                <div className={authStyles.formBox}>
+                    <div className={authStyles.formTitle}>Sign up</div>
+                    <ButtonGroup className={styles.btnGroup}>
+                        <Button className={styles.btnGroupBtn}
                                 onClick={this.handleClientClick}
                                 style={{backgroundColor: this.state.salonButtonClicked ? notClickedButtonColor : clickedButtonColor}}>Customer</Button>
-                        <Button className="Auth-btn-group-btn shadow-none"
+                        <Button className={styles.btnGroupBtn}
                                 onClick={this.handleSalonClick}
                                 style={{backgroundColor: this.state.salonButtonClicked ? clickedButtonColor : notClickedButtonColor}}>Salon</Button>
                     </ButtonGroup>
@@ -152,12 +153,12 @@ class Registration extends Component {
                             <span>.</span>
                         </Alert>
                     }
-                    <Button className="btn-reservatio shadow-none" type="submit"
+                    <Button className={authStyles.button} type="submit"
                             onClick={this.handleSignUpClicked}>
                         Submit
                     </Button>
                 </div>
-                <div className="Auth-link">Have an account? <a href={"/login"}>Sign in</a></div>
+                <div className={authStyles.link}>Have an account? <a href={"/login"}>Sign in</a></div>
             </div>
         );
     }

@@ -28,20 +28,26 @@ class Explore extends Component {
             <div className="container">
                 <div className="row">
                     <div className="col">
-                        <select className="Select-box">
+                        <div className="input-group" style={{marginTop: "5%"}}>
+                            <label className="input-group-text" htmlFor="inputGroupSelect01">Service</label>
+                            <select className="form-select" id="inputGroupSelect01" style={{width: "85%"}}>
                             <option selected>Select service</option>
                             <option value="1">One</option>
                             <option value="2">Two</option>
                             <option value="3">Three</option>
                         </select>
+                        </div>
                     </div>
                     <div className="col">
-                        <select className="Select-box">
+                        <div className="input-group" style={{marginTop: "5%"}}>
+                            <label className="input-group-text" htmlFor="inputGroupSelect01">City</label>
+                            <select className="form-select" id="inputGroupSelect01" style={{width: "90%"}}>
                             <option selected>Select city</option>
                             <option value="1">One</option>
                             <option value="2">Two</option>
                             <option value="3">Three</option>
                         </select>
+                        </div>
                     </div>
                 </div>
                 <div className="row">
