@@ -1,10 +1,7 @@
 package com.ziwg.reservatio.entity;
 
 import com.sun.istack.NotNull;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,8 +9,9 @@ import java.util.List;
 
 @Entity
 @Data
-@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
-@RequiredArgsConstructor
+@Builder
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ServiceProvider {
 
     @Id
@@ -21,21 +19,23 @@ public class ServiceProvider {
     private Long id;
     @NotNull
     @Column(unique = true)
-    private final String email;
+    private String email;
     @NotNull
     @Column(length = 50)
-    private final String name;
+    private String name;
     @NotNull
     @Column(length = 12, unique = true)
-    private final String phoneNumber;
+    private String phoneNumber;
     private String imageUrl;
 
     @OneToOne
-    private final Address address;
+    private Address address;
 
     @OneToMany(mappedBy = "serviceProvider")
+    @Singular
     private List<Service> services;
 
     @OneToMany(mappedBy = "serviceProvider")
+    @Singular
     private List<Employee> employees;
 }
