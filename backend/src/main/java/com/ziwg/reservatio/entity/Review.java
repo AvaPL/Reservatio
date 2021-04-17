@@ -1,28 +1,25 @@
 package com.ziwg.reservatio.entity;
 
 import com.sun.istack.NotNull;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Data
-@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
-@RequiredArgsConstructor
+@Builder
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Review {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
-    private final Integer grade;
+    private Integer grade;
     @Column(length = 2000)
-    private final String message;
+    private String message;
 
     @OneToOne
-    private final Reservation reservation;
-
+    private Reservation reservation;
 }
