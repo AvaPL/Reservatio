@@ -26,22 +26,27 @@ public class EmployeeController {
     private final ServiceRepository serviceRepository;
 
     @Autowired
-    public EmployeeController(EmployeeRepository employeeRepository, ServiceProviderRepository serviceProviderRepository, ServiceRepository serviceRepository) {
+    public EmployeeController(EmployeeRepository employeeRepository,
+                              ServiceProviderRepository serviceProviderRepository,
+                              ServiceRepository serviceRepository) {
         this.employeeRepository = employeeRepository;
         this.serviceProviderRepository = serviceProviderRepository;
         this.serviceRepository = serviceRepository;
     }
 
     @PostMapping("addEmployee/{serviceProviderId}")
-    public ResponseEntity<HttpStatus> addEmployee(@PathVariable Long serviceProviderId, @RequestBody EmployeeToAdd employeeToAdd) {
+    public ResponseEntity<HttpStatus> addEmployee(@PathVariable Long serviceProviderId,
+                                                  @RequestBody EmployeeToAdd employeeToAdd) {
         Optional<ServiceProvider> serviceProvider = serviceProviderRepository.findById(serviceProviderId);
         if (serviceProvider.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        Employee employee = new Employee(employeeToAdd.getFirstName(), employeeToAdd.getLastName(), serviceProvider.get());
+        Employee employee = Employee.builder().firstName(employeeToAdd.getFirstName())
+                .lastName(employeeToAdd.getLastName()).serviceProvider(serviceProvider.get()).build();
         // TODO: Services may be fetched from serviceProvider
         // TODO: N+1 problem
         for (String serviceName : employeeToAdd.getServices()) {
-            Optional<Service> service = serviceRepository.findByNameAndServiceProviderId(serviceName, serviceProviderId);
+            Optional<Service> service = serviceRepository
+                    .findByNameAndServiceProviderId(serviceName, serviceProviderId);
             if (service.isEmpty())
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             employee.getServices().add(service.get());
@@ -53,8 +58,11 @@ public class EmployeeController {
 
     // TODO: This can be handled via a repository method
     @DeleteMapping("deleteEmployee/{serviceProviderId}")
-    public ResponseEntity<HttpStatus> deleteEmployee(@PathVariable Long serviceProviderId, @RequestBody EmployeeToDelete employeeToDelete) {
-        Optional<Employee> employee = employeeRepository.findByFirstNameAndLastNameAndServiceProviderId(employeeToDelete.getFirstName(), employeeToDelete.getLastName(), serviceProviderId);
+    public ResponseEntity<HttpStatus> deleteEmployee(@PathVariable Long serviceProviderId,
+                                                     @RequestBody EmployeeToDelete employeeToDelete) {
+        Optional<Employee> employee = employeeRepository
+                .findByFirstNameAndLastNameAndServiceProviderId(employeeToDelete.getFirstName(), employeeToDelete
+                        .getLastName(), serviceProviderId);
         if (employee.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         employeeRepository.delete(employee.get());
