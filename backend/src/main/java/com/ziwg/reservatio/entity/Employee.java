@@ -1,10 +1,7 @@
 package com.ziwg.reservatio.entity;
 
 import com.sun.istack.NotNull;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -12,8 +9,9 @@ import java.util.List;
 
 @Entity
 @Data
-@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
-@RequiredArgsConstructor
+@Builder
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Employee {
 
     @Id
@@ -21,16 +19,17 @@ public class Employee {
     private Long id;
     @NotNull
     @Column(length = 20)
-    private final String firstName;
+    private String firstName;
     @NotNull
     @Column(length = 20)
-    private final String lastName;
+    private String lastName;
 
     @OneToMany(mappedBy = "employee")
+    @Singular
     private List<Reservation> reservations;
 
     @ManyToOne
-    private final ServiceProvider serviceProvider;
+    private ServiceProvider serviceProvider;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -38,5 +37,6 @@ public class Employee {
             joinColumns = @JoinColumn(name = "employee_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id")
     )
-    private List<Service> services = new ArrayList<>();
+    @Singular
+    private List<Service> services;
 }

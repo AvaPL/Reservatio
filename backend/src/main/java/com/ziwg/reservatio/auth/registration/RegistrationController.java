@@ -53,8 +53,9 @@ public class RegistrationController {
     }
 
     private Customer saveCustomerInDatabase(CustomerRegistrationForm registrationForm) {
-        val customer = new Customer(registrationForm.getFirstName(), registrationForm.getLastName(), registrationForm
-                .getPhoneNumber(), registrationForm.getEmail());
+        val customer = Customer.builder().firstName(registrationForm.getFirstName())
+                .lastName(registrationForm.getLastName()).phoneNumber(registrationForm.getPhoneNumber())
+                .email(registrationForm.getEmail()).build();
         return customerRepository.save(customer);
     }
 
@@ -77,11 +78,13 @@ public class RegistrationController {
     }
 
     private ServiceProvider saveServiceProviderInDatabase(ServiceProviderRegistrationForm registrationForm) {
-        val address = new Address(registrationForm.getStreet(), registrationForm.getPropertyNumber(), registrationForm
-                .getCity(), registrationForm.getPostCode());
+        val address = Address.builder().street(registrationForm.getStreet())
+                .propertyNumber(registrationForm.getPropertyNumber()).city(registrationForm.getCity())
+                .postCode(registrationForm.getPostCode()).build();
         val savedAddress = addressRepository.save(address);
-        val serviceProvider = new ServiceProvider(registrationForm.getEmail(), registrationForm
-                .getName(), registrationForm.getPhoneNumber(), savedAddress);
+        val serviceProvider = ServiceProvider.builder().email(registrationForm.getEmail())
+                .name(registrationForm.getName()).phoneNumber(registrationForm.getPhoneNumber()).address(savedAddress)
+                .build();
         return serviceProviderRepository.save(serviceProvider);
     }
 
