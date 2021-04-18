@@ -4,7 +4,6 @@ import com.ziwg.reservatio.entity.Employee;
 import com.ziwg.reservatio.entity.Service;
 import com.ziwg.reservatio.entity.ServiceProvider;
 import com.ziwg.reservatio.pojos.EmployeeToAdd;
-import com.ziwg.reservatio.pojos.EmployeeToDelete;
 import com.ziwg.reservatio.repository.EmployeeRepository;
 import com.ziwg.reservatio.repository.ServiceProviderRepository;
 import com.ziwg.reservatio.repository.ServiceRepository;
@@ -13,7 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController
@@ -23,15 +26,12 @@ public class EmployeeController {
 
     private final EmployeeRepository employeeRepository;
     private final ServiceProviderRepository serviceProviderRepository;
-    private final ServiceRepository serviceRepository;
 
     @Autowired
     public EmployeeController(EmployeeRepository employeeRepository,
-                              ServiceProviderRepository serviceProviderRepository,
-                              ServiceRepository serviceRepository) {
+                              ServiceProviderRepository serviceProviderRepository) {
         this.employeeRepository = employeeRepository;
         this.serviceProviderRepository = serviceProviderRepository;
-        this.serviceRepository = serviceRepository;
     }
 
     @PostMapping("addEmployee/{serviceProviderId}")
@@ -40,34 +40,30 @@ public class EmployeeController {
         Optional<ServiceProvider> serviceProvider = serviceProviderRepository.findById(serviceProviderId);
         if (serviceProvider.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        Employee employee = Employee.builder().firstName(employeeToAdd.getFirstName())
-                .lastName(employeeToAdd.getLastName()).serviceProvider(serviceProvider.get()).build();
-        // TODO: Services may be fetched from serviceProvider
-        // TODO: N+1 problem
-        for (String serviceName : employeeToAdd.getServices()) {
-            Optional<Service> service = serviceRepository
-                    .findByNameAndServiceProviderId(serviceName, serviceProviderId);
-            if (service.isEmpty())
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            employee.getServices().add(service.get());
-        }
+        Employee employee = Employee.builder().firstName(employeeToAdd.getFirstName()).lastName(employeeToAdd.getLastName()).serviceProvider(serviceProvider.get()).build();
+        List<String> serviceProviderServices = serviceProvider.get().getServices().stream().map(Service::getName).collect(Collectors.toList());
+        if (!serviceProviderServices.containsAll(employeeToAdd.getServices()))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        List<Service> servicesToAdd = serviceProvider.get().getServices().stream().filter(service -> employeeToAdd.getServices().contains(service.getName())).collect(Collectors.toList());
+        employee.setServices(servicesToAdd);
         employeeRepository.save(employee);
-        // TODO: Should return 201 with created entity
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    // TODO: This can be handled via a repository method
-    @DeleteMapping("deleteEmployee/{serviceProviderId}")
-    public ResponseEntity<HttpStatus> deleteEmployee(@PathVariable Long serviceProviderId,
-                                                     @RequestBody EmployeeToDelete employeeToDelete) {
-        Optional<Employee> employee = employeeRepository
-                .findByFirstNameAndLastNameAndServiceProviderId(employeeToDelete.getFirstName(), employeeToDelete
-                        .getLastName(), serviceProviderId);
-        if (employee.isEmpty())
+    @DeleteMapping("deleteEmployee/{employeeId}")
+    public ResponseEntity<String> deleteEmployee(@PathVariable Long employeeId) {
+        Optional<Employee> employeeToDelete = employeeRepository.findById(employeeId);
+        if (employeeToDelete.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        employeeRepository.delete(employee.get());
-        // TODO: Should return 204 or 200 with link to remaining employees endpoint
-        return new ResponseEntity<>(HttpStatus.OK);
+        if (employeeToDelete.get().getReservations().stream().anyMatch(reservation -> reservation.getDateTime().isAfter(LocalDateTime.now())))
+            return new ResponseEntity<>("Cannot delete an employee that has upcoming appointments", HttpStatus.BAD_REQUEST);
+        ServiceProvider serviceProvider = employeeToDelete.get().getServiceProvider();
+        serviceProvider.setEmployees(serviceProvider.getEmployees().stream().filter(employee -> !employee.getId().equals(employeeId)).collect(Collectors.toList()));
+        serviceProviderRepository.save(serviceProvider);
+        employeeToDelete.get().setServiceProvider(null);
+        employeeToDelete.get().setServices(new ArrayList<>());
+        employeeRepository.save(employeeToDelete.get());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
 
