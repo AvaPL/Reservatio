@@ -185,6 +185,7 @@ public class LoadTestData {
                 log.info("Linked test employee '" + employee.getFirstName() + " " +
                         employee.getLastName() + "' with test service '" + service.getName() + "'");
             }
+            employeeRepository.save(employee);
         }
     }
 }

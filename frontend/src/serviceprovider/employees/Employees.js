@@ -22,7 +22,6 @@ class Employees extends Component {
     }
 
     componentDidMount() {
-        // TODO: Predefined employees can't be deleted for some reason
         this.fetchEmployees().then(this.processEmployees(), this.handleError());
     }
 
@@ -95,12 +94,12 @@ class Employees extends Component {
 
     alerts() {
         if (this.state.errorAdding) {
-            return <Alert variant="danger">
+            return <Alert variant="danger" onClose={() => this.setState({errorAdding: null})} dismissible>
                 Failed to add employee
             </Alert>
         } else if (this.state.errorDeleting) {
-            return <Alert variant="danger">
-                Failed to delete employee
+            return <Alert variant="danger" onClose={() => this.setState({errorDeleting: null})} dismissible>
+                {this.state.errorDeleting}
             </Alert>
         }
     }
@@ -114,10 +113,10 @@ class Employees extends Component {
             return (
                 <Nav variant="pills" className="flex-column">
                     {
-                        this.state.employees.map((employee, i) =>
-                            <Nav.Item key={i}>
-                                <Nav.Link eventKey={i} className="employees-tab"
-                                          active={this.state.selectedEmployee?.firstName === employee.firstName && this.state.selectedEmployee?.lastName === employee.lastName}
+                        this.state.employees.map(employee =>
+                            <Nav.Item key={employee.id}>
+                                <Nav.Link eventKey={employee.id} className="employees-tab"
+                                          active={this.state.selectedEmployee?.id === employee.id}
                                           onSelect={() => this.setState({selectedEmployee: employee})}>{employee.firstName} {employee.lastName}</Nav.Link>
                             </Nav.Item>
                         )
@@ -132,9 +131,9 @@ class Employees extends Component {
             return (
                 <Tab.Content>
                     {
-                        this.state.employees.map((employee, i) =>
-                            <Tab.Pane key={i} eventKey={i}
-                                      active={this.state.selectedEmployee?.firstName === employee.firstName && this.state.selectedEmployee?.lastName === employee.lastName}>
+                        this.state.employees.map(employee =>
+                            <Tab.Pane key={employee.id} eventKey={employee.id}
+                                      active={this.state.selectedEmployee?.id === employee.id}>
                                 <span className="font-weight-bold" style={{fontSize: "150%"}}>Services:</span>
                                 {
                                     <ul>
@@ -189,7 +188,7 @@ class Employees extends Component {
             }, this.handleError()))
             .catch(error => {
                 console.log("Error occurred: ", error);
-                this.setState({errorAdding: error});
+                this.setState({showModalAdd: false, errorAdding: error});
             });
     };
 
@@ -234,21 +233,15 @@ class Employees extends Component {
     }
 
     onDeleteClicked = () => {
-        const serviceProviderId = authService.token?.entityId;
-        authService.fetchAuthenticated(`${backendHost}/rest/deleteEmployee/${serviceProviderId}`, {
+        authService.fetchAuthenticated(`${backendHost}/rest/deleteEmployee/${this.state.selectedEmployee.id}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                //TODO: delete by ID
-                firstName: this.state.selectedEmployee.firstName,
-                lastName: this.state.selectedEmployee.lastName
-            })
+            }
         }).then(response => {
             if (!response.ok) {
-                throw new Error("Failed to delete");
+                throw response
             }
             return response;
         })
@@ -262,8 +255,15 @@ class Employees extends Component {
                 })
             }, this.handleError()))
             .catch(error => {
-                console.log("Error occurred: ", error);
-                this.setState({errorDeleting: error});
+                if (error.text) {
+                    error.text().then(error => {
+                        console.log("Error occurred: ", error);
+                        this.setState({showModalDelete: false, errorDeleting: error});
+                    });
+                } else {
+                    console.log("Error occurred: Failed to delete employee");
+                    this.setState({showModalDelete: false, errorDeleting: "Failed to delete employee"});
+                }
             });
     };
 }
