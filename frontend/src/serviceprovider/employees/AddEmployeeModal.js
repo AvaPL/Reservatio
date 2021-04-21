@@ -17,14 +17,19 @@ export class AddEmployeeModal extends Component {
     }
 
     componentDidMount() {
-        this.fetchEmployees().then(this.processEmployees(), this.handleError());
+        this.fetchServices().then(this.processEmployees(), this.handleError());
     }
 
-    fetchEmployees() {
+    fetchServices() {
         const serviceProviderId = authService.token?.entityId;
         return authService.fetchAuthenticated(`${backendHost}/rest/serviceProviderEmployeesViews/${serviceProviderId}`)
-            // TODO: Check response status here
-            .then(res => res.json()).then(res => res.services);
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch");
+                }
+                return response.json();
+            })
+            .then(response => response.services);
     }
 
     processEmployees() {

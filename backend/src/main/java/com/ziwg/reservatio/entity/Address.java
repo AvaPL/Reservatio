@@ -2,31 +2,29 @@ package com.ziwg.reservatio.entity;
 
 
 import com.sun.istack.NotNull;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Data
-@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
-@RequiredArgsConstructor
+@Builder
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
     @Column(length = 50)
-    private final String street;
+    private String street;
     @NotNull
     @Column(length = 10)
-    private final String propertyNumber;
+    private String propertyNumber;
     @NotNull
     @Column(length = 50)
-    private final String city;
+    private String city;
     @NotNull
     @Column(length = 10)
-    private final String postCode;
+    private String postCode;
 }

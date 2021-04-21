@@ -130,7 +130,7 @@ class Registration extends Component {
     }
 
     getCarouselItem(name, imageUrl) {
-        return <Carousel.Item>
+        return <Carousel.Item key={name}>
             <img
                 className="img-responsive d-block "
                 height={600}

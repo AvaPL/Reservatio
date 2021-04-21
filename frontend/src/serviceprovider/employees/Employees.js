@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import {Button, Col, Modal, Nav, Row, Tab} from "react-bootstrap";
-
+import {Alert, Button, Col, Modal, Nav, Row, Tab} from "react-bootstrap";
 import './Employees.scss'
 import {AddEmployeeModal} from "./AddEmployeeModal";
 import {authService} from "../../auth/AuthService";
@@ -10,35 +9,32 @@ class Employees extends Component {
 
     constructor(props, context) {
         super(props, context);
-        // TODO: Should be simplified
-        let state = {
-            employees: [
-                {
-                    firstName: "John",
-                    lastName: "Doe",
-                    services: ["Service A", "Service B", "Service C"]
-                }
-            ],
-            error: null,
+        this.state = {
+            employees: [],
             isLoaded: false,
+            error: null,
+            errorAdding: null,
+            errorDeleting: null,
             linkHasBeenClicked: false,
             showModalAdd: false,
             showModalDelete: false,
-        }
-        this.state = state;
-        state.selectedEmployee = state.employees[0];
+        };
     }
 
     componentDidMount() {
-        // TODO: Predefined employees can't be deleted for some reason
         this.fetchEmployees().then(this.processEmployees(), this.handleError());
     }
 
     fetchEmployees() {
         const serviceProviderId = authService.token?.entityId;
         return authService.fetchAuthenticated(`${backendHost}/rest/serviceProviderEmployeesViews/${serviceProviderId}/employees`)
-            // TODO: Check response status here
-            .then(res => res.json()).then(res => res._embedded.employeeViews);
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch");
+                }
+                return response.json();
+            })
+            .then(response => response._embedded.employeeViews);
     }
 
     processEmployees() {
@@ -57,7 +53,7 @@ class Employees extends Component {
                 isLoaded: true,
                 error: error
             })
-            console.log(error);
+            console.log("Error occurred: ", error);
         }
     }
 
@@ -79,6 +75,7 @@ class Employees extends Component {
                                 </div>
                             </Col>
                         </Row>
+                        {this.alerts()}
                         <Row className="employees-border py-3">
                             <Col className="font-weight-bold" sm={3}>
                                 {this.employeesNamesPanel()}
@@ -95,18 +92,31 @@ class Employees extends Component {
         );
     }
 
+    alerts() {
+        if (this.state.errorAdding) {
+            return <Alert variant="danger" onClose={() => this.setState({errorAdding: null})} dismissible>
+                Failed to add employee
+            </Alert>
+        } else if (this.state.errorDeleting) {
+            return <Alert variant="danger" onClose={() => this.setState({errorDeleting: null})} dismissible>
+                {this.state.errorDeleting}
+            </Alert>
+        }
+    }
+
     employeesNamesPanel() {
         if (this.state.error) {
-            return <span>Error</span>
+            return <span>Unable to load employees</span>
         } else if (!this.state.isLoaded) {
             return <span>Loading...</span>
         } else {
             return (
                 <Nav variant="pills" className="flex-column">
                     {
-                        this.state.employees.map((employee, i) =>
-                            <Nav.Item key={i}>
-                                <Nav.Link eventKey={i} className="employees-tab"
+                        this.state.employees.map(employee =>
+                            <Nav.Item key={employee.id}>
+                                <Nav.Link eventKey={employee.id} className="employees-tab"
+                                          active={this.state.selectedEmployee?.id === employee.id}
                                           onSelect={() => this.setState({selectedEmployee: employee})}>{employee.firstName} {employee.lastName}</Nav.Link>
                             </Nav.Item>
                         )
@@ -121,8 +131,9 @@ class Employees extends Component {
             return (
                 <Tab.Content>
                     {
-                        this.state.employees.map((employee, i) =>
-                            <Tab.Pane key={i} eventKey={i}>
+                        this.state.employees.map(employee =>
+                            <Tab.Pane key={employee.id} eventKey={employee.id}
+                                      active={this.state.selectedEmployee?.id === employee.id}>
                                 <span className="font-weight-bold" style={{fontSize: "150%"}}>Services:</span>
                                 {
                                     <ul>
@@ -160,12 +171,25 @@ class Employees extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(employee)
-        }).then(() => console.log("Employee added successfully"))
-            // TODO: Check response status here
-            .catch(error => console.log(error));
-        this.setState({showModalAdd: false});
-        // TODO: Use state instead of reloading the window
-        window.location.reload(false);
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to post");
+            }
+            return response;
+        })
+            .then(() => console.log("Employee added successfully"))
+            .then(() => this.fetchEmployees().then(employees => {
+                this.setState({
+                    showModalAdd: false,
+                    errorAdding: null,
+                    employees: employees,
+                    selectedEmployee: employees[employees.length - 1]
+                })
+            }, this.handleError()))
+            .catch(error => {
+                console.log("Error occurred: ", error);
+                this.setState({showModalAdd: false, errorAdding: error});
+            });
     };
 
     deleteEmployeeModal() {
@@ -183,37 +207,64 @@ class Employees extends Component {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    Are you sure you want to
-                    delete {this.state.selectedEmployee.firstName} {this.state.selectedEmployee.lastName}?
+                    {this.getDeleteModalBody()}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button className="employees-button-secondary shadow-none"
                             onClick={() => this.setState({showModalDelete: false})}>Cancel</Button>
-                    <Button className="employees-button-primary shadow-none"
+                    <Button className="employees-button-primary shadow-none" disabled={!this.state.selectedEmployee}
                             onClick={this.onDeleteClicked}>Delete</Button>
                 </Modal.Footer>
             </Modal>
         );
     }
 
+    getDeleteModalBody() {
+        if (this.state.selectedEmployee) {
+            return <>
+                Are you sure you want to
+                delete {this.state.selectedEmployee?.firstName} {this.state.selectedEmployee?.lastName}?
+            </>;
+        } else {
+            return <>
+                No employee selected.
+            </>;
+        }
+    }
+
     onDeleteClicked = () => {
-        const serviceProviderId = authService.token?.entityId;
-        authService.fetchAuthenticated(`${backendHost}/rest/deleteEmployee/${serviceProviderId}`, {
+        authService.fetchAuthenticated(`${backendHost}/rest/deleteEmployee/${this.state.selectedEmployee.id}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                firstName: this.state.selectedEmployee.firstName,
-                lastName: this.state.selectedEmployee.lastName
-            })
-        }).then(() => console.log(`Deleted employee [${this.state.selectedEmployee.firstName}] [${this.state.selectedEmployee.lastName}]`))
-            // TODO: Check response status here
-            .catch(error => console.log(error));
-        this.setState({showModalDelete: false});
-        // TODO: Use state instead of reloading the window
-        window.location.reload(false);
+            }
+        }).then(response => {
+            if (!response.ok) {
+                throw response
+            }
+            return response;
+        })
+            .then(() => console.log(`Deleted employee [${this.state.selectedEmployee.firstName}] [${this.state.selectedEmployee.lastName}]`))
+            .then(() => this.fetchEmployees().then(employees => {
+                this.setState({
+                    showModalDelete: false,
+                    errorDeleting: null,
+                    employees: employees,
+                    selectedEmployee: employees[employees.length - 1]
+                })
+            }, this.handleError()))
+            .catch(error => {
+                if (error.text) {
+                    error.text().then(error => {
+                        console.log("Error occurred: ", error);
+                        this.setState({showModalDelete: false, errorDeleting: error});
+                    });
+                } else {
+                    console.log("Error occurred: Failed to delete employee");
+                    this.setState({showModalDelete: false, errorDeleting: "Failed to delete employee"});
+                }
+            });
     };
 }
 

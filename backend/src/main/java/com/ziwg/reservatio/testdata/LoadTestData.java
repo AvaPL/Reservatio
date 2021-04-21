@@ -76,10 +76,8 @@ public class LoadTestData {
         Random random = new Random();
         for (int i = 1; i <= LoadTestData.numberOfCustomers; i++) {
             int randomPhoneNumber = 100000000 + random.nextInt(900000000);
-            val customer = new Customer("name" + i,
-                    "lastname" + i,
-                    "+48" + randomPhoneNumber,
-                    "customer" + i + "@gmail.com");
+            val customer = Customer.builder().firstName("name" + i).lastName("lastname" + i)
+                    .phoneNumber("+48" + randomPhoneNumber).email("customer" + i + "@gmail.com").build();
             customerRepository.save(customer);
             log.info("Loaded test customer '" + customer.getFirstName() + " " + customer.getLastName() + "'");
         }
@@ -87,10 +85,8 @@ public class LoadTestData {
 
     private void fillAddresses() {
         for (int i = 1; i <= LoadTestData.numberOfServiceProviders; i++) {
-            val address = new Address("street" + i,
-                    String.valueOf(i),
-                    "city" + i,
-                    "00-" + ThreadLocalRandom.current().nextInt(100, 999 + 1));
+            val address = Address.builder().street("street" + i).propertyNumber(String.valueOf(i)).city("city" + i)
+                    .postCode("00-" + ThreadLocalRandom.current().nextInt(100, 999 + 1)).build();
             addressRepository.save(address);
             log.info("Loaded test address '" + address.getStreet() + " " + address.getPropertyNumber() + ", " +
                     address.getPostCode() + " " + address.getCity() + "'");
@@ -104,10 +100,9 @@ public class LoadTestData {
             if (!addressIterator.hasNext())
                 addressIterator = addressRepository.findAll().iterator();
 
-            val serviceProvider = new ServiceProvider("serviceprovider" + i + "@gmail.com",
-                    "serviceprovider" + i,
-                    "+48" + String.format("%-" + 9 + "s", i).replace(" ", "0"),
-                    addressIterator.next());
+            val serviceProvider = ServiceProvider.builder().email("serviceprovider" + i + "@gmail.com")
+                    .name("serviceprovider" + i).phoneNumber("+48" + String.format("%-" + 9 + "s", i).replace(" ", "0"))
+                    .address(addressIterator.next()).build();
             val filename = serviceProvider.getName() + ".jpg";
             try (val imageStream = imageFromResources(filename)) {
                 minioUploader.upload(imageStream, filename, "image/jpeg");
@@ -127,11 +122,8 @@ public class LoadTestData {
         for (int i = 1; i <= LoadTestData.numberOfServices; i++) {
             if (!serviceProviderIterator.hasNext())
                 serviceProviderIterator = serviceProviderRepository.findAll().iterator();
-            val service = new Service("service" + i,
-                    (float) i,
-                    i * 10,
-                    "description" + i,
-                    serviceProviderIterator.next());
+            val service = Service.builder().name("service" + i).price((float) i).duration(i * 10)
+                    .description("description" + i).serviceProvider(serviceProviderIterator.next()).build();
             serviceRepository.save(service);
             log.info("Loaded test service '" + service.getName() + "'");
         }
@@ -142,9 +134,8 @@ public class LoadTestData {
         for (int i = 1; i <= LoadTestData.numberOfEmployees; i++) {
             if (!serviceProviderIterator.hasNext())
                 serviceProviderIterator = serviceProviderRepository.findAll().iterator();
-            val employee = new Employee("employee" + i,
-                    "lastname" + i,
-                    serviceProviderIterator.next());
+            val employee = Employee.builder().firstName("employee" + i).lastName("lastname" + i)
+                    .serviceProvider(serviceProviderIterator.next()).build();
             employeeRepository.save(employee);
             log.info("Loaded test employee '" + employee.getFirstName() + " " + employee.getLastName() + "'");
         }
@@ -161,13 +152,10 @@ public class LoadTestData {
                 serviceIterator = serviceRepository.findAll().iterator();
             if (!employeeIterator.hasNext())
                 employeeIterator = employeeRepository.findAll().iterator();
-            val reservation = new Reservation(LocalDateTime.now(),
-                    customerIterator.next(),
-                    serviceIterator.next(),
-                    employeeIterator.next());
+            val reservation = Reservation.builder().dateTime(LocalDateTime.now()).customer(customerIterator.next())
+                    .service(serviceIterator.next()).employee(employeeIterator.next()).build();
             reservationRepository.save(reservation);
-            log.info("Loaded test reservation 'ID " + reservation.getId() + " (" + reservation
-                    .getDateTime() + ")'");
+            log.info("Loaded test reservation 'ID " + reservation.getId() + " (" + reservation.getDateTime() + ")'");
         }
     }
 
@@ -177,7 +165,7 @@ public class LoadTestData {
             if (!reservationIterator.hasNext())
                 reservationIterator = reservationRepository.findAll().iterator();
             Reservation reservation = reservationIterator.next();
-            Review review = new Review(i, "review" + i, reservation);
+            Review review = Review.builder().grade(i).message("review" + i).reservation(reservation).build();
             reservation.setReview(review);
             reviewRepository.save(review);
             log.info("Loaded test review '" + review.getMessage() + "'");
@@ -197,6 +185,7 @@ public class LoadTestData {
                 log.info("Linked test employee '" + employee.getFirstName() + " " +
                         employee.getLastName() + "' with test service '" + service.getName() + "'");
             }
+            employeeRepository.save(employee);
         }
     }
 }
