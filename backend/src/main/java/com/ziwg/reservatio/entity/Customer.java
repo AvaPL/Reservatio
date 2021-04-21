@@ -19,13 +19,13 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
-    @Column(length = 20)
+    @Column(length = 50)
     private final String firstName;
     @NotNull
-    @Column(length = 20)
+    @Column(length = 50)
     private final String lastName;
     @NotNull
-    @Column(length = 12, unique = true)
+    @Column(length = 20, unique = true)
     private final String phoneNumber;
     @NotNull
     @Column(unique = true)

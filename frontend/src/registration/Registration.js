@@ -60,6 +60,7 @@ class Registration extends Component {
     };
 
     handleChange = event => {
+        this.handlePasswordsValidation(event);
         const form = this.state.form
         this.setState({
             form: {
@@ -69,13 +70,29 @@ class Registration extends Component {
         });
     };
 
+    handlePasswordsValidation(event) {
+        if (event.target.id === 'repeatPassword')
+            if (event.target.value === this.state.form?.password)
+                event.target.setCustomValidity('')
+            else
+                event.target.setCustomValidity('passwords_mismatch')
+    }
+
     handleKeyDown = event => {
         if (event.key === 'Enter') {
             this.handleSignUpClicked();
         }
     };
 
-    handleSignUpClicked = () => {
+    handleSignUpClicked(event) {
+        const form = event.currentTarget
+        event.preventDefault()
+        event.stopPropagation()
+        if (form.checkValidity())
+            this.registerUser();
+    };
+
+    registerUser() {
         const requestOptions = {
             method: 'POST',
             headers: {
@@ -94,7 +111,7 @@ class Registration extends Component {
                 console.log('error', error)
                 this.setState({showError: true})
             })
-    };
+    }
 
     render() {
         if (this.state.width > 900) {
@@ -142,21 +159,20 @@ class Registration extends Component {
                     </ButtonGroup>
                     {this.state.salonButtonClicked ?
                         <ServiceProviderRegistrationForm handleChange={this.handleChange}
-                                                         handleKeyDown={this.handleKeyDown}/> :
-                        <CustomerRegistrationForm handleChange={this.handleChange} handleKeyDown={this.handleKeyDown}/>
+                                                         handleKeyDown={this.handleKeyDown}
+                                                         onSubmit={event => this.handleSignUpClicked(event)}/> :
+                        <CustomerRegistrationForm handleChange={this.handleChange} handleKeyDown={this.handleKeyDown}
+                                                  onSubmit={event => this.handleSignUpClicked(event)}/>
                     }
                     {
                         this.state.showError &&
-                        <Alert variant="danger" onClose={() => this.setState({showError: false})} dismissible>
+                        <Alert className="mt-2" variant="danger" onClose={() => this.setState({showError: false})} dismissible>
                             <span>The registration could not be performed. For support contact us at </span>
                             <a href="mailto:support@reservatio.com">support@reservatio.com</a>
                             <span>.</span>
                         </Alert>
                     }
-                    <Button className={authStyles.button} type="submit"
-                            onClick={this.handleSignUpClicked}>
-                        Submit
-                    </Button>
+
                 </div>
                 <div className={authStyles.link}>Have an account? <a href={"/login"}>Sign in</a></div>
             </div>
