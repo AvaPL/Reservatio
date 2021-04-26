@@ -35,6 +35,8 @@ public class ReviewController {
         Optional<Reservation> reservation = reservationRepository.findById(reservationId);
         Review review = Review.builder().grade(reviewToAdd.getGrade()).message(reviewToAdd.getMessage()).reservation(reservation.get()).build();
         reviewRepository.save(review);
+        reservation.get().setReview(review);
+        reservationRepository.save(reservation.get());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
