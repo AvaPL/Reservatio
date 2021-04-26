@@ -87,6 +87,7 @@ keycloak:
         - patterns:
             - /rest/customer/* # TODO: Remove after creating first customer path
             - /rest/customerReservationViews/*
+            - /rest/addReview/*
     - auth-roles:
         - service_provider
       security-collections:

@@ -43,7 +43,7 @@ class Appointments extends Component {
                     data[i]=d
                     this.setState({data})
                     if(Date.now() < Date.parse(this.state.data[i].dateTime)){
-                        this.setState({dataU: [...this.state.data.splice(i,i)]})
+                        this.setState({dataU: [...this.state.data.splice(i,1)]})
                     }
                 }
             })
@@ -110,7 +110,7 @@ class Appointments extends Component {
     }
 
     hideReview(){
-        this.setState({open: false})
+        this.setState({open: false});
     }
 
     renderPast() {
@@ -178,7 +178,7 @@ class Appointments extends Component {
                     <Modal.Body>
                         <Form.Group controlId="exampleForm.ControlTextarea1">
                             <Form.Label>
-                                <ToggleButtonGroup className="mod" type="radio"  name="options" defaultValue={1}>
+                                <ToggleButtonGroup className="mod" type="radio"  name="options" defaultValue={1} onChange={(value) =>this.setState({reviewStar: value})}>
                                     <ToggleButton variant="danger" value={1}>1</ToggleButton>
                                     <ToggleButton variant="danger" value={2}>2</ToggleButton>
                                     <ToggleButton variant="danger" value={3}>3</ToggleButton>
@@ -186,14 +186,45 @@ class Appointments extends Component {
                                     <ToggleButton variant="danger" value={5}>5</ToggleButton>
                                 </ToggleButtonGroup>
                             </Form.Label>
-                            <Form.Control as="textarea" rows={10} />
+                            <Form.Control as="textarea"  rows={10}
+                            onChange={(event) =>this.setState({reviewMessage: event.target.value})}
+                            />
                         </Form.Group>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={()=>this.hideReview()}>
+                        <Button
+                            variant="secondary"
+                            onClick={()=>{
+                                this.hideReview();
+                                this.setState({reviewMessage: ""});
+                                this.setState({reviewStar: ""});
+                            }}
+                        >
                             Close
                         </Button>
-                        <Button variant="danger" onClick={()=>this.hideReview()}>
+                        <Button
+                            variant="danger"
+                            onClick={()=>{
+                                this.hideReview();
+                                console.log(this.state.reviewMessage);
+                                console.log(this.state.reviewStar);
+                                console.log(item._links.self.href.substr(-2))//id of reservation
+
+                                authService.fetchAuthenticated(`${backendHost}/rest/addReview/${item._links.self.href.substr(-2)}`,{
+                                    method: 'POST',
+                                    headers: {
+                                        'Accept': 'application/json',
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({grade: this.state.reviewStar, message: this.state.reviewMessage})
+                                }).then(response => {
+                                        if (!response.ok) {
+                                            throw new Error("Failed to post");
+                                        }
+                                        return response;
+                                    })
+                            }}
+                        >
                             Save Changes
                         </Button>
                     </Modal.Footer>
