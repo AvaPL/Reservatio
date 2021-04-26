@@ -34,7 +34,8 @@ class Appointments extends Component {
             .then(res => res._embedded.reservationViews)
             .then(reservations => {
                 this.setState({data:reservations});
-                for(var i=0;i<this.state.data.length;i++){
+                console.log(this.state.data)
+                for(let i=0;i<this.state.data.length;i++){
                     array = this.state.data[i].dateTime.substring(11,16).split(':')
                     seconds = (+array[0]) * 60 * 60 + (+array[1]) * 60  + this.state.data[i].duration * 60
                     let data = [...this.state.data]
@@ -43,9 +44,13 @@ class Appointments extends Component {
                     data[i]=d
                     this.setState({data})
                     if(Date.now() < Date.parse(this.state.data[i].dateTime)){
-                        this.setState({dataU: [...this.state.data.splice(i,1)]})
+                        console.log(this.state.data[i])
+                        let joined = this.state.dataU.concat(this.state.data.splice(i,1))
+                        this.setState({dataU: joined})
+                        i--
                     }
                 }
+                console.log(this.state.dataU)
             })
             .catch((error) => {
             console.error('Error:', error);
@@ -118,7 +123,7 @@ class Appointments extends Component {
             "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
         ];
 
-        let tmp = this.state.data.map((item, index) => (
+        let tmp = this.state.data.sort((a,b)=>Date.parse(b.dateTime)-Date.parse(a.dateTime)).map((item, index) => (
             <>
                 <div className="rcorners2 justify-content-center" key={index}>
                     <div className="container-fluid">
@@ -223,6 +228,7 @@ class Appointments extends Component {
                                         }
                                         return response;
                                     })
+                                window.location.reload(false);
                             }}
                         >
                             Save Changes
@@ -238,6 +244,7 @@ class Appointments extends Component {
         const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN",
             "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
         ];
+        console.log(this.state.dataU)
         return this.state.dataU.map((item, index) => (
             <>
                 <div className="rcorners2 justify-content-center" key={index}>
