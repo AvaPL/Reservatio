@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Button, Modal} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
+import styles from "./Services.module.scss";
 
 class AddServiceModal extends Component {
     constructor(props, context) {
@@ -23,36 +24,36 @@ class AddServiceModal extends Component {
                 centered
             >
                 <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter" className="employees-form-title">
+                    <Modal.Title id="contained-modal-title-vcenter" className={styles.formTitle}>
                         Add new service
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
                         <Form.Group controlId="name">
-                            <Form.Label className="employees-form-label">Name</Form.Label>
+                            <Form.Label className={styles.formLabel}>Name</Form.Label>
                             <Form.Control type="text" placeholder="Name"
                                           onChange={event => this.handleChange(event)}/>
                         </Form.Group>
                         <Form.Group controlId="description">
-                            <Form.Label className="employees-form-label">Description</Form.Label>
+                            <Form.Label className={styles.formLabel}>Description</Form.Label>
                             <Form.Control type="text" placeholder="Description"
                                           onChange={event => this.handleChange(event)}/>
                         </Form.Group>
                         {/*TODO: only accept number*/}
                         <Form.Group controlId="price">
-                            <Form.Label className="employees-form-label">Price</Form.Label>
+                            <Form.Label className={styles.formLabel}>Price</Form.Label>
                             <Form.Control type="number" placeholder="Price"
                                           onChange={event => this.handleChange(event)}/>
                         </Form.Group>
                         {/*TODO: only accept number*/}
                         <Form.Group controlId="duration">
-                            <Form.Label className="employees-form-label">Duration</Form.Label>
+                            <Form.Label className={styles.formLabel}>Duration</Form.Label>
                             <Form.Control type="number" placeholder="Duration"
                                           onChange={event => this.handleChange(event)}/>
                         </Form.Group>
                         <Form.Group controlId="employees">
-                            <Form.Label className="employees-form-label">Employees</Form.Label>
+                            <Form.Label className={styles.formLabel}>Employees</Form.Label>
                             {
                                 this.renderEmployees()
                             }
@@ -60,9 +61,9 @@ class AddServiceModal extends Component {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button className="employees-button-secondary shadow-none"
+                    <Button className={`${styles.buttonSecondary} shadow-none`}
                             onClick={this.props.onHide}>Cancel</Button>
-                    <Button className="employees-button-primary shadow-none"
+                    <Button className={`${styles.buttonPrimary} shadow-none`}
                             onClick={this.handleAddClicked}>Add</Button>
                 </Modal.Footer>
             </Modal>
@@ -88,7 +89,7 @@ class AddServiceModal extends Component {
             return <Form.Control plaintext readOnly defaultValue="Loading..."/>
         } else {
             return this.state.employees.map(service =>
-                <Form.Check id={service} key={service} className="employees-form-checkbox"
+                <Form.Check id={service} key={service} className={styles.formCheckbox}
                             type="checkbox" label={service}
                             onChange={event => this.handleServiceChange(event)}/>
             );

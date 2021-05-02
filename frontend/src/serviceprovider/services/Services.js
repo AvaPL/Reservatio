@@ -105,10 +105,6 @@ class Services extends Component {
                             <Nav.Item key={service.id}>
                                 <Nav.Link eventKey={service.id} className={styles.servicesTab}
                                           active={this.state.selectedService?.id === service.id}
-                                    // activeStyle={{backgroundColor: "#F85F6A"}}
-                                    //       activeStyle={styles.activeTab}
-                                    //       activeClassName={styles.servicesTab.active}
-                                    //       activeClassName="active"
                                           onSelect={() => this.setState({selectedService: service})}>{service.name}</Nav.Link>
                             </Nav.Item>
                         )
@@ -128,8 +124,8 @@ class Services extends Component {
                                       active={this.state.selectedService?.id === service.id}>
                                 <span className="font-weight-bold" style={{fontSize: "150%"}}>About:</span>
                                 <div>Description: {service.description}</div>
-                                <div>Price: {service.price}</div>
-                                <div>Duration: {service.duration}</div>
+                                <div>Price: {service.price}$</div>
+                                <div>Duration: {service.duration} minutes</div>
                                 <span className="font-weight-bold" style={{fontSize: "150%"}}>Employees:</span>
                                 {
                                     <ul>
