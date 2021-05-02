@@ -3,6 +3,7 @@ import {Button, Modal} from "react-bootstrap";
 import Form from "react-bootstrap/Form";
 import {authService} from "../../auth/AuthService";
 import {backendHost} from "../../Config";
+import styles from './Employees.module.scss';
 
 export class AddEmployeeModal extends Component {
 
@@ -61,24 +62,24 @@ export class AddEmployeeModal extends Component {
                 centered
             >
                 <Modal.Header closeButton>
-                    <Modal.Title id="contained-modal-title-vcenter" className="employees-form-title">
+                    <Modal.Title id="contained-modal-title-vcenter" className={styles.formTitle}>
                         Add new employee
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
                         <Form.Group controlId="firstName">
-                            <Form.Label className="employees-form-label">First name</Form.Label>
+                            <Form.Label className={styles.formLabel}>First name</Form.Label>
                             <Form.Control type="text" placeholder="First name"
                                           onChange={event => this.handleChange(event)}/>
                         </Form.Group>
                         <Form.Group controlId="lastName">
-                            <Form.Label className="employees-form-label">Last name</Form.Label>
+                            <Form.Label className={styles.formLabel}>Last name</Form.Label>
                             <Form.Control type="text" placeholder="Last name"
                                           onChange={event => this.handleChange(event)}/>
                         </Form.Group>
                         <Form.Group controlId="services">
-                            <Form.Label className="employees-form-label">Services</Form.Label>
+                            <Form.Label className={styles.formLabel}>Services</Form.Label>
                             {
                                 this.renderServices()
                             }
@@ -86,9 +87,9 @@ export class AddEmployeeModal extends Component {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button className="employees-button-secondary shadow-none"
+                    <Button className={`${styles.buttonSecondary} shadow-none`}
                             onClick={this.props.onHide}>Cancel</Button>
-                    <Button className="employees-button-primary shadow-none"
+                    <Button className={`${styles.buttonPrimary} shadow-none`}
                             onClick={this.handleAddClicked}>Add</Button>
                 </Modal.Footer>
             </Modal>
@@ -112,7 +113,7 @@ export class AddEmployeeModal extends Component {
             return <Form.Control plaintext readOnly defaultValue="Loading..."/>
         } else {
             return this.state.services.map(service =>
-                <Form.Check id={service.name} key={service.name} className="employees-form-checkbox"
+                <Form.Check id={service.name} key={service.name} className={styles.formCheckbox}
                             type="checkbox" label={service.name}
                             onChange={event => this.handleServiceChange(event)}/>
             );

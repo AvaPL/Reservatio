@@ -3,16 +3,16 @@ $button-primary: #F85F6A;
 $label: #F85F6A;
 $button-hover: #D9535D;
 
-.employees-text {
+.text {
   font-family: 'Asap', sans-serif;
 }
 
-.employees-border {
+.border {
   border: 2px solid $border;
   border-radius: 10px;
 }
 
-.employees-button-primary {
+.buttonPrimary {
   background-color: $button-primary !important;
   border: none !important;
 
@@ -25,38 +25,42 @@ $button-hover: #D9535D;
   }
 }
 
-.employees-button-secondary {
+.buttonSecondary {
   background-color: transparent !important;
   border: none !important;
   color: black !important;
 }
 
-a.employees-tab {
+:local(.employeesTab) {
   color: black;
 
-  &:not(.active):hover {
+  &:hover {
     color: $button-hover;
   }
 
-  &.active {
+  :global &.active {
     background-color: $button-primary !important;
+
+    &:hover {
+      color: white;
+    }
   }
 }
 
-.employees-form-title {
+.formTitle {
   font-family: 'Asap', sans-serif;
   font-weight: bold;
   font-size: 30px;
 }
 
-.employees-form-label {
+.formLabel {
   font-family: 'Asap', sans-serif;
   font-weight: bold;
   font-size: 14px;
   color: $label;
 }
 
-.employees-form-checkbox {
+.formCheckbox {
   font-family: 'Asap', sans-serif;
   font-size: 15px;
 }

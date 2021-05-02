@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Alert, Button, Col, Modal, Nav, Row, Tab} from "react-bootstrap";
-import './Employees.scss'
+import styles from './Employees.module.scss';
 import {AddEmployeeModal} from "./AddEmployeeModal";
 import {authService} from "../../auth/AuthService";
 import {backendHost} from "../../Config";
@@ -60,23 +60,23 @@ class Employees extends Component {
     render() {
         return (
             <div>
-                <div className="employees-text m-4 m-lg-5">
+                <div className={`m-4 m-lg-5 ${styles.text}`}>
                     <Tab.Container defaultActiveKey={0}>
                         <Row>
                             <Col className="align-self-center">
-                                <h1 className="float-left employees-text font-weight-bold">Employee</h1>
+                                <h1 className={`float-left font-weight-bold ${styles.text}`}>Employee</h1>
                             </Col>
                             <Col className="align-self-center">
                                 <div className="float-right">
-                                    <Button className="employees-button-secondary shadow-none"
+                                    <Button className={`${styles.buttonSecondary} shadow-none`}
                                             onClick={() => this.setState({showModalDelete: true})}>Delete</Button>
-                                    <Button className="employees-button-primary shadow-none"
+                                    <Button className={`${styles.buttonPrimary} shadow-none`}
                                             onClick={() => this.setState({showModalAdd: true})}>Add new</Button>
                                 </div>
                             </Col>
                         </Row>
                         {this.alerts()}
-                        <Row className="employees-border py-3">
+                        <Row className={`${styles.border} py-3`}>
                             <Col className="font-weight-bold" sm={3}>
                                 {this.employeesNamesPanel()}
                             </Col>
@@ -115,7 +115,7 @@ class Employees extends Component {
                     {
                         this.state.employees.map(employee =>
                             <Nav.Item key={employee.id}>
-                                <Nav.Link eventKey={employee.id} className="employees-tab"
+                                <Nav.Link eventKey={employee.id} className={styles.employeesTab}
                                           active={this.state.selectedEmployee?.id === employee.id}
                                           onSelect={() => this.setState({selectedEmployee: employee})}>{employee.firstName} {employee.lastName}</Nav.Link>
                             </Nav.Item>
@@ -210,9 +210,9 @@ class Employees extends Component {
                     {this.getDeleteModalBody()}
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button className="employees-button-secondary shadow-none"
+                    <Button className={`${styles.buttonSecondary} shadow-none`}
                             onClick={() => this.setState({showModalDelete: false})}>Cancel</Button>
-                    <Button className="employees-button-primary shadow-none" disabled={!this.state.selectedEmployee}
+                    <Button className={`${styles.buttonPrimary} shadow-none`} disabled={!this.state.selectedEmployee}
                             onClick={this.onDeleteClicked}>Delete</Button>
                 </Modal.Footer>
             </Modal>
