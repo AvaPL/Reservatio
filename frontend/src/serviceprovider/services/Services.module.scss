@@ -1,0 +1,78 @@
+$border: #FDC2C6;
+$button-primary: #F85F6A;
+$label: #F85F6A;
+$button-hover: #D9535D;
+
+.text {
+  font-family: 'Asap', sans-serif;
+}
+
+.border {
+  border: 2px solid $border;
+  border-radius: 10px;
+}
+
+.buttonPrimary {
+  background-color: $button-primary !important;
+  border: none !important;
+
+  &:hover {
+    background-color: $button-hover !important;
+  }
+
+  &:active {
+    background-color: $button-hover !important;
+  }
+}
+
+.buttonSecondary {
+  background-color: transparent !important;
+  border: none !important;
+  color: black !important;
+}
+
+a.servicesTab {
+  color: black;
+  // TODO: active not working
+
+  &:not(.active):hover {
+    color: $button-hover !important;
+  }
+
+  &.active {
+    background-color: $button-primary !important;
+  }
+
+  //&.active.focus,
+  //&.active:focus,
+  //&.focus,
+  //&.focus:active,
+  //&:active:focus,
+  &:focus,
+  //&.visited,
+     {
+    background-color: $button-primary !important;
+  }
+}
+
+.activeTab {
+  background-color: $button-primary !important;
+}
+
+.formTitle {
+  font-family: 'Asap', sans-serif;
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.formLabel {
+  font-family: 'Asap', sans-serif;
+  font-weight: bold;
+  font-size: 14px;
+  color: $label;
+}
+
+.formCheckbox {
+  font-family: 'Asap', sans-serif;
+  font-size: 15px;
+}
