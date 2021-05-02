@@ -1,6 +1,7 @@
 package com.ziwg.reservatio.configuration;
 
 import com.ziwg.reservatio.views.employees.EmployeeView;
+import com.ziwg.reservatio.views.services.ServiceView;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,6 @@ public class RepositoryConfig implements RepositoryRestConfigurer {
 
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
-        config.exposeIdsFor(EmployeeView.class);
+        config.exposeIdsFor(EmployeeView.class, ServiceView.class);
     }
 }

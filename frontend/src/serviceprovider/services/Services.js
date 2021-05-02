@@ -2,48 +2,60 @@ import React, {Component} from 'react';
 import {Alert, Button, Col, Modal, Nav, Row, Tab} from "react-bootstrap";
 import AddServiceModal from "./AddServiceModal";
 import styles from "./Services.module.scss";
+import {authService} from "../../auth/AuthService";
+import {backendHost} from "../../Config";
 
 class Services extends Component {
 
     constructor(props, context) {
         super(props, context);
         this.state = {
-            services: [
-                {
-                    id: 1,
-                    name: "Haircut",
-                    description: "Your hair will look divine.",
-                    price: 100,
-                    duration: 60,
-                    employees: ["Employee A"]
-                },
-                {
-                    id: 2,
-                    name: "Manicure",
-                    description: "Your nails will look divine.",
-                    price: 50,
-                    duration: 90,
-                    employees: ["Employee A", "Employee B"]
-                },
-                {
-                    id: 3,
-                    name: "Something",
-                    description: "Your something will look divine.",
-                    price: 200,
-                    duration: 120,
-                    employees: ["Employee A", "Employee B", "Employee C"]
-                }
-            ],
-            isLoaded: true, // TODO: should be false at first
+            services: [],
+            isLoaded: false,
             error: null,
             errorAdding: null,
             errorDeleting: null,
             showModalAdd: false,
             showModalDelete: false,
         };
-        this.state.selectedService = this.state.services[0]
     }
 
+    componentDidMount() {
+        this.fetchServices().then(this.processServices(), this.handleError());
+    }
+
+    fetchServices() {
+        const serviceProviderId = authService.token?.entityId;
+        return authService.fetchAuthenticated(`${backendHost}/rest/serviceProviderServicesViews/${serviceProviderId}/services`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch");
+                }
+                return response.json();
+            })
+            .then(response => response._embedded.serviceViews);
+    }
+
+    processServices() {
+        return services => {
+            this.setState({
+                isLoaded: true,
+                services: services,
+                selectedService: services[0]
+            });
+            console.log(services)
+        };
+    }
+
+    handleError() {
+        return error => {
+            this.setState({
+                isLoaded: true,
+                error: error
+            })
+            console.log("Error occurred: ", error);
+        }
+    }
 
     render() {
         return (
@@ -131,7 +143,7 @@ class Services extends Component {
                                     <ul>
                                         {
                                             service.employees.map(employee =>
-                                                <li key={employee}>{employee}</li>
+                                                <li key={employee.id}>{employee.name}</li>
                                             )
                                         }
                                     </ul>

@@ -88,9 +88,9 @@ class AddServiceModal extends Component {
         } else if (!this.state.isLoaded) {
             return <Form.Control plaintext readOnly defaultValue="Loading..."/>
         } else {
-            return this.state.employees.map(service =>
-                <Form.Check id={service} key={service} className={styles.formCheckbox}
-                            type="checkbox" label={service}
+            return this.state.employees.map(employee =>
+                <Form.Check id={employee} key={employee} className={styles.formCheckbox}
+                            type="checkbox" label={employee}
                             onChange={event => this.handleServiceChange(event)}/>
             );
         }
