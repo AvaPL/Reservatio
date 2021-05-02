@@ -31,27 +31,19 @@ $button-hover: #D9535D;
   color: black !important;
 }
 
-a.servicesTab {
+:local(.servicesTab) {
   color: black;
-  // TODO: active not working
 
-  &:not(.active):hover {
-    color: $button-hover !important;
+  &:hover {
+    color: $button-hover;
   }
 
-  &.active {
+  :global &.active {
     background-color: $button-primary !important;
-  }
 
-  //&.active.focus,
-  //&.active:focus,
-  //&.focus,
-  //&.focus:active,
-  //&:active:focus,
-  &:focus,
-  //&.visited,
-     {
-    background-color: $button-primary !important;
+    &:hover {
+      color: white;
+    }
   }
 }
 
