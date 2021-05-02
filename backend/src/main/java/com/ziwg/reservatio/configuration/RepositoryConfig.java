@@ -1,6 +1,6 @@
 package com.ziwg.reservatio.configuration;
 
-import com.ziwg.reservatio.views.employeesviews.EmployeeView;
+import com.ziwg.reservatio.views.employees.EmployeeView;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
 import org.springframework.stereotype.Component;
