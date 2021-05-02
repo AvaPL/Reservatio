@@ -43,7 +43,6 @@ class Services extends Component {
                 services: services,
                 selectedService: services[0]
             });
-            console.log(services)
         };
     }
 
@@ -159,15 +158,41 @@ class Services extends Component {
     addServiceModal() {
         return (
             <AddServiceModal show={this.state.showModalAdd}
-                              onHide={() => this.setState({showModalAdd: false})}
-                              onClick={this.onAddClick}/>
+                             onHide={() => this.setState({showModalAdd: false})}
+                             onClick={this.onAddClick}/>
         );
     }
 
     onAddClick = service => {
         console.log("Service to add: ");
         console.log(service);
-        this.setState({showModalAdd: false});
+        const serviceProviderId = authService.token?.entityId;
+        authService.fetchAuthenticated(`${backendHost}/rest/addService/${serviceProviderId}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(service)
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to post");
+            }
+            return response;
+        })
+            .then(() => console.log("Service added successfully"))
+            .then(() => this.fetchServices().then(services => {
+                this.setState({
+                    showModalAdd: false,
+                    errorAdding: null,
+                    services: services,
+                    selectedService: services[services.length - 1]
+                })
+            }, this.handleError()))
+            .catch(error => {
+                console.log("Error occurred: ", error);
+                this.setState({showModalAdd: false, errorAdding: error});
+            });
     };
 
     deleteServiceModal() {

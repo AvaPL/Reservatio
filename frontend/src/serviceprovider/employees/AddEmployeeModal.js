@@ -18,7 +18,7 @@ export class AddEmployeeModal extends Component {
     }
 
     componentDidMount() {
-        this.fetchServices().then(this.processEmployees(), this.handleError());
+        this.fetchServices().then(this.processServices(), this.handleError());
     }
 
     fetchServices() {
@@ -33,7 +33,7 @@ export class AddEmployeeModal extends Component {
             .then(response => response.services);
     }
 
-    processEmployees() {
+    processServices() {
         return services => {
             this.setState({
                 isLoaded: true,
