@@ -14,6 +14,16 @@
   transform: translate(-50%, -50%);
 }
 
+.dropdownContainer {
+  color: white;
+}
+
+.dropdownButton {
+  position: absolute;
+  transform: translate(25%);
+  color: #F85F6A;
+}
+
 .rectangle {
   position: relative;
   alignment: center;
@@ -27,11 +37,12 @@
 .row {
   position: absolute;
   contain: size;
-  top: 66%;
+  top: 69%;
   left:0;
   right:0;
   margin:0 auto;
   text-align: center;
+  z-index: -1;
 }
 
 .timeTable {

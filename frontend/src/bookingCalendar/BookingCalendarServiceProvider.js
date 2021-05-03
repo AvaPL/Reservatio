@@ -18,67 +18,89 @@ export default function BookingCalendarConsumer() {
         score: 0,
         calendarHeader: "Zestawienie rezerwacji",
         address: "ul. Owaka 4, Wrocław",
-        terms: [
+        reservations: [
             {
                 id: 1,
                 time: "8:00",
                 date: new Date(2021, 3, 10),
                 available: "Wolne",
+                employeeId: 1,
             },
             {
                 id: 2,
                 time: "8:45",
                 date: new Date(2021, 3, 10),
                 available: "Strzyżenie męskie",
+                employeeId: 1,
             },
             {
                 id: 3,
                 time: "9:30",
                 date: new Date(2021, 3, 10),
                 available: "Wolne",
+                employeeId: 1,
             },
             {
                 id: 4,
                 time: "10:15",
                 date: new Date(2021, 3, 11),
                 available: "Wolne",
+                employeeId: 1,
             },
             {
                 id: 5,
                 time: "11:00",
                 date: new Date(2021, 3, 11),
                 available: "Włosy klasycznie + broda",
+                employeeId: 2,
             },
             {
                 id: 6,
                 time: "11:45",
                 date: new Date(2021, 3, 11),
                 available: "Strzyżenie damskie",
+                employeeId: 2,
             },
             {
                 id: 7,
                 time: "12:30",
                 date: new Date(2021, 3, 11),
                 available: "Wolne",
+                employeeId: 2,
             },
             {
                 id: 8,
                 time: "14:45",
                 date: new Date(2021, 3, 11),
                 available: "Wolne",
+                employeeId: 2,
             },
             {
                 id: 9,
                 time: "15:30",
                 date: new Date(2021, 3, 11),
                 available: "Wolne",
+                employeeId: 1,
             },
             {
                 id: 10,
                 time: "16:15",
                 date: new Date(2021, 3, 11),
                 available: "Wolne",
+                employeeId: 2,
             },
+        ],
+        employees: [
+            {
+                id: 1,
+                firstName: "Mario",
+                lastName: "Luigi",
+            },
+            {
+                id: 1,
+                firstName: "Ash",
+                lastName: "Ketchum",
+            }
         ],
     });
 
@@ -120,13 +142,13 @@ export default function BookingCalendarConsumer() {
                     </tr>
                     </thead>
                     <tbody>
-                        {state.terms.filter(term => term.date.getTime() === selectedDate.getTime()).map((term) => (
-                            <tr key={term.id}>
+                        {state.reservations.filter(reservation => reservation.date.getTime() === selectedDate.getTime()).map(reservation => (
+                            <tr key={reservation.id}>
                                 <td className={styles.timeTableRow}>
-                                    {term.time}
+                                    {reservation.time}
                                 </td>
                                 <td className={styles.timeTableRow}>
-                                    {term.available}
+                                    {reservation.available}
                                 </td>
                             </tr>
                         ))}
