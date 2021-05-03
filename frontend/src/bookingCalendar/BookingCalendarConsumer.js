@@ -8,6 +8,8 @@ import Calendar from 'react-calendar'
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import 'react-calendar/dist/Calendar.css';
 import cn from "classnames";
+import {authService} from "../../auth/AuthService";
+import {backendHost} from "../../Config";
 
 export default function BookingCalendarConsumer() {
     const { serviceproviderid, serviceid } = useParams();
@@ -26,61 +28,61 @@ export default function BookingCalendarConsumer() {
                 id: 1,
                 time: "8:00",
                 date: new Date(2021, 3, 10),
-                available: 1,
+                consumerId: 1,
             },
             {
                 id: 2,
                 time: "8:45",
                 date: new Date(2021, 3, 10),
-                available: 0,
+                consumerId: null,
             },
             {
                 id: 3,
                 time: "9:30",
                 date: new Date(2021, 3, 10),
-                available: 1,
+                consumerId: null,
             },
             {
                 id: 4,
                 time: "10:15",
                 date: new Date(2021, 3, 11),
-                available: 1,
+                consumerId: null,
             },
             {
                 id: 5,
                 time: "11:00",
                 date: new Date(2021, 3, 11),
-                available: 1,
+                consumerId: null,
             },
             {
                 id: 6,
                 time: "11:45",
                 date: new Date(2021, 3, 11),
-                available: 1,
+                consumerId: null,
             },
             {
                 id: 7,
                 time: "12:30",
                 date: new Date(2021, 3, 11),
-                available: 1,
+                consumerId: null,
             },
             {
                 id: 8,
                 time: "14:45",
                 date: new Date(2021, 3, 11),
-                available: 1,
+                consumerId: null,
             },
             {
                 id: 9,
                 time: "15:30",
                 date: new Date(2021, 3, 11),
-                available: 1,
+                consumerId: null,
             },
             {
                 id: 10,
                 time: "16:15",
                 date: new Date(2021, 3, 11),
-                available: 1,
+                consumerId: null,
             },
         ],
     });
@@ -117,7 +119,7 @@ export default function BookingCalendarConsumer() {
                     </div>
                 </div>
                 <Row className={styles.row}>
-                    {state.terms.filter(term => term.date.getTime() === selectedDate.getTime() && term.available === 1).map((term) => (
+                    {state.terms.filter(term => term.date.getTime() === selectedDate.getTime() && term.consumerId === null).map((term) => (
                         <Col sm={12} md={6} lg={4} className={cn(styles.marginBottom, styles.paddingTop)} key={term.id}>
                             <AvailableService
                                 {...term}
@@ -137,9 +139,12 @@ function AvailableService({ time, serviceid, serviceproviderid }) {
                 <Button
                     className={cn(styles.button, styles.serviceCardPriceInfoCol)}
                     variant="primary"
+                    onClick="handleClick()"
                     // strzał do API (rezerwacja)
                 >
                     {time}
                 </Button>
     );
 }
+
+
