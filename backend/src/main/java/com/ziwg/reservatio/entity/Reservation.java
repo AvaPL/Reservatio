@@ -18,6 +18,7 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @NotNull
     private final LocalDateTime dateTime;
 
@@ -32,5 +33,4 @@ public class Reservation {
 
     @ManyToOne
     private final Employee employee;
-
 }
