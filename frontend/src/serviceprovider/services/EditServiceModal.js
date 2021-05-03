@@ -1,11 +1,12 @@
 import React, {Component} from 'react';
-import {Alert, Button, Modal} from "react-bootstrap";
-import Form from "react-bootstrap/Form";
-import styles from "./Services.module.scss";
 import {authService} from "../../auth/AuthService";
 import {backendHost} from "../../Config";
+import {Alert, Button, Modal} from "react-bootstrap";
+import styles from "./Services.module.scss";
+import Form from "react-bootstrap/Form";
 
-class AddServiceModal extends Component {
+class EditServiceModal extends Component {
+
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -13,8 +14,10 @@ class AddServiceModal extends Component {
             checkedEmployees: new Set(),
             error: null,
             isLoaded: false,
-            formErrors: new Set()
+            formErrors: new Set(),
+            name: null
         }
+        this.props.serviceToEdit?.employees.forEach(employee => this.state.checkedEmployees.add(employee.name))
     }
 
     componentDidMount() {
@@ -56,14 +59,14 @@ class AddServiceModal extends Component {
         return (
             <Modal
                 show={this.props.show}
-                onHide={this.props.onHide}
+                onHide={this.handleHide}
                 size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
             >
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter" className={styles.formTitle}>
-                        Add new service
+                        Edit service
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -71,22 +74,22 @@ class AddServiceModal extends Component {
                         {this.alerts()}
                         <Form.Group controlId="name">
                             <Form.Label className={styles.formLabel}>Name</Form.Label>
-                            <Form.Control type="text" placeholder="Name"
+                            <Form.Control type="text" defaultValue={this.props.serviceToEdit?.name}
                                           onChange={event => this.handleChange(event)}/>
                         </Form.Group>
                         <Form.Group controlId="description">
                             <Form.Label className={styles.formLabel}>Description</Form.Label>
-                            <Form.Control type="text" placeholder="Description"
+                            <Form.Control type="text" defaultValue={this.props.serviceToEdit?.description}
                                           onChange={event => this.handleChange(event)}/>
                         </Form.Group>
                         <Form.Group controlId="price">
                             <Form.Label className={styles.formLabel}>Price</Form.Label>
-                            <Form.Control type="number" placeholder="Price"
+                            <Form.Control type="number" defaultValue={this.props.serviceToEdit?.price}
                                           onChange={event => this.handleChange(event)}/>
                         </Form.Group>
                         <Form.Group controlId="duration">
                             <Form.Label className={styles.formLabel}>Duration</Form.Label>
-                            <Form.Control type="number" placeholder="Duration"
+                            <Form.Control type="number" defaultValue={this.props.serviceToEdit?.duration}
                                           onChange={event => this.handleChange(event)}/>
                         </Form.Group>
                         <Form.Group controlId="employees">
@@ -99,9 +102,9 @@ class AddServiceModal extends Component {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button className={`${styles.buttonSecondary} shadow-none`}
-                            onClick={this.props.onHide}>Cancel</Button>
+                            onClick={this.handleHide}>Cancel</Button>
                     <Button className={`${styles.buttonPrimary} shadow-none`} disabled={this.state.formErrors.size > 0}
-                            onClick={this.handleAddClicked}>Add</Button>
+                            onClick={this.handleEditClicked}>Edit</Button>
                 </Modal.Footer>
             </Modal>
         );
@@ -137,6 +140,7 @@ class AddServiceModal extends Component {
     }
 
     renderEmployees() {
+        console.log(this.state.checkedEmployees)
         if (this.state.error) {
             return <Form.Control plaintext readOnly defaultValue="Error"/>
         } else if (!this.state.isLoaded) {
@@ -145,6 +149,7 @@ class AddServiceModal extends Component {
             return this.state.employees.map(employee =>
                 <Form.Check id={employee.name} key={employee.name} className={styles.formCheckbox}
                             type="checkbox" label={employee.name}
+                            checked={this.state.checkedEmployees.has(employee.name)}
                             onChange={event => this.handleEmployeeChange(event)}/>
             );
         }
@@ -158,19 +163,26 @@ class AddServiceModal extends Component {
         this.setState({checkedEmployees: checkedEmployees});
     };
 
-    handleAddClicked = () => {
+    handleHide = () => {
+        let checkedEmployees = new Set();
+        this.props.serviceToEdit.employees.forEach(employee => checkedEmployees.add(employee.name))
+        this.setState({checkedEmployees: checkedEmployees})
+        this.props.onHide();
+    };
+
+    handleEditClicked = () => {
         if (!this.state.formErrors.size > 0) {
-            let serviceToAdd = {
-                name: this.state.name,
-                description: this.state.description,
-                price: this.state.price,
-                duration: this.state.duration,
+            let serviceToEdit = {
+                name: this.state.name ? this.state.name : this.props.serviceToEdit.name,
+                description: this.state.description ? this.state.description : this.props.serviceToEdit.description,
+                price: this.state.price ? this.state.price : this.props.serviceToEdit.price,
+                duration: this.state.duration ? this.state.duration : this.props.serviceToEdit.duration,
                 employees: Array.from(this.state.checkedEmployees)
             }
-            this.props.onClick(serviceToAdd);
+            this.props.onClick(serviceToEdit);
             this.setState({checkedEmployees: new Set()})
         }
     };
 }
 
-export default AddServiceModal;
+export default EditServiceModal;

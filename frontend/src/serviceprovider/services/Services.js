@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Alert, Button, Col, Modal, Nav, Row, Tab} from "react-bootstrap";
 import AddServiceModal from "./AddServiceModal";
+import EditServiceModal from "./EditServiceModal";
 import styles from "./Services.module.scss";
 import {authService} from "../../auth/AuthService";
 import {backendHost} from "../../Config";
@@ -16,6 +17,7 @@ class Services extends Component {
             errorAdding: null,
             errorDeleting: null,
             showModalAdd: false,
+            showModalEdit: false,
             showModalDelete: false,
         };
     }
@@ -69,6 +71,8 @@ class Services extends Component {
                                 <div className="float-right">
                                     <Button className={`${styles.buttonSecondary} shadow-none`}
                                             onClick={() => this.setState({showModalDelete: true})}>Delete</Button>
+                                    <Button className={`${styles.buttonSecondary} shadow-none`}
+                                            onClick={() => this.setState({showModalEdit: true})}>Edit</Button>
                                     <Button className={`${styles.buttonPrimary} shadow-none`}
                                             onClick={() => this.setState({showModalAdd: true})}>Add new</Button>
                                 </div>
@@ -86,6 +90,7 @@ class Services extends Component {
                     </Tab.Container>
                 </div>
                 {this.addServiceModal()}
+                {this.editServiceModal()}
                 {this.deleteServiceModal()}
             </div>
         );
@@ -193,6 +198,21 @@ class Services extends Component {
                 console.log("Error occurred: ", error);
                 this.setState({showModalAdd: false, errorAdding: error});
             });
+    };
+
+    editServiceModal() {
+        console.log(this.state.selectedService)
+        return (
+            <EditServiceModal show={this.state.showModalEdit}
+                              serviceToEdit={this.state.selectedService}
+                              onHide={() => this.setState({showModalEdit: false})}
+                              onClick={this.onEditClick}/>
+        );
+    }
+
+    onEditClick = service => {
+        console.log("Service to edit: ");
+        console.log(service);
     };
 
     deleteServiceModal() {
