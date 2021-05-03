@@ -3,7 +3,7 @@ package com.ziwg.reservatio.controllers;
 import com.ziwg.reservatio.entity.Employee;
 import com.ziwg.reservatio.entity.Service;
 import com.ziwg.reservatio.entity.ServiceProvider;
-import com.ziwg.reservatio.pojos.ServiceToAdd;
+import com.ziwg.reservatio.pojos.ServicePojo;
 import com.ziwg.reservatio.repository.EmployeeRepository;
 import com.ziwg.reservatio.repository.ServiceProviderRepository;
 import com.ziwg.reservatio.repository.ServiceRepository;
@@ -33,15 +33,15 @@ public class ServiceController {
     }
 
     @PostMapping("addService/{serviceProviderId}")
-    public ResponseEntity<HttpStatus> addService(@PathVariable Long serviceProviderId, @RequestBody ServiceToAdd serviceToAdd) {
+    public ResponseEntity<HttpStatus> addService(@PathVariable Long serviceProviderId, @RequestBody ServicePojo servicePojo) {
         Optional<ServiceProvider> serviceProvider = serviceProviderRepository.findById(serviceProviderId);
         if (serviceProvider.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        Service service = Service.builder().name(serviceToAdd.getName()).description(serviceToAdd.getDescription()).price(serviceToAdd.getPrice()).duration(serviceToAdd.getDuration()).serviceProvider(serviceProvider.get()).build();
+        Service service = Service.builder().name(servicePojo.getName()).description(servicePojo.getDescription()).price(servicePojo.getPrice()).duration(servicePojo.getDuration()).serviceProvider(serviceProvider.get()).build();
         List<String> serviceProviderEmployees = serviceProvider.get().getEmployees().stream().map(employee -> employee.getFirstName() + " " + employee.getLastName()).collect(Collectors.toList());
-        if (!serviceProviderEmployees.containsAll(serviceToAdd.getEmployees()))
+        if (!serviceProviderEmployees.containsAll(servicePojo.getEmployees()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        List<Employee> employeesToAdd = serviceProvider.get().getEmployees().stream().filter(employee -> serviceToAdd.getEmployees().contains(employee.getFirstName() + " " + employee.getLastName())).collect(Collectors.toList());
+        List<Employee> employeesToAdd = serviceProvider.get().getEmployees().stream().filter(employee -> servicePojo.getEmployees().contains(employee.getFirstName() + " " + employee.getLastName())).collect(Collectors.toList());
         service.setEmployees(employeesToAdd);
         serviceRepository.save(service);
         addServiceToEmployees(service, employeesToAdd);
@@ -75,5 +75,26 @@ public class ServiceController {
             employee.setServices(employee.getServices().stream().filter(service -> !service.getId().equals(serviceToDelete.getId())).collect(Collectors.toList()));
             employeeRepository.save(employee);
         }
+    }
+
+    @PutMapping("editService/{serviceId}")
+    public ResponseEntity<HttpStatus> editService(@PathVariable Long serviceId, @RequestBody ServicePojo servicePojo) {
+        Optional<Service> serviceToEdit = serviceRepository.findById(serviceId);
+        if (serviceToEdit.isEmpty())
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        updateService(serviceToEdit.get(), servicePojo);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    private void updateService(Service serviceToEdit, ServicePojo servicePojo) {
+        serviceToEdit.setName(servicePojo.getName());
+        serviceToEdit.setDescription(servicePojo.getDescription());
+        serviceToEdit.setPrice(servicePojo.getPrice());
+        serviceToEdit.setDuration(servicePojo.getDuration());
+        serviceRepository.save(serviceToEdit);
+        deleteServiceFromEmployees(serviceToEdit);
+        List<Employee> employees = serviceToEdit.getServiceProvider().getEmployees();
+        List<Employee> newEmployees = employees.stream().filter(employee -> servicePojo.getEmployees().contains(employee.getFirstName() + " " + employee.getLastName())).collect(Collectors.toList());
+        addServiceToEmployees(serviceToEdit, newEmployees);
     }
 }

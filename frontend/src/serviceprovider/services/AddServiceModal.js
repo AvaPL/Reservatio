@@ -72,22 +72,22 @@ class AddServiceModal extends Component {
                         <Form.Group controlId="name">
                             <Form.Label className={styles.formLabel}>Name</Form.Label>
                             <Form.Control type="text" placeholder="Name"
-                                          onChange={event => this.handleChange(event)}/>
+                                          onChange={event => this.props.handleChange(event, this)}/>
                         </Form.Group>
                         <Form.Group controlId="description">
                             <Form.Label className={styles.formLabel}>Description</Form.Label>
                             <Form.Control type="text" placeholder="Description"
-                                          onChange={event => this.handleChange(event)}/>
+                                          onChange={event => this.props.handleChange(event, this)}/>
                         </Form.Group>
                         <Form.Group controlId="price">
                             <Form.Label className={styles.formLabel}>Price</Form.Label>
                             <Form.Control type="number" placeholder="Price"
-                                          onChange={event => this.handleChange(event)}/>
+                                          onChange={event => this.props.handleChange(event, this)}/>
                         </Form.Group>
                         <Form.Group controlId="duration">
                             <Form.Label className={styles.formLabel}>Duration</Form.Label>
                             <Form.Control type="number" placeholder="Duration"
-                                          onChange={event => this.handleChange(event)}/>
+                                          onChange={event => this.props.handleChange(event, this)}/>
                         </Form.Group>
                         <Form.Group controlId="employees">
                             <Form.Label className={styles.formLabel}>Employees</Form.Label>
@@ -113,27 +113,6 @@ class AddServiceModal extends Component {
                 {Array.from(this.state.formErrors).join(", ")}
             </Alert>
         }
-    }
-
-    handleChange(event) {
-        let formErrors = this.state.formErrors
-        if (event.target.id === "price") {
-            if (event.target.value < 0)
-                formErrors.add("Price cannot be lower than 0")
-            else
-                formErrors.delete("Price cannot be lower than 0")
-        }
-        if (event.target.id === "duration") {
-            if (event.target.value < 0)
-                formErrors.add("Duration cannot be lower than 0")
-            else
-                formErrors.delete("Duration cannot be lower than 0")
-            if (Number(event.target.value) % 1 !== 0)
-                formErrors.add("Duration must be an integer")
-            else
-                formErrors.delete("Duration must be an integer")
-        }
-        this.setState({formErrors: formErrors, [event.target.id]: event.target.value});
     }
 
     renderEmployees() {

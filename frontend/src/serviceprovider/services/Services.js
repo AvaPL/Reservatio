@@ -164,7 +164,8 @@ class Services extends Component {
         return (
             <AddServiceModal show={this.state.showModalAdd}
                              onHide={() => this.setState({showModalAdd: false})}
-                             onClick={this.onAddClick}/>
+                             onClick={this.onAddClick}
+                             handleChange={this.handleChange}/>
         );
     }
 
@@ -201,18 +202,64 @@ class Services extends Component {
     };
 
     editServiceModal() {
-        console.log(this.state.selectedService)
         return (
             <EditServiceModal show={this.state.showModalEdit}
                               serviceToEdit={this.state.selectedService}
                               onHide={() => this.setState({showModalEdit: false})}
-                              onClick={this.onEditClick}/>
+                              onClick={this.onEditClick}
+                              handleChange={this.handleChange}/>
         );
     }
+
+    handleChange = (event, component) => {
+        let formErrors = component.state.formErrors
+        if (event.target.id === "price") {
+            if (event.target.value < 0)
+                formErrors.add("Price cannot be lower than 0")
+            else
+                formErrors.delete("Price cannot be lower than 0")
+        }
+        if (event.target.id === "duration") {
+            if (event.target.value < 0)
+                formErrors.add("Duration cannot be lower than 0")
+            else
+                formErrors.delete("Duration cannot be lower than 0")
+            if (Number(event.target.value) % 1 !== 0)
+                formErrors.add("Duration must be an integer")
+            else
+                formErrors.delete("Duration must be an integer")
+        }
+        component.setState({formErrors: formErrors, [event.target.id]: event.target.value});
+    };
 
     onEditClick = service => {
         console.log("Service to edit: ");
         console.log(service);
+        authService.fetchAuthenticated(`${backendHost}/rest/editService/${this.state.selectedService.id}`, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(service)
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to edit");
+            }
+            return response;
+        })
+            .then(() => console.log("Service edited successfully"))
+            .then(() => this.fetchServices().then(services => {
+                this.setState({
+                    showModalEdit: false,
+                    errorEditing: null,
+                    services: services,
+                })
+            }, this.handleError()))
+            .catch(error => {
+                console.log("Error occurred: ", error);
+                this.setState({showModalEdit: false, errorEditing: error});
+            });
     };
 
     deleteServiceModal() {

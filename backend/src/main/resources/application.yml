@@ -96,3 +96,4 @@ keycloak:
             - /rest/serviceProviderServicesViews/*
             - /rest/addService/*
             - /rest/deleteService/*
+            - /rest/editService/*

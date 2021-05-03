@@ -15,9 +15,8 @@ class EditServiceModal extends Component {
             error: null,
             isLoaded: false,
             formErrors: new Set(),
-            name: null
+            name: null,
         }
-        this.props.serviceToEdit?.employees.forEach(employee => this.state.checkedEmployees.add(employee.name))
     }
 
     componentDidMount() {
@@ -59,6 +58,7 @@ class EditServiceModal extends Component {
         return (
             <Modal
                 show={this.props.show}
+                onShow={this.onShow}
                 onHide={this.handleHide}
                 size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
@@ -75,22 +75,22 @@ class EditServiceModal extends Component {
                         <Form.Group controlId="name">
                             <Form.Label className={styles.formLabel}>Name</Form.Label>
                             <Form.Control type="text" defaultValue={this.props.serviceToEdit?.name}
-                                          onChange={event => this.handleChange(event)}/>
+                                          onChange={event => this.props.handleChange(event, this)}/>
                         </Form.Group>
                         <Form.Group controlId="description">
                             <Form.Label className={styles.formLabel}>Description</Form.Label>
                             <Form.Control type="text" defaultValue={this.props.serviceToEdit?.description}
-                                          onChange={event => this.handleChange(event)}/>
+                                          onChange={event => this.props.handleChange(event, this)}/>
                         </Form.Group>
                         <Form.Group controlId="price">
                             <Form.Label className={styles.formLabel}>Price</Form.Label>
                             <Form.Control type="number" defaultValue={this.props.serviceToEdit?.price}
-                                          onChange={event => this.handleChange(event)}/>
+                                          onChange={event => this.props.handleChange(event, this)}/>
                         </Form.Group>
                         <Form.Group controlId="duration">
                             <Form.Label className={styles.formLabel}>Duration</Form.Label>
                             <Form.Control type="number" defaultValue={this.props.serviceToEdit?.duration}
-                                          onChange={event => this.handleChange(event)}/>
+                                          onChange={event => this.props.handleChange(event, this)}/>
                         </Form.Group>
                         <Form.Group controlId="employees">
                             <Form.Label className={styles.formLabel}>Employees</Form.Label>
@@ -110,6 +110,18 @@ class EditServiceModal extends Component {
         );
     }
 
+    onShow = () => {
+        const checkedEmployees = this.state.checkedEmployees
+        this.props.serviceToEdit?.employees.forEach(employee => checkedEmployees.add(employee.name))
+        this.setState({checkedEmployees: checkedEmployees});
+    };
+
+    handleHide = () => {
+        let checkedEmployees = new Set();
+        this.setState({checkedEmployees: checkedEmployees})
+        this.props.onHide();
+    };
+
     alerts() {
         if (this.state.formErrors.size > 0) {
             return <Alert variant="danger">
@@ -118,29 +130,7 @@ class EditServiceModal extends Component {
         }
     }
 
-    handleChange(event) {
-        let formErrors = this.state.formErrors
-        if (event.target.id === "price") {
-            if (event.target.value < 0)
-                formErrors.add("Price cannot be lower than 0")
-            else
-                formErrors.delete("Price cannot be lower than 0")
-        }
-        if (event.target.id === "duration") {
-            if (event.target.value < 0)
-                formErrors.add("Duration cannot be lower than 0")
-            else
-                formErrors.delete("Duration cannot be lower than 0")
-            if (Number(event.target.value) % 1 !== 0)
-                formErrors.add("Duration must be an integer")
-            else
-                formErrors.delete("Duration must be an integer")
-        }
-        this.setState({formErrors: formErrors, [event.target.id]: event.target.value});
-    }
-
     renderEmployees() {
-        console.log(this.state.checkedEmployees)
         if (this.state.error) {
             return <Form.Control plaintext readOnly defaultValue="Error"/>
         } else if (!this.state.isLoaded) {
@@ -161,13 +151,6 @@ class EditServiceModal extends Component {
         if (event.target.checked) checkedEmployees.add(eventId)
         else checkedEmployees.delete(eventId)
         this.setState({checkedEmployees: checkedEmployees});
-    };
-
-    handleHide = () => {
-        let checkedEmployees = new Set();
-        this.props.serviceToEdit.employees.forEach(employee => checkedEmployees.add(employee.name))
-        this.setState({checkedEmployees: checkedEmployees})
-        this.props.onHide();
     };
 
     handleEditClicked = () => {
