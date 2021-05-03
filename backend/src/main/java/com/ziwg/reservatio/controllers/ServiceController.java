@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -50,6 +51,28 @@ public class ServiceController {
     private void addServiceToEmployees(Service service, List<Employee> employeesToAdd) {
         for (Employee employee : employeesToAdd) {
             employee.getServices().add(service);
+            employeeRepository.save(employee);
+        }
+    }
+
+    @DeleteMapping("deleteService/{serviceId}")
+    public ResponseEntity<String> deleteService(@PathVariable Long serviceId) {
+        Optional<Service> serviceToDelete = serviceRepository.findById(serviceId);
+        if (serviceToDelete.isEmpty())
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if (serviceToDelete.get().getReservations().stream().anyMatch(reservation -> reservation.getDateTime().isAfter(LocalDateTime.now())))
+            return new ResponseEntity<>("Cannot delete a service assigned to upcoming appointments", HttpStatus.BAD_REQUEST);
+        ServiceProvider serviceProvider = serviceToDelete.get().getServiceProvider();
+        serviceProvider.setServices(serviceProvider.getServices().stream().filter(service -> service.getId().equals(serviceId)).collect(Collectors.toList()));
+        serviceProviderRepository.save(serviceProvider);
+        serviceToDelete.get().setServiceProvider(null);
+        deleteServiceFromEmployees(serviceToDelete.get());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    private void deleteServiceFromEmployees(Service serviceToDelete) {
+        for (Employee employee : serviceToDelete.getEmployees()) {
+            employee.setServices(employee.getServices().stream().filter(service -> !service.getId().equals(serviceToDelete.getId())).collect(Collectors.toList()));
             employeeRepository.save(employee);
         }
     }

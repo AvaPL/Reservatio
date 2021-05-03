@@ -95,3 +95,4 @@ keycloak:
             - /rest/deleteEmployee/*
             - /rest/serviceProviderServicesViews/*
             - /rest/addService/*
+            - /rest/deleteService/*

@@ -236,8 +236,38 @@ class Services extends Component {
     }
 
     onDeleteClicked = () => {
-        console.log("Employee to delete: ")
-        console.log(this.state.selectedService)
+        authService.fetchAuthenticated(`${backendHost}/rest/deleteService/${this.state.selectedService.id}`, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
+        }).then(response => {
+            if (!response.ok) {
+                throw response
+            }
+            return response;
+        })
+            .then(() => console.log(`Deleted service [${this.state.selectedService.name}]`))
+            .then(() => this.fetchServices().then(services => {
+                this.setState({
+                    showModalDelete: false,
+                    errorDeleting: null,
+                    services: services,
+                    selectedService: services[services.length - 1]
+                })
+            }, this.handleError()))
+            .catch(error => {
+                if (error.text) {
+                    error.text().then(error => {
+                        console.log("Error occurred: ", error);
+                        this.setState({showModalDelete: false, errorDeleting: error});
+                    });
+                } else {
+                    console.log("Error occurred: Failed to delete service");
+                    this.setState({showModalDelete: false, errorDeleting: "Failed to delete service"});
+                }
+            });
     };
 }
 
