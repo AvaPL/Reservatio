@@ -3,10 +3,9 @@ package com.ziwg.reservatio.controllers;
 import com.ziwg.reservatio.entity.Employee;
 import com.ziwg.reservatio.entity.Service;
 import com.ziwg.reservatio.entity.ServiceProvider;
-import com.ziwg.reservatio.pojos.EmployeeToAdd;
+import com.ziwg.reservatio.pojos.EmployeePojo;
 import com.ziwg.reservatio.repository.EmployeeRepository;
 import com.ziwg.reservatio.repository.ServiceProviderRepository;
-import com.ziwg.reservatio.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,15 +34,15 @@ public class EmployeeController {
 
     @PostMapping("addEmployee/{serviceProviderId}")
     public ResponseEntity<HttpStatus> addEmployee(@PathVariable Long serviceProviderId,
-                                                  @RequestBody EmployeeToAdd employeeToAdd) {
+                                                  @RequestBody EmployeePojo employeePojo) {
         Optional<ServiceProvider> serviceProvider = serviceProviderRepository.findById(serviceProviderId);
         if (serviceProvider.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        Employee employee = Employee.builder().firstName(employeeToAdd.getFirstName()).lastName(employeeToAdd.getLastName()).serviceProvider(serviceProvider.get()).build();
+        Employee employee = Employee.builder().firstName(employeePojo.getFirstName()).lastName(employeePojo.getLastName()).serviceProvider(serviceProvider.get()).build();
         List<String> serviceProviderServices = serviceProvider.get().getServices().stream().map(Service::getName).collect(Collectors.toList());
-        if (!serviceProviderServices.containsAll(employeeToAdd.getServices()))
+        if (!serviceProviderServices.containsAll(employeePojo.getServices()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        List<Service> servicesToAdd = serviceProvider.get().getServices().stream().filter(service -> employeeToAdd.getServices().contains(service.getName())).collect(Collectors.toList());
+        List<Service> servicesToAdd = serviceProvider.get().getServices().stream().filter(service -> employeePojo.getServices().contains(service.getName())).collect(Collectors.toList());
         employee.setServices(servicesToAdd);
         employeeRepository.save(employee);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -63,6 +62,23 @@ public class EmployeeController {
         employeeToDelete.get().setServices(new ArrayList<>());
         employeeRepository.save(employeeToDelete.get());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("editEmployee/{employeeId}")
+    public ResponseEntity<HttpStatus> editEmployee(@PathVariable Long employeeId, @RequestBody EmployeePojo employeePojo) {
+        Optional<Employee> employeeToEdit = employeeRepository.findById(employeeId);
+        if (employeeToEdit.isEmpty())
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        updateEmployee(employeeToEdit.get(), employeePojo);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    private void updateEmployee(Employee employeeToEdit, EmployeePojo employeePojo) {
+        employeeToEdit.setFirstName(employeePojo.getFirstName());
+        employeeToEdit.setLastName(employeePojo.getLastName());
+        List<Service> services = employeeToEdit.getServiceProvider().getServices().stream().filter(service -> employeePojo.getServices().contains(service.getName())).collect(Collectors.toList());
+        employeeToEdit.setServices(services);
+        employeeRepository.save(employeeToEdit);
     }
 }
 

@@ -199,40 +199,40 @@ class Employees extends Component {
     editEmployeeModal() {
         return (
             <EditEmployeeModal show={this.state.showModalEdit}
-                              employeeToEdit={this.state.selectedEmployee}
-                              onHide={() => this.setState({showModalEdit: false})}
-                              onClick={this.onEditClick}/>
+                               employeeToEdit={this.state.selectedEmployee}
+                               onHide={() => this.setState({showModalEdit: false})}
+                               onClick={this.onEditClick}/>
         );
     }
 
     onEditClick = employee => {
         console.log("Employee to edit: ");
         console.log(employee);
-        // authService.fetchAuthenticated(`${backendHost}/rest/editEmployee/${this.state.selectedEmployee.id}`, {
-        //     method: 'PUT',
-        //     headers: {
-        //         'Accept': 'application/json',
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify(employee)
-        // }).then(response => {
-        //     if (!response.ok) {
-        //         throw new Error("Failed to edit");
-        //     }
-        //     return response;
-        // })
-        //     .then(() => console.log("Employee edited successfully"))
-        //     .then(() => this.fetchEmployees().then(employees => {
-        //         this.setState({
-        //             showModalEdit: false,
-        //             errorEditing: null,
-        //             employees: employees,
-        //         })
-        //     }, this.handleError()))
-        //     .catch(error => {
-        //         console.log("Error occurred: ", error);
-        //         this.setState({showModalEdit: false, errorEditing: error});
-        //     });
+        authService.fetchAuthenticated(`${backendHost}/rest/editEmployee/${this.state.selectedEmployee.id}`, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(employee)
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to edit");
+            }
+            return response;
+        })
+            .then(() => console.log("Employee edited successfully"))
+            .then(() => this.fetchEmployees().then(employees => {
+                this.setState({
+                    showModalEdit: false,
+                    errorEditing: null,
+                    employees: employees,
+                })
+            }, this.handleError()))
+            .catch(error => {
+                console.log("Error occurred: ", error);
+                this.setState({showModalEdit: false, errorEditing: error});
+            });
     };
 
     deleteEmployeeModal() {
