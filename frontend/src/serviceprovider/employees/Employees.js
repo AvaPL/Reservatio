@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Alert, Button, Col, Modal, Nav, Row, Tab} from "react-bootstrap";
 import styles from './Employees.module.scss';
 import {AddEmployeeModal} from "./AddEmployeeModal";
+import EditEmployeeModal from "./EditEmployeeModal";
 import {authService} from "../../auth/AuthService";
 import {backendHost} from "../../Config";
 
@@ -15,8 +16,8 @@ class Employees extends Component {
             error: null,
             errorAdding: null,
             errorDeleting: null,
-            linkHasBeenClicked: false,
             showModalAdd: false,
+            showModalEdit: false,
             showModalDelete: false,
         };
     }
@@ -70,6 +71,8 @@ class Employees extends Component {
                                 <div className="float-right">
                                     <Button className={`${styles.buttonSecondary} shadow-none`}
                                             onClick={() => this.setState({showModalDelete: true})}>Delete</Button>
+                                    <Button className={`${styles.buttonSecondary} shadow-none`}
+                                            onClick={() => this.setState({showModalEdit: true})}>Edit</Button>
                                     <Button className={`${styles.buttonPrimary} shadow-none`}
                                             onClick={() => this.setState({showModalAdd: true})}>Add new</Button>
                                 </div>
@@ -87,6 +90,7 @@ class Employees extends Component {
                     </Tab.Container>
                 </div>
                 {this.addEmployeeModal()}
+                {this.editEmployeeModal()}
                 {this.deleteEmployeeModal()}
             </div>
         );
@@ -190,6 +194,45 @@ class Employees extends Component {
                 console.log("Error occurred: ", error);
                 this.setState({showModalAdd: false, errorAdding: error});
             });
+    };
+
+    editEmployeeModal() {
+        return (
+            <EditEmployeeModal show={this.state.showModalEdit}
+                              employeeToEdit={this.state.selectedEmployee}
+                              onHide={() => this.setState({showModalEdit: false})}
+                              onClick={this.onEditClick}/>
+        );
+    }
+
+    onEditClick = employee => {
+        console.log("Employee to edit: ");
+        console.log(employee);
+        // authService.fetchAuthenticated(`${backendHost}/rest/editEmployee/${this.state.selectedEmployee.id}`, {
+        //     method: 'PUT',
+        //     headers: {
+        //         'Accept': 'application/json',
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(employee)
+        // }).then(response => {
+        //     if (!response.ok) {
+        //         throw new Error("Failed to edit");
+        //     }
+        //     return response;
+        // })
+        //     .then(() => console.log("Employee edited successfully"))
+        //     .then(() => this.fetchEmployees().then(employees => {
+        //         this.setState({
+        //             showModalEdit: false,
+        //             errorEditing: null,
+        //             employees: employees,
+        //         })
+        //     }, this.handleError()))
+        //     .catch(error => {
+        //         console.log("Error occurred: ", error);
+        //         this.setState({showModalEdit: false, errorEditing: error});
+        //     });
     };
 
     deleteEmployeeModal() {

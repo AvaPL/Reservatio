@@ -117,8 +117,7 @@ class EditServiceModal extends Component {
     };
 
     handleHide = () => {
-        let checkedEmployees = new Set();
-        this.setState({checkedEmployees: checkedEmployees})
+        this.setState({checkedEmployees: new Set()})
         this.props.onHide();
     };
 
