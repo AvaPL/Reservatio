@@ -223,10 +223,12 @@ class Employees extends Component {
         })
             .then(() => console.log("Employee edited successfully"))
             .then(() => this.fetchEmployees().then(employees => {
+                console.log(employees)
                 this.setState({
                     showModalEdit: false,
                     errorEditing: null,
                     employees: employees,
+                    selectedEmployee: employees.find(e => e.id === employee.id)
                 })
             }, this.handleError()))
             .catch(error => {

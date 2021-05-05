@@ -133,6 +133,7 @@ class EditEmployeeModal extends Component {
 
     handleEditClicked = () => {
         let employeeToEdit = {
+            id: this.props.employeeToEdit.id,
             firstName: this.state.firstName ? this.state.firstName : this.props.employeeToEdit.firstName,
             lastName: this.state.lastName ? this.state.lastName : this.props.employeeToEdit.lastName,
             services: Array.from(this.state.checkedServices)

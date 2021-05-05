@@ -254,6 +254,7 @@ class Services extends Component {
                     showModalEdit: false,
                     errorEditing: null,
                     services: services,
+                    selectedService: services.find(s => s.id === service.id)
                 })
             }, this.handleError()))
             .catch(error => {

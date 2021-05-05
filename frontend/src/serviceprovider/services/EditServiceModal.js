@@ -155,6 +155,7 @@ class EditServiceModal extends Component {
     handleEditClicked = () => {
         if (!this.state.formErrors.size > 0) {
             let serviceToEdit = {
+                id: this.props.serviceToEdit.id,
                 name: this.state.name ? this.state.name : this.props.serviceToEdit.name,
                 description: this.state.description ? this.state.description : this.props.serviceToEdit.description,
                 price: this.state.price ? this.state.price : this.props.serviceToEdit.price,
