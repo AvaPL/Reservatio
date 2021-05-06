@@ -1,11 +1,13 @@
 package com.ziwg.reservatio.testdata;
 
+import com.github.javafaker.Faker;
 import com.ziwg.reservatio.entity.*;
 import com.ziwg.reservatio.minio.MinioUploader;
 import com.ziwg.reservatio.repository.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -15,22 +17,46 @@ import org.springframework.context.annotation.Configuration;
 import java.io.File;
 import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-
+import java.util.stream.Collectors;
 
 @Configuration
 @Slf4j
 public class LoadTestData {
 
-    private static final int numberOfCustomers = 20;
-    private static final int numberOfServiceProviders = 3;
-    private static final int numberOfServices = 10;
-    private static final int numberOfEmployees = 20;
-    private static final int numberOfReservations = 10;
-    private static final int numberOfReviews = 5;
-    private static final int numberOfServicesPerEmployee = 2;
+    private static final Faker faker = new Faker();
+
+    private static int serviceProvidersCount() {
+        return faker.number().numberBetween(3, 5);
+    }
+
+    private static int servicesPerProviderCount() {
+        return faker.number().numberBetween(5, 10);
+    }
+
+    private static int employeesPerProviderCount() {
+        return faker.number().numberBetween(4, 6);
+    }
+
+    private static int servicesPerEmployeeCount() {
+        return faker.number().numberBetween(1, 3);
+    }
+
+    private static int numberOfCustomersCount() {
+        return faker.number().numberBetween(15, 25);
+    }
+
+    private static int numberOfReservationsCount() {
+        return faker.number().numberBetween(10, 20);
+    }
+
+    private static int numberOfReviewsCount() {
+        return faker.number().numberBetween(10, 20);
+    }
 
     private final CustomerRepository customerRepository;
     private final AddressRepository addressRepository;
@@ -60,14 +86,13 @@ public class LoadTestData {
     public CommandLineRunner initDatabase(@Value("#{new Boolean('${reservatio.load-test-data}')}") Boolean loadTestData) {
         return args -> {
             if (loadTestData) {
-                fillCustomers();
                 fillAddresses();
-                fillServiceProviders();
-                fillServices();
-                fillEmployees();
+                val serviceProviders = fillServiceProviders();
+                val employees = fillEmployees(serviceProviders);
+                val services = fillServices(employees);
+                fillCustomers();
                 fillReservations();
                 fillReviews();
-                joinEmployeesAndServices();
             }
         };
     }
@@ -94,51 +119,93 @@ public class LoadTestData {
     }
 
     @SneakyThrows
-    private void fillServiceProviders() {
-        Iterator<Address> addressIterator = addressRepository.findAll().iterator();
-        for (int i = 1; i <= LoadTestData.numberOfServiceProviders; i++) {
-            if (!addressIterator.hasNext())
-                addressIterator = addressRepository.findAll().iterator();
-
-            val serviceProvider = ServiceProvider.builder().email("serviceprovider" + i + "@gmail.com")
-                    .name("serviceprovider" + i).phoneNumber("+48" + String.format("%-" + 9 + "s", i).replace(" ", "0"))
-                    .address(addressIterator.next()).build();
-            val filename = serviceProvider.getName() + ".jpg";
-            try (val imageStream = imageFromResources(filename)) {
-                minioUploader.upload(imageStream, filename, "image/jpeg");
-                serviceProvider.setImageUrl(minioUploader.urlFor(filename));
-            }
-            serviceProviderRepository.save(serviceProvider);
+    private Iterable<ServiceProvider> fillServiceProviders() {
+        val count = serviceProvidersCount();
+        val addresses = new ArrayList<Address>();
+        val serviceProviders = new ArrayList<ServiceProvider>();
+        for (int i = 0; i < count; i++) {
+            val address = fakeAddress();
+            val serviceProvider = fakeServiceProvider(address);
+            // TODO: Add images
+//            val filename = serviceProvider.getName() + ".jpg";
+//            try (val imageStream = imageFromResources(filename)) {
+//                minioUploader.upload(imageStream, filename, "image/jpeg");
+//                serviceProvider.setImageUrl(minioUploader.urlFor(filename));
+//            }
+            addresses.add(address);
+            serviceProviders.add(serviceProvider);
             log.info("Loaded test service provider '" + serviceProvider.getName() + "'");
         }
+        addressRepository.saveAll(addresses);
+        return serviceProviderRepository.saveAll(serviceProviders);
+    }
+
+    private Address fakeAddress() {
+        return Address.builder().street(faker.address().streetName()).propertyNumber(faker.address().buildingNumber())
+                .city(faker.address().city()).postCode(faker.address().zipCode()).build();
+    }
+
+    private ServiceProvider fakeServiceProvider(Address address) {
+        return ServiceProvider.builder().email(faker.internet().emailAddress()).name(faker.company().name())
+                .phoneNumber(faker.phoneNumber().phoneNumber()).address(address).build();
     }
 
     private InputStream imageFromResources(String filename) {
         return getClass().getClassLoader().getResourceAsStream("images" + File.separator + filename);
     }
 
-    private void fillServices() {
-        Iterator<ServiceProvider> serviceProviderIterator = serviceProviderRepository.findAll().iterator();
-        for (int i = 1; i <= LoadTestData.numberOfServices; i++) {
-            if (!serviceProviderIterator.hasNext())
-                serviceProviderIterator = serviceProviderRepository.findAll().iterator();
-            val service = Service.builder().name("service" + i).price((float) i).duration(i * 10)
-                    .description("description" + i).serviceProvider(serviceProviderIterator.next()).build();
-            serviceRepository.save(service);
-            log.info("Loaded test service '" + service.getName() + "'");
+    // TODO: Cleanup
+    private Iterable<Service> fillServices(List<Employee> employees) {
+        val result = new ArrayList<Service>();
+        val serviceProviders = employees.stream().map(Employee::getServiceProvider).collect(Collectors.toList());
+        for (val serviceProvider : serviceProviders) {
+            val servicesCount = servicesPerProviderCount();
+            val providerServices = new ArrayList<Service>();
+            for (int i = 0; i < servicesCount; i++) {
+                val service = fakeService(serviceProvider);
+                providerServices.add(service);
+                log.info("Loaded test service '" + service.getName() + "'");
+            }
+            for (val employee : serviceProvider.getEmployees()) {
+                val servicesPerEmployee = servicesPerEmployeeCount();
+                for (int i = 0; i < servicesPerEmployee; i++) {
+                    val randomService = providerServices.get(faker.random().nextInt(providerServices.size()));
+                    employee.getServices().add(randomService);
+                    randomService.getEmployees().add(employee);
+                    log.info("Linked test employee '" + employee.getFirstName() + " " + employee
+                            .getLastName() + "' with test service '" + randomService.getName() + "'");
+                }
+            }
         }
+        val savedEntities = serviceRepository.saveAll(result);
+        employeeRepository.saveAll(employees);
+        return savedEntities;
     }
 
-    private void fillEmployees() {
-        Iterator<ServiceProvider> serviceProviderIterator = serviceProviderRepository.findAll().iterator();
-        for (int i = 1; i <= LoadTestData.numberOfEmployees; i++) {
-            if (!serviceProviderIterator.hasNext())
-                serviceProviderIterator = serviceProviderRepository.findAll().iterator();
-            val employee = Employee.builder().firstName("employee" + i).lastName("lastname" + i)
-                    .serviceProvider(serviceProviderIterator.next()).build();
-            employeeRepository.save(employee);
-            log.info("Loaded test employee '" + employee.getFirstName() + " " + employee.getLastName() + "'");
+    private Service fakeService(ServiceProvider serviceProvider) {
+        return Service.builder().name(faker.job().title()).priceUsd(Float.parseFloat(faker.commerce().price()))
+                .durationMinutes(faker.number().numberBetween(1, 7) * 10)
+                .description(StringUtils.left(faker.shakespeare().hamletQuote(), 500)).serviceProvider(serviceProvider)
+                .build();
+    }
+
+    private List<Employee> fillEmployees(Iterable<ServiceProvider> serviceProviders) {
+        val result = new ArrayList<Employee>();
+        for (val serviceProvider : serviceProviders) {
+            val count = employeesPerProviderCount();
+            for (int i = 0; i < count; i++) {
+                val employee = fakeEmployee(serviceProvider);
+                val savedEntity = employeeRepository.save(employee);
+                result.add(savedEntity);
+                log.info("Loaded test employee '" + savedEntity.getFirstName() + " " + savedEntity.getLastName() + "'");
+            }
         }
+        return result;
+    }
+
+    private Employee fakeEmployee(ServiceProvider serviceProvider) {
+        return Employee.builder().firstName(faker.name().firstName()).lastName(faker.name().lastName())
+                .serviceProvider(serviceProvider).build();
     }
 
     private void fillReservations() {
@@ -182,8 +249,6 @@ public class LoadTestData {
                 employee.getServices().add(service);
                 service.getEmployees().add(employee);
                 serviceRepository.save(service);
-                log.info("Linked test employee '" + employee.getFirstName() + " " +
-                        employee.getLastName() + "' with test service '" + service.getName() + "'");
             }
             employeeRepository.save(employee);
         }
