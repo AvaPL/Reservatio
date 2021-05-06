@@ -46,15 +46,15 @@ public class LoadTestData {
         return faker.number().numberBetween(1, 3);
     }
 
-    private static int numberOfCustomersCount() {
+    private static int customersCount() {
         return faker.number().numberBetween(15, 25);
     }
 
-    private static int numberOfReservationsCount() {
+    private static int reservationsCount() {
         return faker.number().numberBetween(10, 20);
     }
 
-    private static int numberOfReviewsCount() {
+    private static int reviewsCount() {
         return faker.number().numberBetween(10, 20);
     }
 
@@ -86,7 +86,6 @@ public class LoadTestData {
     public CommandLineRunner initDatabase(@Value("#{new Boolean('${reservatio.load-test-data}')}") Boolean loadTestData) {
         return args -> {
             if (loadTestData) {
-                fillAddresses();
                 val serviceProviders = fillServiceProviders();
                 val employees = fillEmployees(serviceProviders);
                 val services = fillServices(employees);
@@ -95,27 +94,6 @@ public class LoadTestData {
                 fillReviews();
             }
         };
-    }
-
-    private void fillCustomers() {
-        Random random = new Random();
-        for (int i = 1; i <= LoadTestData.numberOfCustomers; i++) {
-            int randomPhoneNumber = 100000000 + random.nextInt(900000000);
-            val customer = Customer.builder().firstName("name" + i).lastName("lastname" + i)
-                    .phoneNumber("+48" + randomPhoneNumber).email("customer" + i + "@gmail.com").build();
-            customerRepository.save(customer);
-            log.info("Loaded test customer '" + customer.getFirstName() + " " + customer.getLastName() + "'");
-        }
-    }
-
-    private void fillAddresses() {
-        for (int i = 1; i <= LoadTestData.numberOfServiceProviders; i++) {
-            val address = Address.builder().street("street" + i).propertyNumber(String.valueOf(i)).city("city" + i)
-                    .postCode("00-" + ThreadLocalRandom.current().nextInt(100, 999 + 1)).build();
-            addressRepository.save(address);
-            log.info("Loaded test address '" + address.getStreet() + " " + address.getPropertyNumber() + ", " +
-                    address.getPostCode() + " " + address.getCity() + "'");
-        }
     }
 
     @SneakyThrows
@@ -150,45 +128,6 @@ public class LoadTestData {
                 .phoneNumber(faker.phoneNumber().phoneNumber()).address(address).build();
     }
 
-    private InputStream imageFromResources(String filename) {
-        return getClass().getClassLoader().getResourceAsStream("images" + File.separator + filename);
-    }
-
-    // TODO: Cleanup
-    private Iterable<Service> fillServices(List<Employee> employees) {
-        val result = new ArrayList<Service>();
-        val serviceProviders = employees.stream().map(Employee::getServiceProvider).collect(Collectors.toList());
-        for (val serviceProvider : serviceProviders) {
-            val servicesCount = servicesPerProviderCount();
-            val providerServices = new ArrayList<Service>();
-            for (int i = 0; i < servicesCount; i++) {
-                val service = fakeService(serviceProvider);
-                providerServices.add(service);
-                log.info("Loaded test service '" + service.getName() + "'");
-            }
-            for (val employee : serviceProvider.getEmployees()) {
-                val servicesPerEmployee = servicesPerEmployeeCount();
-                for (int i = 0; i < servicesPerEmployee; i++) {
-                    val randomService = providerServices.get(faker.random().nextInt(providerServices.size()));
-                    employee.getServices().add(randomService);
-                    randomService.getEmployees().add(employee);
-                    log.info("Linked test employee '" + employee.getFirstName() + " " + employee
-                            .getLastName() + "' with test service '" + randomService.getName() + "'");
-                }
-            }
-        }
-        val savedEntities = serviceRepository.saveAll(result);
-        employeeRepository.saveAll(employees);
-        return savedEntities;
-    }
-
-    private Service fakeService(ServiceProvider serviceProvider) {
-        return Service.builder().name(faker.job().title()).priceUsd(Float.parseFloat(faker.commerce().price()))
-                .durationMinutes(faker.number().numberBetween(1, 7) * 10)
-                .description(StringUtils.left(faker.shakespeare().hamletQuote(), 500)).serviceProvider(serviceProvider)
-                .build();
-    }
-
     private List<Employee> fillEmployees(Iterable<ServiceProvider> serviceProviders) {
         val result = new ArrayList<Employee>();
         for (val serviceProvider : serviceProviders) {
@@ -207,6 +146,64 @@ public class LoadTestData {
         return Employee.builder().firstName(faker.name().firstName()).lastName(faker.name().lastName())
                 .serviceProvider(serviceProvider).build();
     }
+
+    // TODO: Cleanup
+    private Iterable<Service> fillServices(List<Employee> employees) {
+        val result = new ArrayList<Service>();
+        val serviceProviders = employees.stream().map(Employee::getServiceProvider).collect(Collectors.toList());
+        for (val serviceProvider : serviceProviders) {
+            val servicesCount = servicesPerProviderCount();
+            val providerServices = new ArrayList<Service>();
+            for (int i = 0; i < servicesCount; i++) {
+                val service = fakeService(serviceProvider);
+                providerServices.add(service);
+                log.info("Loaded test service '" + service.getName() + "'");
+            }
+            for (val employee : serviceProvider.getEmployees()) {
+                val servicesPerEmployee = servicesPerEmployeeCount();
+                for (int i = 0; i < servicesPerEmployee; i++) {
+                    val randomService = providerServices.get(faker.random().nextInt(providerServices.size()));
+                    randomService.getEmployees().add(employee);
+                    log.info("Linked test employee '" + employee.getFirstName() + " " + employee
+                            .getLastName() + "' with test service '" + randomService.getName() + "'");
+                }
+            }
+        }
+        return serviceRepository.saveAll(result);
+    }
+
+    private Service fakeService(ServiceProvider serviceProvider) {
+        return Service.builder().name(faker.job().title()).priceUsd(Float.parseFloat(faker.commerce().price()))
+                .durationMinutes(faker.number().numberBetween(1, 7) * 10)
+                .description(StringUtils.left(faker.shakespeare().hamletQuote(), 500)).serviceProvider(serviceProvider)
+                .build();
+    }
+
+    private void fillCustomers() {
+        Random random = new Random();
+        for (int i = 1; i <= LoadTestData.numberOfCustomers; i++) {
+            int randomPhoneNumber = 100000000 + random.nextInt(900000000);
+            val customer = Customer.builder().firstName("name" + i).lastName("lastname" + i)
+                    .phoneNumber("+48" + randomPhoneNumber).email("customer" + i + "@gmail.com").build();
+            customerRepository.save(customer);
+            log.info("Loaded test customer '" + customer.getFirstName() + " " + customer.getLastName() + "'");
+        }
+    }
+
+//    private void fillAddresses() {
+//        for (int i = 1; i <= LoadTestData.numberOfServiceProviders; i++) {
+//            val address = Address.builder().street("street" + i).propertyNumber(String.valueOf(i)).city("city" + i)
+//                    .postCode("00-" + ThreadLocalRandom.current().nextInt(100, 999 + 1)).build();
+//            addressRepository.save(address);
+//            log.info("Loaded test address '" + address.getStreet() + " " + address.getPropertyNumber() + ", " +
+//                    address.getPostCode() + " " + address.getCity() + "'");
+//        }
+//    }
+
+    private InputStream imageFromResources(String filename) {
+        return getClass().getClassLoader().getResourceAsStream("images" + File.separator + filename);
+    }
+
 
     private void fillReservations() {
         Iterator<Customer> customerIterator = customerRepository.findAll().iterator();
@@ -239,18 +236,18 @@ public class LoadTestData {
         }
     }
 
-    private void joinEmployeesAndServices() {
-        Iterator<Service> serviceIterator = serviceRepository.findAll().iterator();
-        for (Employee employee : employeeRepository.findAll()) {
-            for (int i = 0; i < numberOfServicesPerEmployee; i++) {
-                if (!serviceIterator.hasNext())
-                    serviceIterator = serviceRepository.findAll().iterator();
-                Service service = serviceIterator.next();
-                employee.getServices().add(service);
-                service.getEmployees().add(employee);
-                serviceRepository.save(service);
-            }
-            employeeRepository.save(employee);
-        }
-    }
+//    private void joinEmployeesAndServices() {
+//        Iterator<Service> serviceIterator = serviceRepository.findAll().iterator();
+//        for (Employee employee : employeeRepository.findAll()) {
+//            for (int i = 0; i < numberOfServicesPerEmployee; i++) {
+//                if (!serviceIterator.hasNext())
+//                    serviceIterator = serviceRepository.findAll().iterator();
+//                Service service = serviceIterator.next();
+//                employee.getServices().add(service);
+//                service.getEmployees().add(employee);
+//                serviceRepository.save(service);
+//            }
+//            employeeRepository.save(employee);
+//        }
+//    }
 }
