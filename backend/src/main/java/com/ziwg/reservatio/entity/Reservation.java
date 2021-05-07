@@ -19,9 +19,6 @@ public class Reservation {
     @NotNull
     private LocalDateTime dateTime;
 
-    @OneToOne
-    private Review review;
-
     @ManyToOne
     private Customer customer;
 
