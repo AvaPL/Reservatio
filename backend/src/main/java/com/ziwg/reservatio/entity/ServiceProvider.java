@@ -23,7 +23,7 @@ public class ServiceProvider {
     @Column(length = 50)
     private String name;
     @NotNull
-    @Column(length = 20, unique = true)
+    @Column(length = 30, unique = true)
     private String phoneNumber;
     private String imageUrl;
 

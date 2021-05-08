@@ -1,11 +1,14 @@
 package com.ziwg.reservatio.testdata;
 
+import com.github.javafaker.Faker;
+import com.google.common.collect.Lists;
 import com.ziwg.reservatio.entity.*;
 import com.ziwg.reservatio.minio.MinioUploader;
 import com.ziwg.reservatio.repository.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -13,24 +16,46 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
-import java.io.InputStream;
-import java.time.LocalDateTime;
-import java.util.Iterator;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
-
+import java.io.IOException;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Configuration
 @Slf4j
 public class LoadTestData {
 
-    private static final int numberOfCustomers = 20;
-    private static final int numberOfServiceProviders = 3;
-    private static final int numberOfServices = 10;
-    private static final int numberOfEmployees = 20;
-    private static final int numberOfReservations = 10;
-    private static final int numberOfReviews = 5;
-    private static final int numberOfServicesPerEmployee = 2;
+    private static final Faker faker = new Faker();
+
+    private static int serviceProvidersCount() {
+        return faker.number().numberBetween(3, 5);
+    }
+
+    private static int servicesPerProviderCount() {
+        return faker.number().numberBetween(5, 10);
+    }
+
+    private static int employeesPerProviderCount() {
+        return faker.number().numberBetween(4, 6);
+    }
+
+    private static int servicesPerEmployeeCount() {
+        return faker.number().numberBetween(1, 3);
+    }
+
+    private static int customersCount() {
+        return faker.number().numberBetween(15, 25);
+    }
+
+    private static int reservationsCount() {
+        return faker.number().numberBetween(10, 20);
+    }
+
+    private static int reviewsCount() {
+        return faker.number().numberBetween(10, 20);
+    }
 
     private final CustomerRepository customerRepository;
     private final AddressRepository addressRepository;
@@ -60,132 +85,235 @@ public class LoadTestData {
     public CommandLineRunner initDatabase(@Value("#{new Boolean('${reservatio.load-test-data}')}") Boolean loadTestData) {
         return args -> {
             if (loadTestData) {
-                fillCustomers();
-                fillAddresses();
-                fillServiceProviders();
-                fillServices();
-                fillEmployees();
-                fillReservations();
-                fillReviews();
-                joinEmployeesAndServices();
+                fillServiceProviderRelatedTables();
+                fillCustomerRelatedTables();
             }
         };
     }
 
-    private void fillCustomers() {
-        Random random = new Random();
-        for (int i = 1; i <= LoadTestData.numberOfCustomers; i++) {
-            int randomPhoneNumber = 100000000 + random.nextInt(900000000);
-            val customer = Customer.builder().firstName("name" + i).lastName("lastname" + i)
-                    .phoneNumber("+48" + randomPhoneNumber).email("customer" + i + "@gmail.com").build();
-            customerRepository.save(customer);
-            log.info("Loaded test customer '" + customer.getFirstName() + " " + customer.getLastName() + "'");
-        }
+    private void fillServiceProviderRelatedTables() {
+        val serviceProviders = fillServiceProviders();
+        val services = fillServices(serviceProviders);
+        fillEmployees(serviceProviders);
+        val employees = linkEmployeesAndServices(serviceProviders);
+        addressRepository.saveAll(serviceProviders.stream().map(ServiceProvider::getAddress)
+                .collect(Collectors.toList()));
+        serviceProviderRepository.saveAll(serviceProviders);
+        serviceRepository.saveAll(services);
+        employeeRepository.saveAll(employees);
     }
 
-    private void fillAddresses() {
-        for (int i = 1; i <= LoadTestData.numberOfServiceProviders; i++) {
-            val address = Address.builder().street("street" + i).propertyNumber(String.valueOf(i)).city("city" + i)
-                    .postCode("00-" + ThreadLocalRandom.current().nextInt(100, 999 + 1)).build();
-            addressRepository.save(address);
-            log.info("Loaded test address '" + address.getStreet() + " " + address.getPropertyNumber() + ", " +
-                    address.getPostCode() + " " + address.getCity() + "'");
+    private void fillCustomerRelatedTables() {
+        val customers = fillCustomers();
+        val reservations = fillReservations(customers, Lists
+                .newArrayList(serviceRepository.findAll())); // Also fetches relations of services
+        val reviews = fillReviews(reservations);
+        customerRepository.saveAll(customers);
+        reservationRepository.saveAll(reservations);
+        reviewRepository.saveAll(reviews);
+    }
+
+    private List<ServiceProvider> fillServiceProviders() {
+        val result = new ArrayList<ServiceProvider>();
+        val count = serviceProvidersCount();
+        for (int i = 0; i < count; i++) {
+            val address = fakeAddress();
+            val imageUrl = randomImage();
+            val serviceProvider = fakeServiceProvider(address, imageUrl);
+            result.add(serviceProvider);
+            log.info("Loaded test service provider '" + serviceProvider.getName() + "'");
         }
+        return result;
+    }
+
+    private String randomImage() {
+        val imageIndex = faker.number().numberBetween(1, 6);
+        val filename = "serviceprovider" + imageIndex + ".jpg";
+        val path = "images" + File.separator + filename;
+        return uploadToMinio(filename, path);
     }
 
     @SneakyThrows
-    private void fillServiceProviders() {
-        Iterator<Address> addressIterator = addressRepository.findAll().iterator();
-        for (int i = 1; i <= LoadTestData.numberOfServiceProviders; i++) {
-            if (!addressIterator.hasNext())
-                addressIterator = addressRepository.findAll().iterator();
-
-            val serviceProvider = ServiceProvider.builder().email("serviceprovider" + i + "@gmail.com")
-                    .name("serviceprovider" + i).phoneNumber("+48" + String.format("%-" + 9 + "s", i).replace(" ", "0"))
-                    .address(addressIterator.next()).build();
-            val filename = serviceProvider.getName() + ".jpg";
-            try (val imageStream = imageFromResources(filename)) {
-                minioUploader.upload(imageStream, filename, "image/jpeg");
-                serviceProvider.setImageUrl(minioUploader.urlFor(filename));
-            }
-            serviceProviderRepository.save(serviceProvider);
-            log.info("Loaded test service provider '" + serviceProvider.getName() + "'");
+    private String uploadToMinio(String filename, String path) {
+        try (val imageStream = getClass().getClassLoader().getResourceAsStream(path)) {
+            minioUploader.upload(imageStream, filename, "image/jpeg");
+            return minioUploader.urlFor(filename);
         }
     }
 
-    private InputStream imageFromResources(String filename) {
-        return getClass().getClassLoader().getResourceAsStream("images" + File.separator + filename);
+    private Address fakeAddress() {
+        return Address.builder().street(faker.address().streetName()).propertyNumber(faker.regexify("\\d{1,2}"))
+                .city(faker.address().city()).postCode(faker.numerify("##-###")).build();
     }
 
-    private void fillServices() {
-        Iterator<ServiceProvider> serviceProviderIterator = serviceProviderRepository.findAll().iterator();
-        for (int i = 1; i <= LoadTestData.numberOfServices; i++) {
-            if (!serviceProviderIterator.hasNext())
-                serviceProviderIterator = serviceProviderRepository.findAll().iterator();
-            val service = Service.builder().name("service" + i).price((float) i).duration(i * 10)
-                    .description("description" + i).serviceProvider(serviceProviderIterator.next()).build();
-            serviceRepository.save(service);
-            log.info("Loaded test service '" + service.getName() + "'");
+    private ServiceProvider fakeServiceProvider(Address address, String imageUrl) {
+        return ServiceProvider.builder().email(faker.internet().emailAddress()).name(faker.company().name())
+                .phoneNumber(fakePhoneNumber()).address(address).imageUrl(imageUrl).build();
+    }
+
+    private String fakePhoneNumber() {
+        return faker.regexify("(\\+48)?\\d{9}");
+    }
+
+    private List<Employee> fillEmployees(List<ServiceProvider> serviceProviders) {
+        for (val serviceProvider : serviceProviders) {
+            val count = employeesPerProviderCount();
+            val providerEmployees = createEmployees(serviceProvider, count);
+            serviceProvider.setEmployees(providerEmployees);
         }
+        return serviceProviders.stream().flatMap(sp -> sp.getEmployees().stream()).collect(Collectors.toList());
     }
 
-    private void fillEmployees() {
-        Iterator<ServiceProvider> serviceProviderIterator = serviceProviderRepository.findAll().iterator();
-        for (int i = 1; i <= LoadTestData.numberOfEmployees; i++) {
-            if (!serviceProviderIterator.hasNext())
-                serviceProviderIterator = serviceProviderRepository.findAll().iterator();
-            val employee = Employee.builder().firstName("employee" + i).lastName("lastname" + i)
-                    .serviceProvider(serviceProviderIterator.next()).build();
-            employeeRepository.save(employee);
+    private ArrayList<Employee> createEmployees(ServiceProvider serviceProvider, int count) {
+        val providerEmployees = new ArrayList<Employee>();
+        for (int i = 0; i < count; i++) {
+            val employee = fakeEmployee(serviceProvider);
+            providerEmployees.add(employee);
             log.info("Loaded test employee '" + employee.getFirstName() + " " + employee.getLastName() + "'");
         }
+        return providerEmployees;
     }
 
-    private void fillReservations() {
-        Iterator<Customer> customerIterator = customerRepository.findAll().iterator();
-        Iterator<Service> serviceIterator = serviceRepository.findAll().iterator();
-        Iterator<Employee> employeeIterator = employeeRepository.findAll().iterator();
-        for (int i = 1; i <= LoadTestData.numberOfReservations; i++) {
-            if (!customerIterator.hasNext())
-                customerIterator = customerRepository.findAll().iterator();
-            if (!serviceIterator.hasNext())
-                serviceIterator = serviceRepository.findAll().iterator();
-            if (!employeeIterator.hasNext())
-                employeeIterator = employeeRepository.findAll().iterator();
-            val reservation = Reservation.builder().dateTime(LocalDateTime.now()).customer(customerIterator.next())
-                    .service(serviceIterator.next()).employee(employeeIterator.next()).build();
-            reservationRepository.save(reservation);
-            log.info("Loaded test reservation 'ID " + reservation.getId() + " (" + reservation.getDateTime() + ")'");
+    private Employee fakeEmployee(ServiceProvider serviceProvider) {
+        return Employee.builder().firstName(faker.name().firstName()).lastName(faker.name().lastName())
+                .serviceProvider(serviceProvider).build();
+    }
+
+    private List<Service> fillServices(List<ServiceProvider> serviceProviders) {
+        for (val serviceProvider : serviceProviders) {
+            val count = servicesPerProviderCount();
+            final ArrayList<Service> providerServices = createServices(serviceProvider, count);
+            serviceProvider.setServices(providerServices);
+        }
+        return serviceProviders.stream().flatMap(sp -> sp.getServices().stream()).collect(Collectors.toList());
+    }
+
+    private ArrayList<Service> createServices(ServiceProvider serviceProvider, int count) {
+        val providerServices = new ArrayList<Service>();
+        for (int i = 0; i < count; i++) {
+            val service = fakeService(serviceProvider);
+            providerServices.add(service);
+            log.info("Loaded test service '" + service.getName() + "'");
+        }
+        return providerServices;
+    }
+
+    private Service fakeService(ServiceProvider serviceProvider) {
+        return Service.builder().name(faker.company().catchPhrase())
+                .priceUsd(Float.parseFloat(faker.commerce().price()))
+                .durationMinutes(faker.number().numberBetween(1, 7) * 10)
+                .description(StringUtils.left(faker.shakespeare().hamletQuote(), 500)).serviceProvider(serviceProvider)
+                .build();
+    }
+
+    private List<Employee> linkEmployeesAndServices(List<ServiceProvider> serviceProviders) {
+        for (ServiceProvider serviceProvider : serviceProviders) {
+            linkServiceProviderEmployeesWithServices(serviceProvider);
+        }
+        return serviceProviders.stream().flatMap(sp -> sp.getEmployees().stream()).collect(Collectors.toList());
+    }
+
+    private void linkServiceProviderEmployeesWithServices(ServiceProvider serviceProvider) {
+        for (Employee employee : serviceProvider.getEmployees()) {
+            val count = servicesPerEmployeeCount();
+            linkEmployeeWithServices(employee, serviceProvider.getServices(), count);
         }
     }
 
-    private void fillReviews() {
-        Iterator<Reservation> reservationIterator = reservationRepository.findAll().iterator();
-        for (int i = 1; i <= numberOfReviews; i++) {
-            if (!reservationIterator.hasNext())
-                reservationIterator = reservationRepository.findAll().iterator();
-            Reservation reservation = reservationIterator.next();
-            Review review = Review.builder().grade(i).message("review" + i).reservation(reservation).build();
-            reservation.setReview(review);
-            reviewRepository.save(review);
-            log.info("Loaded test review '" + review.getMessage() + "'");
-        }
-    }
-
-    private void joinEmployeesAndServices() {
-        Iterator<Service> serviceIterator = serviceRepository.findAll().iterator();
-        for (Employee employee : employeeRepository.findAll()) {
-            for (int i = 0; i < numberOfServicesPerEmployee; i++) {
-                if (!serviceIterator.hasNext())
-                    serviceIterator = serviceRepository.findAll().iterator();
-                Service service = serviceIterator.next();
-                employee.getServices().add(service);
-                service.getEmployees().add(employee);
-                serviceRepository.save(service);
-                log.info("Linked test employee '" + employee.getFirstName() + " " +
-                        employee.getLastName() + "' with test service '" + service.getName() + "'");
+    private void linkEmployeeWithServices(Employee employee, List<Service> services, int count) {
+        for (int i = 0; i < count; i++) {
+            val randomService = random(services);
+            if (!employee.getServices().contains(randomService)) {
+                employee.setServices(Lists.asList(randomService, employee.getServices().toArray(new Service[0])));
+                log.info("Linked test employee '" + employee.getFirstName() + " " + employee
+                        .getLastName() + "' with test service '" + randomService.getName() + "'");
             }
-            employeeRepository.save(employee);
         }
+    }
+
+    private <T> T random(List<T> list) {
+        return list.get(faker.random().nextInt(list.size()));
+    }
+
+    private List<Customer> fillCustomers() {
+        val count = customersCount();
+        return createCustomers(count);
+    }
+
+    private ArrayList<Customer> createCustomers(int count) {
+        val result = new ArrayList<Customer>();
+        for (int i = 0; i < count; i++) {
+            val customer = fakeCustomer();
+            result.add(customer);
+            log.info("Loaded test customer '" + customer.getFirstName() + " " + customer.getLastName() + "'");
+        }
+        return result;
+    }
+
+    private Customer fakeCustomer() {
+        return Customer.builder().firstName(faker.name().firstName()).lastName(faker.name().lastName())
+                .phoneNumber(fakePhoneNumber()).email(faker.internet().emailAddress()).build();
+    }
+
+    private List<Reservation> fillReservations(List<Customer> customers, List<Service> services) {
+        val count = reservationsCount();
+        val servicesWithEmployees = services.stream().filter(s -> !s.getEmployees().isEmpty())
+                .collect(Collectors.toList());
+        return createReservations(customers, servicesWithEmployees, count);
+    }
+
+    private ArrayList<Reservation> createReservations(List<Customer> customers, List<Service> servicesWithEmployees,
+                                                      int count) {
+        val result = new ArrayList<Reservation>();
+        for (int i = 0; i < count; i++) {
+            val reservation = createReservation(customers, servicesWithEmployees);
+            result.add(reservation);
+        }
+        return result;
+    }
+
+    private Reservation createReservation(List<Customer> customers, List<Service> servicesWithEmployees) {
+        val randomCustomer = random(customers);
+        val randomService = random(servicesWithEmployees);
+        val randomEmployee = random(randomService.getEmployees());
+        val reservation = fakeReservation(randomCustomer, randomService, randomEmployee);
+        log.info("Loaded test reservation for service '" + randomService
+                .getName() + "' and customer '" + randomCustomer.getFirstName() + " " + randomCustomer
+                .getLastName() + "' on '" + reservation.getDateTime() + "'");
+        return reservation;
+    }
+
+    private Reservation fakeReservation(Customer randomCustomer, Service randomService, Employee randomEmployee) {
+        return Reservation.builder()
+                .dateTime(faker.date().past(14, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault())
+                        .toLocalDateTime()).customer(randomCustomer).service(randomService).employee(randomEmployee)
+                .build();
+    }
+
+    private List<Review> fillReviews(List<Reservation> reservations) {
+        val count = reviewsCount();
+        return createReviews(reservations, count);
+    }
+
+    private ArrayList<Review> createReviews(List<Reservation> reservations, int count) {
+        val result = new ArrayList<Review>();
+        for (int i = 0; i < count; i++) {
+            val review = createReview(reservations);
+            result.add(review);
+        }
+        return result;
+    }
+
+    private Review createReview(List<Reservation> reservations) {
+        val randomReservation = random(reservations);
+        val review = fakeReview(randomReservation);
+        log.info("Loaded test review '" + review.getMessage() + "'");
+        return review;
+    }
+
+    private Review fakeReview(Reservation randomReservation) {
+        return Review.builder().grade(faker.number().numberBetween(1, 6))
+                .message(StringUtils.left(faker.shakespeare().hamletQuote(), 2000)).reservation(randomReservation)
+                .build();
     }
 }

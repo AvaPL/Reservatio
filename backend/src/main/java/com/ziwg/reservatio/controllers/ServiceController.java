@@ -26,22 +26,29 @@ public class ServiceController {
     private final EmployeeRepository employeeRepository;
 
     @Autowired
-    public ServiceController(ServiceProviderRepository serviceProviderRepository, ServiceRepository serviceRepository, EmployeeRepository employeeRepository) {
+    public ServiceController(ServiceProviderRepository serviceProviderRepository, ServiceRepository serviceRepository
+            , EmployeeRepository employeeRepository) {
         this.serviceProviderRepository = serviceProviderRepository;
         this.serviceRepository = serviceRepository;
         this.employeeRepository = employeeRepository;
     }
 
     @PostMapping("addService/{serviceProviderId}")
-    public ResponseEntity<HttpStatus> addService(@PathVariable Long serviceProviderId, @RequestBody ServicePojo servicePojo) {
+    public ResponseEntity<HttpStatus> addService(@PathVariable Long serviceProviderId,
+                                                 @RequestBody ServicePojo servicePojo) {
         Optional<ServiceProvider> serviceProvider = serviceProviderRepository.findById(serviceProviderId);
         if (serviceProvider.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        Service service = Service.builder().name(servicePojo.getName()).description(servicePojo.getDescription()).price(servicePojo.getPrice()).duration(servicePojo.getDuration()).serviceProvider(serviceProvider.get()).build();
-        List<String> serviceProviderEmployees = serviceProvider.get().getEmployees().stream().map(employee -> employee.getFirstName() + " " + employee.getLastName()).collect(Collectors.toList());
+        Service service = Service.builder().name(servicePojo.getName()).description(servicePojo.getDescription())
+                .priceUsd(servicePojo.getPrice()).durationMinutes(servicePojo.getDuration())
+                .serviceProvider(serviceProvider.get()).build();
+        List<String> serviceProviderEmployees = serviceProvider.get().getEmployees().stream()
+                .map(employee -> employee.getFirstName() + " " + employee.getLastName()).collect(Collectors.toList());
         if (!serviceProviderEmployees.containsAll(servicePojo.getEmployees()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        List<Employee> employeesToAdd = serviceProvider.get().getEmployees().stream().filter(employee -> servicePojo.getEmployees().contains(employee.getFirstName() + " " + employee.getLastName())).collect(Collectors.toList());
+        List<Employee> employeesToAdd = serviceProvider.get().getEmployees().stream()
+                .filter(employee -> servicePojo.getEmployees()
+                        .contains(employee.getFirstName() + " " + employee.getLastName())).collect(Collectors.toList());
         service.setEmployees(employeesToAdd);
         serviceRepository.save(service);
         addServiceToEmployees(service, employeesToAdd);
@@ -60,10 +67,14 @@ public class ServiceController {
         Optional<Service> serviceToDelete = serviceRepository.findById(serviceId);
         if (serviceToDelete.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        if (serviceToDelete.get().getReservations().stream().anyMatch(reservation -> reservation.getDateTime().isAfter(LocalDateTime.now())))
-            return new ResponseEntity<>("Cannot delete a service assigned to upcoming appointments", HttpStatus.BAD_REQUEST);
+        if (serviceToDelete.get().getReservations().stream()
+                .anyMatch(reservation -> reservation.getDateTime().isAfter(LocalDateTime.now())))
+            return new ResponseEntity<>("Cannot delete a service assigned to upcoming appointments",
+                    HttpStatus.BAD_REQUEST);
         ServiceProvider serviceProvider = serviceToDelete.get().getServiceProvider();
-        serviceProvider.setServices(serviceProvider.getServices().stream().filter(service -> service.getId().equals(serviceId)).collect(Collectors.toList()));
+        serviceProvider
+                .setServices(serviceProvider.getServices().stream().filter(service -> service.getId().equals(serviceId))
+                        .collect(Collectors.toList()));
         serviceProviderRepository.save(serviceProvider);
         serviceToDelete.get().setServiceProvider(null);
         deleteServiceFromEmployees(serviceToDelete.get());
@@ -72,7 +83,8 @@ public class ServiceController {
 
     private void deleteServiceFromEmployees(Service serviceToDelete) {
         for (Employee employee : serviceToDelete.getEmployees()) {
-            employee.setServices(employee.getServices().stream().filter(service -> !service.getId().equals(serviceToDelete.getId())).collect(Collectors.toList()));
+            employee.setServices(employee.getServices().stream()
+                    .filter(service -> !service.getId().equals(serviceToDelete.getId())).collect(Collectors.toList()));
             employeeRepository.save(employee);
         }
     }
@@ -89,12 +101,13 @@ public class ServiceController {
     private void updateService(Service serviceToEdit, ServicePojo servicePojo) {
         serviceToEdit.setName(servicePojo.getName());
         serviceToEdit.setDescription(servicePojo.getDescription());
-        serviceToEdit.setPrice(servicePojo.getPrice());
-        serviceToEdit.setDuration(servicePojo.getDuration());
+        serviceToEdit.setPriceUsd(servicePojo.getPrice());
+        serviceToEdit.setDurationMinutes(servicePojo.getDuration());
         serviceRepository.save(serviceToEdit);
         deleteServiceFromEmployees(serviceToEdit);
         List<Employee> employees = serviceToEdit.getServiceProvider().getEmployees();
-        List<Employee> newEmployees = employees.stream().filter(employee -> servicePojo.getEmployees().contains(employee.getFirstName() + " " + employee.getLastName())).collect(Collectors.toList());
+        List<Employee> newEmployees = employees.stream().filter(employee -> servicePojo.getEmployees()
+                .contains(employee.getFirstName() + " " + employee.getLastName())).collect(Collectors.toList());
         addServiceToEmployees(serviceToEdit, newEmployees);
     }
 }

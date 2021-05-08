@@ -22,10 +22,10 @@ public class Service {
     private String name;
     @NotNull
     @Column
-    private Float price;
+    private Float priceUsd;
     @NotNull
     @Column
-    private Integer duration;
+    private Integer durationMinutes;
     @Column(length = 500)
     private String description;
 
