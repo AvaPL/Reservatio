@@ -1,11 +1,11 @@
-import React, {Component} from "react";
-import {Button, Modal} from "react-bootstrap";
-import Form from "react-bootstrap/Form";
+import React, {Component} from 'react';
 import {authService} from "../../auth/AuthService";
 import {backendHost} from "../../Config";
-import styles from './Employees.module.scss';
+import {Button, Modal} from "react-bootstrap";
+import styles from "./Employees.module.scss";
+import Form from "react-bootstrap/Form";
 
-export class AddEmployeeModal extends Component {
+class EditEmployeeModal extends Component {
 
     constructor(props, context) {
         super(props, context);
@@ -56,6 +56,7 @@ export class AddEmployeeModal extends Component {
         return (
             <Modal
                 show={this.props.show}
+                onShow={this.onShow}
                 onHide={this.props.onHide}
                 size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
@@ -63,19 +64,19 @@ export class AddEmployeeModal extends Component {
             >
                 <Modal.Header closeButton>
                     <Modal.Title id="contained-modal-title-vcenter" className={styles.formTitle}>
-                        Add new employee
+                        Edit employee
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
                         <Form.Group controlId="firstName">
                             <Form.Label className={styles.formLabel}>First name</Form.Label>
-                            <Form.Control type="text" placeholder="First name"
+                            <Form.Control type="text" defaultValue={this.props.employeeToEdit?.firstName}
                                           onChange={event => this.handleChange(event)}/>
                         </Form.Group>
                         <Form.Group controlId="lastName">
                             <Form.Label className={styles.formLabel}>Last name</Form.Label>
-                            <Form.Control type="text" placeholder="Last name"
+                            <Form.Control type="text" defaultValue={this.props.employeeToEdit?.lastName}
                                           onChange={event => this.handleChange(event)}/>
                         </Form.Group>
                         <Form.Group controlId="services">
@@ -88,22 +89,23 @@ export class AddEmployeeModal extends Component {
                 </Modal.Body>
                 <Modal.Footer>
                     <Button className={`${styles.buttonSecondary} shadow-none`}
-                            onClick={this.props.onHide}>Cancel</Button>
+                            onClick={this.handleHide}>Cancel</Button>
                     <Button className={`${styles.buttonPrimary} shadow-none`}
-                            onClick={this.handleAddClicked}>Add</Button>
+                            onClick={this.handleEditClicked}>Edit</Button>
                 </Modal.Footer>
             </Modal>
         );
     }
 
-    handleAddClicked = () => {
-        let employeeToAdd = {
-            firstName: this.state.firstName,
-            lastName: this.state.lastName,
-            services: Array.from(this.state.checkedServices)
-        }
-        this.props.onClick(employeeToAdd);
+    onShow = () => {
+        const checkedServices = this.state.checkedServices
+        this.props.employeeToEdit?.services.forEach(service => checkedServices.add(service.name))
+        this.setState({checkedServices: checkedServices});
+    };
+
+    handleHide = () => {
         this.setState({checkedServices: new Set()})
+        this.props.onHide();
     };
 
     renderServices() {
@@ -115,13 +117,10 @@ export class AddEmployeeModal extends Component {
             return this.state.services.map(service =>
                 <Form.Check id={service.name} key={service.name} className={styles.formCheckbox}
                             type="checkbox" label={service.name}
+                            checked={this.state.checkedServices.has(service.name)}
                             onChange={event => this.handleServiceChange(event)}/>
             );
         }
-    }
-
-    handleChange(event) {
-        this.setState({[event.target.id]: event.target.value})
     }
 
     handleServiceChange(event) {
@@ -131,4 +130,21 @@ export class AddEmployeeModal extends Component {
         else checkedServices.delete(eventId)
         this.setState({checkedServices: checkedServices});
     };
+
+    handleEditClicked = () => {
+        let employeeToEdit = {
+            id: this.props.employeeToEdit.id,
+            firstName: this.state.firstName ? this.state.firstName : this.props.employeeToEdit.firstName,
+            lastName: this.state.lastName ? this.state.lastName : this.props.employeeToEdit.lastName,
+            services: Array.from(this.state.checkedServices)
+        }
+        this.props.onClick(employeeToEdit);
+        this.setState({checkedServices: new Set()})
+    };
+
+    handleChange(event) {
+        this.setState({[event.target.id]: event.target.value})
+    }
 }
+
+export default EditEmployeeModal;

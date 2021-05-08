@@ -93,3 +93,8 @@ keycloak:
             - /rest/serviceProviderEmployeesViews/*
             - /rest/addEmployee/*
             - /rest/deleteEmployee/*
+            - /rest/serviceProviderServicesViews/*
+            - /rest/addService/*
+            - /rest/deleteService/*
+            - /rest/editService/*
+            - /rest/editEmployee/*
