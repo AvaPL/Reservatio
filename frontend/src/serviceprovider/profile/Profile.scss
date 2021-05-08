@@ -1,26 +1,17 @@
 .baseprofile{
-  // Margin
-  margin-top: 50px;
-  margin-right: 20%;
-  margin-left: 20%;
-  margin-bottom: 50px;
+  // Size
+  width: auto;
+
   // Positioning
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   // Frame
-  border: 2px ridge black;
+  //border: 2px ridge black;
 }
 
 .salon-name-photo{
-  // Positioning
-  display: flex;
-  flex-direction: column;
-}
-
-.salon-name{
-  // Text
-  font-size: 5vw;
-  font-weight: bold;
   // Positioning
   display: flex;
   flex-direction: column;
@@ -43,11 +34,7 @@
   justify-content: center;
   align-items: center;
   // Text
-  font-size: 2vw;
-  // Width
-  min-width: 5vw;
-  // Height
-  max-height: 5vw;
+  font-size: 20px;
 }
 
 .salon-photo-button-container{
@@ -64,54 +51,52 @@
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+  // Size
+  width: 425px;
 }
 
 .salon-address-row{
   // Positioning
   display: flex;
   margin-top: 20px;
-  flex-display: row;
   // Width
   width: 100%;
 }
 
-.salon-address-row-blank{
-  // Width
-  width: 6%;
+.salon-address-blank{
+  width: 3%;
 }
 
 .salon-address-row-text{
   // Positioning
   display: flex;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
   // Width
-  min-width: 44%;
+  width: 47%;
   // Text
-  font-size: 3vw;
+  font-size: 20px;
 }
 
 .salon-address-row-value{
   // Positioning
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
   // Width
-  min-width: 44%;
+  width: 50%;
 }
 
 .salon-address-input{
   // Positioning
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
   // Width
-  max-width: 100%;
+  width: 47%;
   // Text
-  font-size: 3vw;
-  color: darkgray;
-  // Frame
-  border-radius: 4px;
+  font-size: 20px;
 }
 
 .salon-address-button-container{
@@ -134,9 +119,9 @@
   align-items: center;
   margin: 20px;
   // Size
-  font-size: 2vw;
+  font-size: 20px;
   // Width
-  min-width: 5vw;
+  min-width: 30px;
   // Height
-  max-height: 5vw;
+  max-height: 30px;
 }

@@ -20,4 +20,31 @@ from service s
          join employee_service es on s.id = es.service_id
          join employee e on e.id = es.employee_id;
 
+create or replace view salon_view
+as
+select sp.id as id, sp.name as name, sp.phone_number as phone_nr, sp.email as email, a.street as street,
+       a.property_number as property_nr, a.city as city, a.post_code as post_code
+from service_provider sp
+    join address a on a.id = sp.address_id;
 
+create or replace view booking_view
+as
+select sp.id as id, sp.name as name, a.city as city, a.street as street, a.property_number as property_nr
+from service_provider sp
+    join address a on sp.address_id = a.id;
+
+create or replace view booking_services_view
+as
+select s.id as id, s.name as name, s.price as price, s.service_provider_id as service_provider_id
+from service s;
+
+create or replace view booking_service_view
+as
+select s.id as id, s.service_provider_id as service_provider_id
+from service s;
+
+create or replace view booking_reservation_view
+as
+select r.id as id, r.service_id as service_id, r2.grade as grade, r2.message as message
+from reservation r
+    join review r2 on r.id = r2.reservation_id;
