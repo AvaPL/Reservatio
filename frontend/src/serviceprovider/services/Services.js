@@ -140,8 +140,8 @@ class Services extends Component {
                                       active={this.state.selectedService?.id === service.id}>
                                 <span className="font-weight-bold" style={{fontSize: "150%"}}>About:</span>
                                 <div>Description: {service.description}</div>
-                                <div>Price: {service.price}$</div>
-                                <div>Duration: {service.duration} minutes</div>
+                                <div>Price: {service.priceUsd}$</div>
+                                <div>Duration: {service.durationMinutes} minutes</div>
                                 <span className="font-weight-bold" style={{fontSize: "150%"}}>Employees:</span>
                                 {
                                     <ul>
@@ -213,13 +213,13 @@ class Services extends Component {
 
     handleChange = (event, component) => {
         let formErrors = component.state.formErrors
-        if (event.target.id === "price") {
+        if (event.target.id === "priceUsd") {
             if (event.target.value < 0)
                 formErrors.add("Price cannot be lower than 0")
             else
                 formErrors.delete("Price cannot be lower than 0")
         }
-        if (event.target.id === "duration") {
+        if (event.target.id === "durationMinutes") {
             if (event.target.value < 0)
                 formErrors.add("Duration cannot be lower than 0")
             else
