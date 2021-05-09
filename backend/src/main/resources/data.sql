@@ -42,7 +42,7 @@ from employee e;
 create
 or replace view service_view
 as
-select s.id, s.name, s.description, s.price, s.duration, s.service_provider_id
+select s.id, s.name, s.description, s.price_usd, s.duration_minutes, s.service_provider_id
 from service s;
 
 create

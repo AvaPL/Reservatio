@@ -46,7 +46,7 @@ class CustomerRegistrationForm extends Component {
                     </Form.Group>
                     <Form.Group controlId="phoneNumber">
                         <Form.Label className={authStyles.formLabel}>Phone number</Form.Label>
-                        <Form.Control required maxLength={20} pattern="\+?\d+" type="text"
+                        <Form.Control required maxLength={30} pattern="\+?\d+" type="text"
                                       placeholder="Enter phone number"
                                       onChange={this.props.handleChange}
                                       onKeyDown={this.props.handleKeyDown}/>
