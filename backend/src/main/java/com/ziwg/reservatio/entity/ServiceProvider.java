@@ -37,4 +37,8 @@ public class ServiceProvider {
     @OneToMany(mappedBy = "serviceProvider")
     @Singular
     private List<Employee> employees;
+
+    @ManyToMany(mappedBy = "favourites")
+    @Singular
+    private List<Customer> customers;
 }

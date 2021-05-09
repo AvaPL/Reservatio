@@ -200,7 +200,7 @@ public class LoadTestData {
 
     private Service fakeService(ServiceProvider serviceProvider) {
         return Service.builder().name(faker.company().catchPhrase())
-                .priceUsd(Float.parseFloat(faker.commerce().price()))
+                .priceUsd(Float.parseFloat(faker.commerce().price().replaceAll(",",".")))
                 .durationMinutes(faker.number().numberBetween(1, 7) * 10)
                 .description(StringUtils.left(faker.shakespeare().hamletQuote(), 500)).serviceProvider(serviceProvider)
                 .build();

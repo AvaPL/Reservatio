@@ -31,4 +31,13 @@ public class Customer {
     @OneToMany(mappedBy = "customer")
     @Singular
     private List<Reservation> reservations;
+
+    @ManyToMany
+    @JoinTable(
+            name = "favourites",
+            joinColumns = @JoinColumn(name = "customer_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_provider_id")
+    )
+    @Singular
+    private List<ServiceProvider> favourites;
 }
