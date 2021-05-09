@@ -1,27 +1,58 @@
 import React, {Component} from 'react';
 import "../../stylesheets/Customer.scss";
+import {authService} from "../../auth/AuthService";
+import {backendHost} from "../../Config";
 
 class Explore extends Component {
 
-    state = {
-        width: window.innerWidth,
-        height: window.innerHeight,
-        salonButtonClicked: false,
-        featuredSalons: [
-            {
-                name: "uBasi",
-                imageUrl: "https://pliki.propertydesign.pl/i/11/75/94/117594_r0_1140.jpg"
-            },
-            {
-                name: "Cool salon",
-                imageUrl: "https://welpmagazine.com/wp-content/uploads/2020/10/Filament-hair-salon1.jpg"
-            },
-            {
-                name: "Another salon",
-                imageUrl: "https://www.triss.com.pl/wp-content/uploads/granat-2768U-1.jpg"
-            }
-        ]
-    };
+    constructor(props, context) {
+        super(props, context);
+        this.state = {
+            serviceProviders: [],
+            isLoaded: false,
+            error: null,
+        };
+    }
+
+    componentDidMount() {
+        this.fetchServiceProviders().then(this.processServiceProviders(), this.handleError());
+    }
+
+    fetchServiceProviders() {
+        //const customerId = authService.token?.entityId;
+        return authService.fetchAuthenticated(`${backendHost}/rest/serviceProvidersViews`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch");
+                }
+                return response.json();
+            })
+            .then(response => response._embedded.serviceProvidersViews);
+    }
+
+    processServiceProviders() {
+        return serviceProviders => {
+            this.setState({
+                isLoaded: true,
+                serviceProviders: serviceProviders
+            });
+        };
+    }
+
+    handleError() {
+        return error => {
+            this.setState({
+                isLoaded: true,
+                error: error
+            })
+            console.log("Error occurred: ", error);
+        }
+    }
+
+    citiesSelect(){
+        console.log(this.state.serviceProviders);
+        return this.state.serviceProviders.map((cities, index) => <option key={index}>{cities.city}</option>);
+    }
 
     render() {
         return (
@@ -42,10 +73,8 @@ class Explore extends Component {
                         <div className="input-group" style={{marginTop: "5%"}}>
                             <label className="input-group-text" htmlFor="inputGroupSelect01">City</label>
                             <select className="form-select" id="inputGroupSelect01" style={{width: "90%"}}>
-                            <option selected>Select city</option>
-                            <option value="1">One</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                                <option>Select city</option>
+                                {this.citiesSelect()}
                         </select>
                         </div>
                     </div>
