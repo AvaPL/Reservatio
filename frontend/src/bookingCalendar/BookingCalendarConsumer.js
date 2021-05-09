@@ -19,7 +19,7 @@ export default function BookingCalendarConsumer() {
         score: 0,
         name: "Nazwa salonu",
         serviceName: "Strzyżenie",
-        price: "60 zł",
+        price: "60$",
         address: "ul. Owaka 4, Wrocław",
         terms: [
             {
