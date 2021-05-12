@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
+// TODO Change base path to /serviceProvider/{serviceProviderId} (?)
 @RequestMapping("${spring.data.rest.base-path}")
 public class ServiceController {
 
