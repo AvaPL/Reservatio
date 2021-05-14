@@ -26,12 +26,12 @@ export default function Booking() {
       {
         id: 1,
         name: "Strzyżenie damskie",
-        price: 60,
+        priceUsd: 60,
       },
       {
         id: 2,
         name: "Strzyżenie męskie",
-        price: 20,
+        priceUsd: 20,
       },
     ],
     reviews: [
@@ -115,7 +115,7 @@ export default function Booking() {
   );
 }
 
-function ServiceCard({ name, price, serviceid, serviceproviderid }) {
+function ServiceCard({ name, priceUsd, serviceid, serviceproviderid }) {
   return (
     <Card body className={styles.marginBottom}>
       <Row>
@@ -128,7 +128,7 @@ function ServiceCard({ name, price, serviceid, serviceproviderid }) {
               variant="primary"
               href={`/booking/${serviceproviderid}/${serviceid}`}
           >
-            {price} zł
+            {priceUsd} zł
           </Button>
         </Col>
       </Row>

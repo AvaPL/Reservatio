@@ -82,14 +82,14 @@ class EditServiceModal extends Component {
                             <Form.Control type="text" defaultValue={this.props.serviceToEdit?.description}
                                           onChange={event => this.props.handleChange(event, this)}/>
                         </Form.Group>
-                        <Form.Group controlId="price">
-                            <Form.Label className={styles.formLabel}>Price</Form.Label>
-                            <Form.Control type="number" defaultValue={this.props.serviceToEdit?.price}
+                        <Form.Group controlId="priceUsd">
+                            <Form.Label className={styles.formLabel}>Price (USD)</Form.Label>
+                            <Form.Control type="number" defaultValue={this.props.serviceToEdit?.priceUsd}
                                           onChange={event => this.props.handleChange(event, this)}/>
                         </Form.Group>
-                        <Form.Group controlId="duration">
-                            <Form.Label className={styles.formLabel}>Duration</Form.Label>
-                            <Form.Control type="number" defaultValue={this.props.serviceToEdit?.duration}
+                        <Form.Group controlId="durationMinutes">
+                            <Form.Label className={styles.formLabel}>Duration (minutes)</Form.Label>
+                            <Form.Control type="number" defaultValue={this.props.serviceToEdit?.durationMinutes}
                                           onChange={event => this.props.handleChange(event, this)}/>
                         </Form.Group>
                         <Form.Group controlId="employees">
@@ -158,8 +158,8 @@ class EditServiceModal extends Component {
                 id: this.props.serviceToEdit.id,
                 name: this.state.name ? this.state.name : this.props.serviceToEdit.name,
                 description: this.state.description ? this.state.description : this.props.serviceToEdit.description,
-                price: this.state.price ? this.state.price : this.props.serviceToEdit.price,
-                duration: this.state.duration ? this.state.duration : this.props.serviceToEdit.duration,
+                priceUsd: this.state.priceUsd ? this.state.priceUsd : this.props.serviceToEdit.priceUsd,
+                durationMinutes: this.state.durationMinutes ? this.state.durationMinutes : this.props.serviceToEdit.durationMinutes,
                 employees: Array.from(this.state.checkedEmployees)
             }
             this.props.onClick(serviceToEdit);

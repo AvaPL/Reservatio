@@ -17,8 +17,8 @@ public class ServiceView {
     private Long id;
     private String name;
     private String description;
-    private Float price;
-    private Integer duration;
+    private Float priceUsd;
+    private Integer durationMinutes;
 
     @ManyToOne
     @JoinColumn(name = "service_provider_id")
