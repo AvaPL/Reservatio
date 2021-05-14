@@ -1,33 +1,30 @@
 package com.ziwg.reservatio.entity;
 
 import com.sun.istack.NotNull;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Data
-@NoArgsConstructor(access = AccessLevel.PRIVATE, force = true)
-@RequiredArgsConstructor
+@Builder
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Reservation {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
-    private final LocalDateTime dateTime;
+    private LocalDateTime dateTime;
 
     @ManyToOne
-    private final Customer customer;
+    private Customer customer;
 
     @ManyToOne
-    private final Service service;
+    private Service service;
 
     @ManyToOne
-    private final Employee employee;
+    private Employee employee;
 }
