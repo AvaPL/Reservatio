@@ -86,6 +86,7 @@ keycloak:
       security-collections:
         - patterns:
             - /rest/customer/* # TODO: Remove after creating first customer path
+            - /rest/bookingViews/*
     - auth-roles:
         - service_provider
       security-collections:
@@ -93,4 +94,5 @@ keycloak:
             - /rest/serviceProviderEmployeesViews/*
             - /rest/addEmployee/*
             - /rest/deleteEmployee/*
+            - /rest/updateServiceProvider/*
             - /rest/salonViews/*

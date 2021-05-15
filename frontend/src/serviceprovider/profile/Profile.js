@@ -1,23 +1,29 @@
 import React, {Component} from 'react';
-import './Profile.scss'
+import './Profile.scss';
 import {authService} from "../../auth/AuthService";
 import {backendHost} from "../../Config";
+import {Button, Modal} from "react-bootstrap";
 
 class Profile extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: "Name of salon",
-            source: "https://ocdn.eu/pulscms-transforms/1/iW-k9kpTURBXy9mOTk1NzZhNTY3YjhlYjljZWQ3MDcxMGJjNWEzZTZhNy5qcGeTlQMAFs0C1M0Bl5MFzQMUzQG8kwmmNTk2MTk0BoGhMAE/gettyimages-954867550.jpg",
+            name : '',
+            city : '',
+            post_code : '',
+            street : '',
+            property_nr : '',
+            phone_nr : '',
+            email : '',
+            source: "http://localhost:9000/reservatio/serviceprovider",
             alt: "photo",
-            street: "Oławska 16",
-            phone: "123456789",
-            email: "abc@gmail.com",
-            city: "Wrocław",
-
             error: null,
-            data: {}
-        };
+            data: {},
+            file : null,
+            showModalChange : false
+        }
+        this.changeSalonProfile = this.changeSalonProfile.bind(this);
+        this.changePhoto = this.changePhoto.bind(this);
     }
 
     componentDidMount() {
@@ -53,14 +59,93 @@ class Profile extends Component {
         }
     }
 
+    changeHandler = (event) => {
+        let name = event.target.name;
+        let value = event.target.value;
+        this.setState({[name]: value});
+    }
+
+    clearData(){
+        document.getElementById('1').value = '';
+        document.getElementById('2').value = '';
+        document.getElementById('3').value = '';
+        document.getElementById('4').value = '';
+        document.getElementById('5').value = '';
+        document.getElementById('6').value = '';
+        document.getElementById('7').value = '';
+    }
+
+    changePhoto(event){
+        this.setState({
+            file: URL.createObjectURL(event.target.files[0])
+        })
+    }
+
+    addChangeModal(){
+        return(
+            <Modal
+                show={this.state.showModalChange}
+                onHide={() => this.setState({showModalChange: false})}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title id="contained-modal-title-vcenter">
+                        Change Photo
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <input type="file" onChange={this.changePhoto}/>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button className="employees-button-secondary shadow-none"
+                            onClick={() => this.setState({showModalChange: false})}>Cancel</Button>
+                    <Button className="employees-button-primary shadow-none" onClick={this.onChangeClicked} >Change</Button>
+                </Modal.Footer>
+            </Modal>
+        );
+    }
+    onChangeClicked = () => {
+        if (this.state.file === null){
+            console.log("Nie dodałeś zdjęcia");
+        }
+        else
+        this.setState({showModalChange: false});
+    }
+
     addNamePhoto() {
         return (
             <div className={'salon-name-photo'}>
                 <div className="card bg-dark text-white">
-                    <img className="card-img salon-photo" src={this.state.source} alt={this.state.alt}/>
+                    <img className="card-img salon-photo" src={this.state.source + authService.token?.entityId + '.jpg'} alt={this.state.alt}/>
                     <div className="card-img-overlay salon-photo-button-container">
-                        <button className={'salon-photo-button'}> Change photo </button>
+                        <button className={'salon-photo-button'} onClick={() => this.setState({showModalChange: true})}> Change photo </button>
                     </div>
+                </div>
+                {this.addChangeModal()}
+            </div>
+        );
+    }
+
+    addAddressData(name, id, placeholder, value){
+        return(
+            <div className={'salon-address-row'}>
+                <div className={'salon-address-blank'}>
+
+                </div>
+                <div className={'salon-address-row-text'}>
+                    {name}:
+                </div>
+                <input className={'salon-address-input'}
+                       id = {id}
+                       type='text'
+                       placeholder={placeholder}
+                       name = {value}
+                       onChange={this.changeHandler}
+                />
+                <div className={'salon-address-blank'}>
+
                 </div>
             </div>
         );
@@ -69,123 +154,92 @@ class Profile extends Component {
     addAddress(){
         return(
             <div className={'salon-address'}>
-                <div className={'salon-address-row'}>
-                    <div className={'salon-address-blank'}>
 
-                    </div>
-                    <div className={'salon-address-row-text'}>
-                        Salon name:
-                    </div>
-                    <input className={'salon-address-input'}
-                        type='text'
-                        placeholder={this.state.data.name}
-                    />
-                    <div className={'salon-address-blank'}>
-
-                    </div>
-                </div>
-
-                <div className={'salon-address-row'}>
-                    <div className={'salon-address-blank'}>
-
-                    </div>
-                    <div className={'salon-address-row-text'}>
-                        City:
-                    </div>
-                    <input className={'salon-address-input'}
-                           type='text'
-                           placeholder={this.state.data.city}
-                    />
-                    <div className={'salon-address-blank'}>
-
-                    </div>
-                </div>
-
-                <div className={'salon-address-row'}>
-                    <div className={'salon-address-blank'}>
-
-                    </div>
-                    <div className={'salon-address-row-text'}>
-                        Post code:
-                    </div>
-                    <input className={'salon-address-input'}
-                           type='text'
-                           placeholder={this.state.data.post_code}
-                    />
-                    <div className={'salon-address-blank'}>
-
-                    </div>
-                </div>
-
-                <div className={'salon-address-row'}>
-                    <div className={'salon-address-blank'}>
-
-                    </div>
-                    <div className={'salon-address-row-text'}>
-                        Street:
-                    </div>
-                    <input className={'salon-address-input'}
-                           type='text'
-                           placeholder={this.state.data.street}
-                    />
-                    <div className={'salon-address-blank'}>
-
-                    </div>
-                </div>
-
-                <div className={'salon-address-row'}>
-                    <div className={'salon-address-blank'}>
-
-                    </div>
-                    <div className={'salon-address-row-text'}>
-                        Propoerty number:
-                    </div>
-                    <input className={'salon-address-input'}
-                           type='text'
-                           placeholder={this.state.data.property_nr}
-                    />
-                    <div className={'salon-address-blank'}>
-
-                    </div>
-                </div>
-
-                <div className={'salon-address-row'}>
-                    <div className={'salon-address-blank'}>
-
-                    </div>
-                    <div className={'salon-address-row-text'}>
-                        Email:
-                    </div>
-                    <input className={'salon-address-input'}
-                           type='text'
-                           placeholder={this.state.data.email}
-                    />
-                    <div className={'salon-address-blank'}>
-
-                    </div>
-                </div>
-
-                <div className={'salon-address-row'}>
-                    <div className={'salon-address-blank'}>
-
-                    </div>
-                    <div className={'salon-address-row-text'}>
-                        Phone number:
-                    </div>
-                    <input className={'salon-address-input'}
-                           type='text'
-                           placeholder={this.state.data.phone_nr}
-                    />
-                    <div className={'salon-address-blank'}>
-
-                    </div>
-                </div>
+                {this.addAddressData('Salon name','1',this.state.data.name, 'name')}
+                {this.addAddressData('City','2',this.state.data.city, 'city')}
+                {this.addAddressData('Post code','3',this.state.data.post_code, 'post_code')}
+                {this.addAddressData('Street','4',this.state.data.street, 'street')}
+                {this.addAddressData('Property number','5',this.state.data.property_nr, 'property_nr')}
+                {this.addAddressData('Email','6',this.state.data.email, 'email')}
+                {this.addAddressData('Phone number','7',this.state.data.phone_nr, 'phone_nr')}
 
                 <div className={'salon-address-button-container'}>
-                    <button className={'salon-address-button'}> Change info </button>
+                    <button className={'salon-address-button'} onClick={this.changeSalonProfile}> Change info </button>
                 </div>
             </div>
         );
+    }
+
+    changeSalonProfile(){
+        let changeddata = {
+            name : '',
+            phone_nr : '',
+            email : '',
+            street : '',
+            property_nr : '',
+            city : '',
+            post_code : ''
+        };
+        if (this.state.name === '') {
+            changeddata.name = this.state.data.name;
+        }
+        else {
+            changeddata.name = this.state.name;
+        }
+        if (this.state.phone_nr === '') {
+            changeddata.phone_nr = this.state.data.phone_nr;
+        }
+        else {
+            changeddata.phone_nr = this.state.phone_nr;
+        }
+        if (this.state.email === '') {
+            changeddata.email = this.state.data.email;
+        }
+        else {
+            changeddata.email = this.state.email;
+        }
+        if (this.state.street === '') {
+            changeddata.street = this.state.data.street;
+        }
+        else {
+            changeddata.street = this.state.street;
+        }
+        if (this.state.property_nr === '') {
+            changeddata.property_nr = this.state.data.property_nr;
+        }
+        else {
+            changeddata.property_nr = this.state.property_nr;
+        }
+        if (this.state.city === '') {
+            changeddata.city = this.state.data.city;
+        }
+        else {
+            changeddata.city = this.state.city;
+        }
+        if (this.state.post_code === '') {
+            changeddata.post_code = this.state.data.post_code;
+        }
+        else {
+            changeddata.post_code = this.state.post_code;
+        }
+
+        const serviceProviderId = authService.token?.entityId;
+        authService.fetchAuthenticated(`${backendHost}/rest/updateServiceProvider/${serviceProviderId}`, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(changeddata)
+        }).then(response => {
+            if (!response.ok) {
+                throw response;
+            }
+            return response;
+        })
+            .then(() => console.log("Salon changed successfully"))
+            .then(this.clearData())
+            .then(() => this.fetchSalon().then(this.processSalon(), this.handleError()));
     }
 
     render() {

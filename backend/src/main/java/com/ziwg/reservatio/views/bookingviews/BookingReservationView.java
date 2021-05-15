@@ -17,6 +17,8 @@ public class BookingReservationView {
     private Long id;
     private Integer grade;
     private String message;
+    private String first_name;
+    private String last_name;
 
     @ManyToOne
     @JoinColumn(name = "service_id")

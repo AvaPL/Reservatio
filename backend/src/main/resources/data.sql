@@ -45,6 +45,7 @@ from service s;
 
 create or replace view booking_reservation_view
 as
-select r.id as id, r.service_id as service_id, r2.grade as grade, r2.message as message
+select r.id as id, r.service_id as service_id, r2.grade as grade, r2.message as message, c.first_name as first_name, c.last_name as last_name
 from reservation r
-    join review r2 on r.id = r2.reservation_id;
+    join review r2 on r.id = r2.reservation_id
+    join customer c on r.customer_id = c.id;

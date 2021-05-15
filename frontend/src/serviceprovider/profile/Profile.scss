@@ -1,7 +1,6 @@
 .baseprofile{
   // Size
   width: auto;
-
   // Positioning
   display: flex;
   flex-direction: column;
@@ -20,6 +19,7 @@
 .salon-photo{
   // Photo proportion
   aspect-ratio: 16 / 9;
+  max-width: 800px;
 }
 
 .salon-photo-button{
