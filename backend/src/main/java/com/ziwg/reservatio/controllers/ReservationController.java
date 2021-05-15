@@ -23,12 +23,10 @@ public class ReservationController {
         _reservationRepository = reservationRepository;
     }
 
-    @PostMapping("addReservation/{serviceProviderId}")
-    public ResponseEntity<HttpStatus> AddReservation(@PathVariable Long serviceProviderId,
-                                                     @RequestBody ReservationToAddPojo reservationToAdd) {
-        Service service = Service.builder().id(serviceProviderId).build();
+    @PostMapping("reservation/")
+    public ResponseEntity<HttpStatus> AddReservation(@RequestBody ReservationToAddPojo reservationToAdd) {
         Employee employee = Employee.builder().id(reservationToAdd.getEmployeeId()).build();
-        Reservation reservation = Reservation.builder().service(service).employee(employee).build();
+        Reservation reservation = Reservation.builder().employee(employee).dateTime(reservationToAdd.getDateTime()).build();
         _reservationRepository.save(reservation);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -45,14 +43,14 @@ public class ReservationController {
         return new ResponseEntity<>(foundReservations, HttpStatus.FOUND);
     }
 
-    @DeleteMapping("deleteReservation/{reservationId}")
+    @DeleteMapping("reservation/{reservationId}")
     public ResponseEntity<HttpStatus> DeleteReservation(@PathVariable Long reservationId) {
         _reservationRepository.deleteById(reservationId);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("bookReservation/{reservationId}")
+    @PatchMapping("bookReservation/{reservationId}")
     public ResponseEntity<HttpStatus> ReserveReservation(@PathVariable Long reservationId,
                                                          @RequestBody ReservationToReservePojo reservationToReserve) {
         Optional<Reservation> reservationToEdit = _reservationRepository.findById(reservationId);
@@ -65,7 +63,7 @@ public class ReservationController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("cancelReservation/{reservationId}")
+    @PatchMapping("cancelReservation/{reservationId}")
     public ResponseEntity<HttpStatus> CancelReservation(@PathVariable Long reservationId) {
         Optional<Reservation> reservationToEdit = _reservationRepository.findById(reservationId);
         if (reservationToEdit.isEmpty()){
@@ -79,11 +77,13 @@ public class ReservationController {
 
     private void updateReservationConsumer(Reservation reservationToEdit, ReservationToReservePojo reservationToReserve) {
         reservationToEdit.setCustomer(Customer.builder().id(reservationToReserve.getCustomerId()).build());
+        reservationToEdit.setService(Service.builder().id(reservationToReserve.getServiceId()).build());
         _reservationRepository.save(reservationToEdit);
     }
 
     private void updateReservationConsumer(Reservation reservationToEdit) {
-        reservationToEdit.setCustomer(Customer.builder().id(null).build());
+        reservationToEdit.setCustomer(null);
+        reservationToEdit.setService(null);
         _reservationRepository.save(reservationToEdit);
     }
 }

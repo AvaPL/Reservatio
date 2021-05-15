@@ -21,14 +21,14 @@ import java.util.stream.Collectors;
 // TODO Change base path to /serviceProvider/{serviceProviderId} (?)
 @RequestMapping("${spring.data.rest.base-path}")
 public class ServiceController {
-
     private final ServiceProviderRepository serviceProviderRepository;
     private final ServiceRepository serviceRepository;
     private final EmployeeRepository employeeRepository;
 
     @Autowired
-    public ServiceController(ServiceProviderRepository serviceProviderRepository, ServiceRepository serviceRepository
-            , EmployeeRepository employeeRepository) {
+    public ServiceController(ServiceProviderRepository serviceProviderRepository,
+                             ServiceRepository serviceRepository,
+                             EmployeeRepository employeeRepository) {
         this.serviceProviderRepository = serviceProviderRepository;
         this.serviceRepository = serviceRepository;
         this.employeeRepository = employeeRepository;
@@ -73,9 +73,9 @@ public class ServiceController {
             return new ResponseEntity<>("Cannot delete a service assigned to upcoming appointments",
                     HttpStatus.BAD_REQUEST);
         ServiceProvider serviceProvider = serviceToDelete.get().getServiceProvider();
-        serviceProvider
-                .setServices(serviceProvider.getServices().stream().filter(service -> service.getId().equals(serviceId))
-                        .collect(Collectors.toList()));
+        serviceProvider.setServices(serviceProvider.getServices().stream()
+                .filter(service -> service.getId().equals(serviceId))
+                .collect(Collectors.toList()));
         serviceProviderRepository.save(serviceProvider);
         serviceToDelete.get().setServiceProvider(null);
         deleteServiceFromEmployees(serviceToDelete.get());
