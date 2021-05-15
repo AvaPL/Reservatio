@@ -79,7 +79,7 @@ public class ServiceController {
         serviceProviderRepository.save(serviceProvider);
         serviceToDelete.get().setServiceProvider(null);
         deleteServiceFromEmployees(serviceToDelete.get());
-        serviceRepository.delete(serviceToDelete.get());
+        serviceRepository.save(serviceToDelete.get());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
