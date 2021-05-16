@@ -27,6 +27,11 @@ public class ServiceProvider {
     private String phoneNumber;
     private String imageUrl;
 
+    @Column(length = 5)
+    private Integer openTimeInSeconds;
+    @Column(length = 5)
+    private Integer closeTimeInSeconds;
+
     @OneToOne
     private Address address;
 
