@@ -15,7 +15,7 @@ class Profile extends Component {
             property_nr : '',
             phone_nr : '',
             email : '',
-            source: "http://localhost:9000/reservatio/serviceprovider",
+            src : `http://localhost:9000/reservatio/serviceprovider${authService.token?.entityId}.jpg?=` + new Date().getTime(),
             alt: "photo",
             error: null,
             data: {},
@@ -77,7 +77,7 @@ class Profile extends Component {
 
     changePhoto(event){
         this.setState({
-            file: URL.createObjectURL(event.target.files[0])
+            file: event.target.files[0]
         })
     }
 
@@ -106,19 +106,44 @@ class Profile extends Component {
             </Modal>
         );
     }
+
     onChangeClicked = () => {
-        if (this.state.file === null){
-            console.log("Nie dodałeś zdjęcia");
+        if (!this.state.file){
+            alert("You didn't choose file!");
         }
-        else
-        this.setState({showModalChange: false});
+        else{
+            var formdata = new FormData();
+            formdata.append("image", this.state.file, `serviceprovider${authService.token?.entityId}.jpg`)
+            var requestOptions = {
+                method: 'PATCH',
+                body: formdata
+            };
+
+            const serviceProviderId = authService.token?.entityId;
+            authService.fetchAuthenticated(`${backendHost}/rest/uploadImage/${serviceProviderId}`, requestOptions)
+                .then(response => {
+                    if (!response.ok) {
+                        throw response;
+                    }
+                    return response;
+                })
+                .then(result => console.log(result))
+                .catch(error => console.log('error', error));
+            this.setState({showModalChange: false});
+            this.setState({file: null});
+            this.setState({src : `http://localhost:9000/reservatio/serviceprovider${authService.token?.entityId}.jpg#${global.Date.now()}`});
+            window.location.reload();
+        }
     }
 
     addNamePhoto() {
         return (
             <div className={'salon-name-photo'}>
-                <div className="card bg-dark text-white">
-                    <img className="card-img salon-photo" src={this.state.source + authService.token?.entityId + '.jpg'} alt={this.state.alt}/>
+                <div id = 'x' className="card bg-dark text-white">
+                    <img className="card-img salon-photo" src={this.state.src}
+                         id = 'image'
+                         alt={this.state.alt}
+                         onError={() => this.setState({src: 'https://st4.depositphotos.com/14953852/24787/v/600/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg'})}/>
                     <div className="card-img-overlay salon-photo-button-container">
                         <button className={'salon-photo-button'} onClick={() => this.setState({showModalChange: true})}> Change photo </button>
                     </div>
