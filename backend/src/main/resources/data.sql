@@ -96,16 +96,13 @@ from service_provider sp
     join favourites f on sp.id = f.service_provider_id
     group by sp.id
 
-
-create or replace view customer_reservation_view
+create or replace view service_providers_view
 as
-select c.id as id
-from customer c;
-
-create or replace view reservation_view
-as
-select r.id as id, r.date_time as date_time, sp.name as provider_name, s.name as service_name, s.duration as duration, r.customer_id as customer_id, r.review_id as review_id
-from reservation r
-         join service s on r.service_id = s.id
-         join service_provider sp on s.service_provider_id = sp.id
-
+select sp.id as id, sp.name as service_provider_name, sp.image_url as image_url, a.city as city, average.average_grade as average_grade
+from service_provider sp
+         join address a on a.id = sp.address_id
+         join (select s.service_provider_id as service_provider_id, AVG(r2.grade) as average_grade
+               from service s
+                        join reservation r on s.id = r.service_id
+                        join review r2 on r.id = r2.reservation_id
+               group by s.service_provider_id) average on service_provider_id = sp.id

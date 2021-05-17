@@ -20,6 +20,7 @@ public class Reservation {
     private LocalDateTime dateTime;
 
     @OneToOne
+    @PrimaryKeyJoinColumn
     private Review review;
 
     @ManyToOne

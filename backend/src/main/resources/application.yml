@@ -89,6 +89,8 @@ keycloak:
             - /rest/bookingViews/*
             - /rest/customerReservationViews/*
             - /rest/addReview/*
+            - /rest/serviceProvidersViews/*
+            - /rest/customers/*
     - auth-roles:
         - service_provider
       security-collections:
