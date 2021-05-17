@@ -96,3 +96,16 @@ from service_provider sp
     join favourites f on sp.id = f.service_provider_id
     group by sp.id
 
+
+create or replace view customer_reservation_view
+as
+select c.id as id
+from customer c;
+
+create or replace view reservation_view
+as
+select r.id as id, r.date_time as date_time, sp.name as provider_name, s.name as service_name, s.duration as duration, r.customer_id as customer_id, r.review_id as review_id
+from reservation r
+         join service s on r.service_id = s.id
+         join service_provider sp on s.service_provider_id = sp.id
+

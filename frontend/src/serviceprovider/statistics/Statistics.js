@@ -55,7 +55,7 @@ class Statistics extends Component {
         return (
             <>
                 <div className="break"></div>
-                <div className="row justify-content-center break">
+                <div className="row justify-content-center">
                     <div className="circle">
                         <p className="textc">
                             {this.state.numberServices}
@@ -98,6 +98,17 @@ class Statistics extends Component {
                     </div>
                     <div className="text left_ right-five">
                         Average rate
+                    </div>
+                </div>
+
+                <div className="row justify-content-center">
+                    <div className="text left-five">
+                        Number of likes
+                    </div>
+                    <div className="circle left_">
+                        <p className="textc">
+                            {this.state.numberLikes}
+                        </p>
                     </div>
                 </div>
 
