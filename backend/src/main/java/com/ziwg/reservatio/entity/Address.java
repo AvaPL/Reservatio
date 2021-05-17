@@ -27,4 +27,8 @@ public class Address {
     @NotNull
     @Column(length = 10)
     private String postCode;
+
+    @OneToOne
+    @PrimaryKeyJoinColumn
+    private ServiceProvider serviceProvider;
 }
