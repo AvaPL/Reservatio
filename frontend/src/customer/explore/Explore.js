@@ -11,7 +11,6 @@ class Explore extends Component {
             serviceProviders: [],
             selectedServiceProviders: [],
             favourites: [],
-            favIds: [],
             selectedCity: null,
             selectedProviderName: null,
             isLoaded: false,
@@ -22,15 +21,9 @@ class Explore extends Component {
         this.renderProviders = this.renderProviders.bind(this);
     }
 
-    componentDidMount() {
-        this.fetchServiceProviders().then(this.processServiceProviders(), this.handleError());
-        this.fetchFavourites().then(this.processFavourites(), this.handleError());
-    }
-
-    getFavIds() {
-        this.state.favIds = this.state.favourites.map((provider) =>
-            provider.id
-        );
+    async componentDidMount() {
+        await this.fetchServiceProviders().then(this.processServiceProviders(), this.handleError());
+        await this.fetchFavourites().then(this.processFavourites(), this.handleError());
     }
 
     fetchFavourites() {
@@ -45,9 +38,9 @@ class Explore extends Component {
             .then(response => response._embedded.serviceProviders);
     }
 
-    fetchServiceProviders() {
-        if(this.state.selectedCity!=null && this.state.selectedProviderName!=null) {
-            return authService.fetchAuthenticated(`${backendHost}/rest/serviceProvidersViews/search/findByCityAndServiceProviderNameContainsIgnoreCase?city=${this.state.serviceProviders[this.state.selectedCity].city}&serviceProviderName=${this.state.selectedProviderName}`)
+    fetchServiceProviders(selectedCity, selectedProviderName) {
+        if(selectedCity!=null && selectedProviderName!=null) {
+            return authService.fetchAuthenticated(`${backendHost}/rest/serviceProvidersViews/search/findByCityAndServiceProviderNameContainsIgnoreCase?city=${this.state.serviceProviders[selectedCity].city}&serviceProviderName=${selectedProviderName}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error("Failed to fetch");
@@ -56,8 +49,8 @@ class Explore extends Component {
                 })
                 .then(response => response._embedded.serviceProvidersViews);
         }
-        else if (this.state.selectedCity===null && this.state.selectedProviderName!=null) {
-            return authService.fetchAuthenticated(`${backendHost}/rest/serviceProvidersViews/search/findByServiceProviderNameContainsIgnoreCase?serviceProviderName=${this.state.selectedProviderName}`)
+        else if (selectedCity===null && selectedProviderName!=null) {
+            return authService.fetchAuthenticated(`${backendHost}/rest/serviceProvidersViews/search/findByServiceProviderNameContainsIgnoreCase?serviceProviderName=${selectedProviderName}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error("Failed to fetch");
@@ -66,8 +59,8 @@ class Explore extends Component {
                 })
                 .then(response => response._embedded.serviceProvidersViews);
         }
-        else if (this.state.selectedCity!=null && this.state.selectedProviderName===null) {
-            return authService.fetchAuthenticated(`${backendHost}/rest/serviceProvidersViews/search/findByCity?city=${this.state.serviceProviders[this.state.selectedCity].city}`)
+        else if (selectedCity!=null && selectedProviderName===null) {
+            return authService.fetchAuthenticated(`${backendHost}/rest/serviceProvidersViews/search/findByCity?city=${this.state.serviceProviders[selectedCity].city}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error("Failed to fetch");
@@ -98,20 +91,25 @@ class Explore extends Component {
         };
     }
 
-    processSelectedServiceProviders() {
+    processSelectedServiceProviders(selectedCity, selectedProviderName) {
         return serviceProviders => {
             this.setState({
                 isLoaded: true,
-                selectedServiceProviders: serviceProviders
+                selectedServiceProviders: serviceProviders,
+                selectedCity: selectedCity,
+                selectedProviderName: selectedProviderName
             });
         };
     }
 
     processFavourites() {
         return favourites => {
+            var array = favourites.map((provider) =>
+                provider.id
+            );
             this.setState({
                 isLoaded: true,
-                favourites: favourites
+                favourites: array
             });
         };
     }
@@ -131,27 +129,28 @@ class Explore extends Component {
     }
 
     handleCitySelect(event){
+        var selectedCity;
         if(event.target.value==="Select city"){
-            this.state.selectedCity = null;
-            }
-        else {
-            this.state.selectedCity = event.target.value;
+            selectedCity=null;
         }
-        this.fetchServiceProviders().then(this.processSelectedServiceProviders(), this.handleError());
+        else {
+            selectedCity=event.target.value
+        }
+        this.fetchServiceProviders(selectedCity, this.state.selectedProviderName).then(this.processSelectedServiceProviders(selectedCity, this.state.selectedProviderName), this.handleError());
     }
 
     handleProviderName(event){
+        var selectedProviderName;
         if(event.target.value===""){
-            this.state.selectedProviderName = null;
+            selectedProviderName = null;
         }
         else {
-            this.state.selectedProviderName = event.target.value;
+            selectedProviderName = event.target.value;
         }
-        this.fetchServiceProviders().then(this.processSelectedServiceProviders(), this.handleError());
+        this.fetchServiceProviders(this.state.selectedCity, selectedProviderName).then(this.processSelectedServiceProviders(this.state.selectedCity, selectedProviderName), this.handleError());
     }
 
     renderProviders(){
-        this.getFavIds();
         const urlPrefix = "http://localhost:3000/booking/";
         return this.state.selectedServiceProviders.map((providers) =>
             <div className="col-lg-4">
@@ -165,7 +164,7 @@ class Explore extends Component {
                             <div className="card"style={{width: "60%", background: "transparent"}}>
                             </div>
                             <div className="card"style={{width: "20%", background: "transparent"}}>
-                                {this.state.favIds.includes(providers.id)
+                                {this.state.favourites.includes(providers.id)
                                     ? <h2><i className="bi bi-star-fill"  style={{color: "red"}}> </i></h2>
                                     : <h2><i className="bi bi-star-fill"  style={{color: "white"}}> </i></h2>}
                             </div>

@@ -4,7 +4,6 @@ import {BrowserRouter, Switch, Route, Redirect} from "react-router-dom";
 import Appointments from "./customer/appointments/Appointments";
 import Explore from "./customer/explore/Explore";
 import Favorites from "./customer/favorites/Favorites";
-import Search from "./customer/search/Search";
 import PageNotFound from "./pagenotfound/PageNotFound";
 import Login from "./login/Login";
 import Registration from "./registration/Registration";

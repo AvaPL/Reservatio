@@ -11,8 +11,6 @@ class Favorites extends Component {
             serviceProviders: [],
             selectedServiceProviders: [],
             favourites: [],
-            favIds: [],
-            favSelectedServiceProviders: [],
             selectedCity: null,
             selectedProviderName: null,
             isLoaded: false,
@@ -23,23 +21,9 @@ class Favorites extends Component {
         this.renderProviders = this.renderProviders.bind(this);
     }
 
-    componentDidMount() {
-        this.fetchServiceProviders().then(this.processServiceProviders(), this.handleError());
-        this.fetchFavourites().then(this.processFavourites(), this.handleError());
-    }
-
-    getFavIds() {
-        this.state.favIds = this.state.favourites.map((provider) =>
-            provider.id
-        );
-    }
-    getFavSelectedServiceProviders() {
-        var array = this.state.selectedServiceProviders.map((provider) => (
-        this.state.favIds.includes(provider.id) ? provider : null)
-        );
-        this.state.favSelectedServiceProviders = array.filter(function (el) {
-            return el != null;
-        });
+    async componentDidMount() {
+        await this.fetchFavourites().then(this.processFavourites(), this.handleError());
+        await this.fetchServiceProviders().then(this.processServiceProviders(), this.handleError());
     }
 
     fetchFavourites() {
@@ -54,9 +38,9 @@ class Favorites extends Component {
             .then(response => response._embedded.serviceProviders);
     }
 
-    fetchServiceProviders() {
-        if(this.state.selectedCity!=null && this.state.selectedProviderName!=null) {
-            return authService.fetchAuthenticated(`${backendHost}/rest/serviceProvidersViews/search/findByCityAndServiceProviderNameContainsIgnoreCase?city=${this.state.serviceProviders[this.state.selectedCity].city}&serviceProviderName=${this.state.selectedProviderName}`)
+    fetchServiceProviders(selectedCity, selectedProviderName) {
+        if(selectedCity!=null && selectedProviderName!=null) {
+            return authService.fetchAuthenticated(`${backendHost}/rest/serviceProvidersViews/search/findByCityAndServiceProviderNameContainsIgnoreCase?city=${this.state.serviceProviders[selectedCity].city}&serviceProviderName=${selectedProviderName}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error("Failed to fetch");
@@ -65,8 +49,8 @@ class Favorites extends Component {
                 })
                 .then(response => response._embedded.serviceProvidersViews);
         }
-        else if (this.state.selectedCity===null && this.state.selectedProviderName!=null) {
-            return authService.fetchAuthenticated(`${backendHost}/rest/serviceProvidersViews/search/findByServiceProviderNameContainsIgnoreCase?serviceProviderName=${this.state.selectedProviderName}`)
+        else if (selectedCity===null && selectedProviderName!=null) {
+            return authService.fetchAuthenticated(`${backendHost}/rest/serviceProvidersViews/search/findByServiceProviderNameContainsIgnoreCase?serviceProviderName=${selectedProviderName}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error("Failed to fetch");
@@ -75,8 +59,8 @@ class Favorites extends Component {
                 })
                 .then(response => response._embedded.serviceProvidersViews);
         }
-        else if (this.state.selectedCity!=null && this.state.selectedProviderName===null) {
-            return authService.fetchAuthenticated(`${backendHost}/rest/serviceProvidersViews/search/findByCity?city=${this.state.serviceProviders[this.state.selectedCity].city}`)
+        else if (selectedCity!=null && selectedProviderName===null) {
+            return authService.fetchAuthenticated(`${backendHost}/rest/serviceProvidersViews/search/findByCity?city=${this.state.serviceProviders[selectedCity].city}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error("Failed to fetch");
@@ -99,28 +83,45 @@ class Favorites extends Component {
 
     processServiceProviders() {
         return serviceProviders => {
+            var array = serviceProviders.map((provider) => (
+                this.state.favourites.includes(provider.id) ? provider : null)
+            );
+            array = array.filter(function (el) {
+                return el != null;
+            });
             this.setState({
                 isLoaded: true,
-                serviceProviders: serviceProviders,
-                selectedServiceProviders: serviceProviders
+                serviceProviders: array,
+                selectedServiceProviders: array
             });
         };
     }
 
-    processSelectedServiceProviders() {
+    processSelectedServiceProviders(selectedCity, selectedProviderName) {
         return serviceProviders => {
+            var array = serviceProviders.map((provider) => (
+                this.state.favourites.includes(provider.id) ? provider : null)
+            );
+            array = array.filter(function (el) {
+                return el != null;
+            });
             this.setState({
                 isLoaded: true,
-                selectedServiceProviders: serviceProviders
+                selectedServiceProviders: array,
+                selectedCity: selectedCity,
+                selectedProviderName: selectedProviderName
             });
         };
     }
 
     processFavourites() {
         return favourites => {
+            var array = favourites.map((provider) =>
+                provider.id
+            );
             this.setState({
                 isLoaded: true,
-                favourites: favourites
+                favourites: array
             });
         };
     }
@@ -140,30 +141,30 @@ class Favorites extends Component {
     }
 
     handleCitySelect(event){
+        var selectedCity;
         if(event.target.value==="Select city"){
-            this.state.selectedCity = null;
+            selectedCity=null;
         }
         else {
-            this.state.selectedCity = event.target.value;
+            selectedCity=event.target.value
         }
-        this.fetchServiceProviders().then(this.processSelectedServiceProviders(), this.handleError());
+        this.fetchServiceProviders(selectedCity, this.state.selectedProviderName).then(this.processSelectedServiceProviders(selectedCity, this.state.selectedProviderName), this.handleError());
     }
 
     handleProviderName(event){
+        var selectedProviderName;
         if(event.target.value===""){
-            this.state.selectedProviderName = null;
+            selectedProviderName = null;
         }
         else {
-            this.state.selectedProviderName = event.target.value;
+            selectedProviderName = event.target.value;
         }
-        this.fetchServiceProviders().then(this.processSelectedServiceProviders(), this.handleError());
+        this.fetchServiceProviders(this.state.selectedCity, selectedProviderName).then(this.processSelectedServiceProviders(this.state.selectedCity, selectedProviderName), this.handleError());
     }
 
     renderProviders(){
-        this.getFavIds();
-        this.getFavSelectedServiceProviders();
         const urlPrefix = "http://localhost:3000/booking/";
-        return this.state.favSelectedServiceProviders.map((providers) =>
+        return this.state.selectedServiceProviders.map((providers) =>
             <div className="col-lg-4">
                 <div className="card" style={{background: "#FDC2C6", marginTop: "5%"}}  >
                     <img className="card-img-top" style={{aspectRatio: "16/9"}} src={providers.imageUrl} alt="Card cap"/>
