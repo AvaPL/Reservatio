@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
+// TODO Change base path to /serviceProvider/{serviceProviderId} (?)
 @RequestMapping("${spring.data.rest.base-path}")
 public class ServiceController {
 
@@ -40,7 +41,7 @@ public class ServiceController {
         if (serviceProvider.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         Service service = Service.builder().name(servicePojo.getName()).description(servicePojo.getDescription())
-                .priceUsd(servicePojo.getPrice()).durationMinutes(servicePojo.getDuration())
+                .priceUsd(servicePojo.getPriceUsd()).durationMinutes(servicePojo.getDurationMinutes())
                 .serviceProvider(serviceProvider.get()).build();
         List<String> serviceProviderEmployees = serviceProvider.get().getEmployees().stream()
                 .map(employee -> employee.getFirstName() + " " + employee.getLastName()).collect(Collectors.toList());
@@ -78,6 +79,7 @@ public class ServiceController {
         serviceProviderRepository.save(serviceProvider);
         serviceToDelete.get().setServiceProvider(null);
         deleteServiceFromEmployees(serviceToDelete.get());
+        serviceRepository.save(serviceToDelete.get());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -101,8 +103,8 @@ public class ServiceController {
     private void updateService(Service serviceToEdit, ServicePojo servicePojo) {
         serviceToEdit.setName(servicePojo.getName());
         serviceToEdit.setDescription(servicePojo.getDescription());
-        serviceToEdit.setPriceUsd(servicePojo.getPrice());
-        serviceToEdit.setDurationMinutes(servicePojo.getDuration());
+        serviceToEdit.setPriceUsd(servicePojo.getPriceUsd());
+        serviceToEdit.setDurationMinutes(servicePojo.getDurationMinutes());
         serviceRepository.save(serviceToEdit);
         deleteServiceFromEmployees(serviceToEdit);
         List<Employee> employees = serviceToEdit.getServiceProvider().getEmployees();

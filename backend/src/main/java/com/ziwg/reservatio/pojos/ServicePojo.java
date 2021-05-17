@@ -9,7 +9,7 @@ public class ServicePojo {
 
     private String name;
     private String description;
-    private Float price;
-    private Integer duration;
+    private Float priceUsd;
+    private Integer durationMinutes;
     private List<String> employees;
 }

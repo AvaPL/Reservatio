@@ -142,7 +142,7 @@ public class LoadTestData {
     }
 
     private Address fakeAddress() {
-        return Address.builder().street(faker.address().streetName()).propertyNumber(faker.regexify("\\d{1,2}"))
+        return Address.builder().street(faker.address().streetName()).propertyNumber(faker.numerify("##"))
                 .city(faker.address().city()).postCode(faker.numerify("##-###")).build();
     }
 

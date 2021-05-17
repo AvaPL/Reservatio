@@ -100,7 +100,7 @@ class Registration extends Component {
             },
             body: JSON.stringify(this.state.form)
         }
-        const endpoint = this.state.salonButtonClicked ? '/register-service-provider' : '/register-customer' // TODO: Load from env
+        const endpoint = this.state.salonButtonClicked ? '/register-service-provider' : '/register-customer'
         fetch(`${backendHost}${endpoint}`, requestOptions)
             .then(response => {
                 if (!response.ok)

@@ -15,7 +15,7 @@ class ServiceProviderDetails extends Component {
             city: "Wrocław",
             person: "Michałek",
             servicename: "Fryzjer damski",
-            serviceprice: 60
+            servicepriceusd: 60
         };
     }
 
@@ -147,7 +147,7 @@ class ServiceProviderDetails extends Component {
                     </div>
                     <div className={'service-price-button'}>
                         <div className={'service-price'}>
-                            {this.state.serviceprice} zł
+                            {this.state.servicepriceusd} zł
                         </div>
                         <div className={'service-button'}>
                             <button className={'service-button-button'}>
@@ -163,7 +163,7 @@ class ServiceProviderDetails extends Component {
                     </div>
                     <div className={'service-price-button'}>
                         <div className={'service-price'}>
-                            {this.state.serviceprice} zł
+                            {this.state.servicepriceusd} zł
                         </div>
                         <div className={'service-button'}>
                             <button className={'service-button-button'}>
