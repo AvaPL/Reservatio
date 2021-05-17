@@ -1,4 +1,4 @@
-package com.ziwg.reservatio.view;
+package com.ziwg.reservatio.views.reservation;
 
 import com.ziwg.reservatio.entity.Service;
 import lombok.Data;
