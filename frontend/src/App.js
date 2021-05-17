@@ -24,7 +24,6 @@ import Logout from "./logout/Logout";
 const routes = [
     {name: "Explore", path: "/explore", component: Explore, requiredRole: "customer"},
     {name: "Favorites", path: "/favorites", component: Favorites, requiredRole: "customer"},
-    {name: "Search", path: "/search", component: Search, requiredRole: "customer"},
     {name: "Appointments", path: "/appointments", component: Appointments, requiredRole: "customer"},
     {name: "Statistics", path: "/statistics", component: Statistics, requiredRole: "service_provider"},
     {name: "Services", path: "/services", component: Services, requiredRole: "service_provider"},

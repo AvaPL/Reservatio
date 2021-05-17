@@ -50,7 +50,7 @@ from employee e
 
 create or replace view service_providers_view
 as
-select sp.id as id, sp.name as service_provider_name, a.city as city, average.average_grade as average_grade
+select sp.id as id, sp.name as service_provider_name, sp.image_url as image_url, a.city as city, average.average_grade as average_grade
 from service_provider sp
          join address a on a.id = sp.address_id
          join (select s.service_provider_id as service_provider_id, AVG(r2.grade) as average_grade

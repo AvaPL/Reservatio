@@ -18,6 +18,7 @@ public class ServiceProvidersView {
     @Id
     private Long id;
     private String serviceProviderName;
-    private String averageGrade;
+    private Float averageGrade;
     private String city;
+    private String imageUrl;
 }

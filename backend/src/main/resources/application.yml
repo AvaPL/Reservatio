@@ -86,6 +86,7 @@ keycloak:
       security-collections:
         - patterns:
             - /rest/serviceProvidersViews/*
+            - /rest/customers/*
     - auth-roles:
         - service_provider
       security-collections:
