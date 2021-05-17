@@ -85,7 +85,8 @@ keycloak:
         - customer
       security-collections:
         - patterns:
-            - /rest/customer/* # TODO: Remove after creating first customer path
+            - /rest/serviceProvidersViews/*
+            - /rest/customers/*
     - auth-roles:
         - service_provider
       security-collections:
