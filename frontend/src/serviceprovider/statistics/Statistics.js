@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 
 import './Statistics.scss'
+import {authService} from "../../auth/AuthService";
+import {backendHost} from "../../Config";
 
 class Statistics extends Component {
 
@@ -15,6 +17,38 @@ class Statistics extends Component {
     }
 
     componentDidMount() {
+
+        const providerId = authService.token?.entityId
+        authService.fetchAuthenticated(`${backendHost}/rest/favouriteViews/${providerId}`)
+            .then(response => {
+                if (!response.ok) {
+                    //throw new Error("Failed to fetch");
+                    //console.clear();
+                    return JSON.parse('{ "number":"0" }')
+                }
+                return response.json();
+            })
+            .then(res => res.number)
+            .then(number =>{
+                console.log(number)
+                this.setState({numberLikes:number})
+            })
+
+        authService.fetchAuthenticated(`${backendHost}/rest/bookingViews/${1}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch");
+                }
+                return response.json();
+            })
+            .then(res => res.reviews.length)
+            .then(reviews =>{
+                console.log(reviews)
+                this.setState({numberServices: reviews})
+            })
+
+
+
     }
 
     render() {

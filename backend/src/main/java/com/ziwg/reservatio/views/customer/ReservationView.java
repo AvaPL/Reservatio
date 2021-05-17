@@ -1,6 +1,7 @@
-package com.ziwg.reservatio.view;
+package com.ziwg.reservatio.views.customer;
 
 
+import com.ziwg.reservatio.view.CustomerReservationView;
 import lombok.Data;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Subselect;

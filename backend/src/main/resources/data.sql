@@ -59,9 +59,10 @@ select e.id, concat(e.first_name, ' ', e.last_name) as name, s.id as service_id
 from employee e
          join employee_service es on e.id = es.employee_id
          join service s on s.id = es.service_id;
+
 create or replace view booking_services_view
 as
-select s.id as id, s.name as name, s.price as price, s.service_provider_id as service_provider_id
+select s.id as id, s.name as name, s.price_usd as price, s.service_provider_id as service_provider_id
 from service s;
 
 create or replace view booking_service_view
@@ -75,3 +76,23 @@ select r.id as id, r.service_id as service_id, r2.grade as grade, r2.message as 
 from reservation r
     join review r2 on r.id = r2.reservation_id
     join customer c on r.customer_id = c.id;
+
+create or replace view customer_reservation_view
+as
+select c.id as id
+from customer c;
+
+create or replace view reservation_view
+as
+select r.id as id, r.date_time as date_time, sp.name as provider_name, s.name as service_name, s.duration_minutes as duration, r.customer_id as customer_id
+from reservation r
+         join service s on r.service_id = s.id
+         join service_provider sp on s.service_provider_id = sp.id;
+
+create or replace view favourite_view
+as
+select sp.id as id, count(*) as number
+from service_provider sp
+    join favourites f on sp.id = f.service_provider_id
+    group by sp.id
+
