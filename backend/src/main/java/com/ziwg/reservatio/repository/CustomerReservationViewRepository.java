@@ -1,6 +1,6 @@
 package com.ziwg.reservatio.repository;
 
-import com.ziwg.reservatio.view.CustomerReservationView;
+import com.ziwg.reservatio.views.reservation.CustomerReservationView;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMethod;
