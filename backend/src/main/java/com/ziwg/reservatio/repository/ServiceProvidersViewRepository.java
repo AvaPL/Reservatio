@@ -1,6 +1,6 @@
 package com.ziwg.reservatio.repository;
 
-import com.ziwg.reservatio.view.ServiceProvidersView;
+import com.ziwg.reservatio.views.reservation.ServiceProvidersView;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;

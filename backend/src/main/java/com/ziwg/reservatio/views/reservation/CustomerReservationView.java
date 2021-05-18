@@ -1,6 +1,5 @@
 package com.ziwg.reservatio.views.reservation;
 
-import com.ziwg.reservatio.entity.Service;
 import lombok.Data;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Subselect;
@@ -13,12 +12,10 @@ import java.util.List;
 @Data
 @Entity
 @Immutable
-@Subselect("select * from service_providers_view")
-public class ServiceProvidersView {
+@Subselect("select * from customer_reservation_view")
+public class CustomerReservationView {
     @Id
     private Long id;
-    private String serviceProviderName;
-    private Float averageGrade;
-    private String city;
-    private String imageUrl;
+    @OneToMany(mappedBy = "customerReservationView")
+    private List<ReservationView> reservations;
 }

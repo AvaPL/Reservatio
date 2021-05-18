@@ -1,8 +1,8 @@
 package com.ziwg.reservatio.configuration;
 
 import com.ziwg.reservatio.entity.ServiceProvider;
-import com.ziwg.reservatio.view.ServiceProvidersView;
 import com.ziwg.reservatio.views.employees.EmployeeView;
+import com.ziwg.reservatio.views.reservation.ServiceProvidersView;
 import com.ziwg.reservatio.views.services.ServiceView;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
