@@ -30,7 +30,7 @@ class Statistics extends Component {
             })
             .then(res => res.number)
             .then(number =>{
-                console.log(number)
+                //console.log(number)
                 this.setState({numberLikes:number})
             })
 
@@ -41,10 +41,19 @@ class Statistics extends Component {
                 }
                 return response.json();
             })
-            .then(res => res.reviews.length)
+            .then(res => res.reviews)
             .then(reviews =>{
                 console.log(reviews)
-                this.setState({numberServices: reviews})
+                var counter = 0;
+                var sumGrade = 0;
+                for(let i = 0; i< reviews.length; i++){
+                    counter = counter + reviews[i].reservations.length
+                    for(let j = 0; j< reviews[i].reservations.length;j++){
+                        sumGrade = sumGrade + reviews[i].reservations[j].grade;
+                    }
+                }
+                this.setState({averageRate: sumGrade/counter})
+                this.setState({numberServices: counter})
             })
 
 
@@ -55,7 +64,7 @@ class Statistics extends Component {
         return (
             <>
                 <div className="break"></div>
-                <div className="row justify-content-center">
+                <div className="row justify-content-center break">
                     <div className="circle">
                         <p className="textc">
                             {this.state.numberServices}
@@ -78,7 +87,6 @@ class Statistics extends Component {
                 {/*</div>*/}
 
 
-
                 <div className="row justify-content-center break">
                     <div className="circle">
                         <p className="textc">
@@ -98,17 +106,6 @@ class Statistics extends Component {
                     </div>
                     <div className="text left_ right-five">
                         Average rate
-                    </div>
-                </div>
-
-                <div className="row justify-content-center">
-                    <div className="text left-five">
-                        Number of likes
-                    </div>
-                    <div className="circle left_">
-                        <p className="textc">
-                            {this.state.numberLikes}
-                        </p>
                     </div>
                 </div>
 

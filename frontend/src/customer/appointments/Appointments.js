@@ -20,7 +20,7 @@ class Appointments extends Component {
         };
     }
 
-    componentDidMount(){
+    fetchData(){
         var array;
         var seconds;
         const customerId = authService.token?.entityId
@@ -34,7 +34,7 @@ class Appointments extends Component {
             .then(res => res._embedded.reservationViews)
             .then(reservations => {
                 this.setState({data:reservations});
-                console.log(this.state.data)
+                //console.log(this.state.data)
                 for(let i=0;i<this.state.data.length;i++){
                     array = this.state.data[i].dateTime.substring(11,16).split(':')
                     seconds = (+array[0]) * 60 * 60 + (+array[1]) * 60  + this.state.data[i].duration * 60
@@ -44,17 +44,21 @@ class Appointments extends Component {
                     data[i]=d
                     this.setState({data})
                     if(Date.now() < Date.parse(this.state.data[i].dateTime)){
-                        console.log(this.state.data[i])
+                        //console.log(this.state.data[i])
                         let joined = this.state.dataU.concat(this.state.data.splice(i,1))
                         this.setState({dataU: joined})
                         i--
                     }
                 }
-                console.log(this.state.dataU)
+                //console.log(this.state.dataU)
             })
             .catch((error) => {
-            console.error('Error:', error);
-        })
+                console.error('Error:', error);
+            })
+    }
+
+    componentDidMount(){
+        this.fetchData();
     }
 
     showPast(){
@@ -211,10 +215,7 @@ class Appointments extends Component {
                             variant="danger"
                             onClick={()=>{
                                 this.hideReview();
-                                console.log(this.state.reviewMessage);
-                                console.log(this.state.reviewStar);
-                                console.log(item._links.self.href.substr(-2))//id of reservation
-
+                                console.log(`${backendHost}/rest/addReview/${item._links.self.href.substr(-2)}`);
                                 authService.fetchAuthenticated(`${backendHost}/rest/addReview/${item._links.self.href.substr(-2)}`,{
                                     method: 'POST',
                                     headers: {
@@ -228,7 +229,10 @@ class Appointments extends Component {
                                         }
                                         return response;
                                     })
-                                window.location.reload(false);
+                                //TODO delete reload
+                                //window.location.reload(false);
+                                this.setState({reviewMessage: ""});
+                                this.setState({reviewStar: ""});
                             }}
                         >
                             Save Changes
@@ -244,8 +248,8 @@ class Appointments extends Component {
         const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN",
             "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
         ];
-        console.log(this.state.dataU)
-        return this.state.dataU.map((item, index) => (
+        //console.log(this.state.dataU)
+        return this.state.dataU.sort((a,b)=>Date.parse(a.dateTime)-Date.parse(b.dateTime)).map((item, index) => (
             <>
                 <div className="rcorners2 justify-content-center" key={index}>
                     <div className="container-fluid">
@@ -292,6 +296,7 @@ class Appointments extends Component {
             </>
         ));
     }
+
 
     sec2time(timeInSeconds) {
         var pad = function(num, size) { return ('000' + num).slice(size * -1); },

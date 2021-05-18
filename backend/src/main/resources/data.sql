@@ -27,12 +27,6 @@ select sp.id as id, sp.name as name, sp.phone_number as phone_nr, sp.email as em
 from service_provider sp
     join address a on a.id = sp.address_id;
 
-create or replace view booking_view
-as
-select sp.id as id, sp.name as name, a.city as city, a.street as street, a.property_number as property_nr
-from service_provider sp
-    join address a on sp.address_id = a.id;
-
 -- services views
 create
 or replace view service_provider_services_view
@@ -60,6 +54,8 @@ from employee e
          join employee_service es on e.id = es.employee_id
          join service s on s.id = es.service_id;
 
+
+
 create or replace view booking_services_view
 as
 select s.id as id, s.name as name, s.price_usd as price, s.service_provider_id as service_provider_id
@@ -77,6 +73,15 @@ from reservation r
     join review r2 on r.id = r2.reservation_id
     join customer c on r.customer_id = c.id;
 
+create or replace view booking_view
+as
+select sp.id as id, sp.name as name, a.city as city, a.street as street, a.property_number as property_nr
+from service_provider sp
+         join address a on sp.address_id = a.id;
+
+
+
+
 create or replace view customer_reservation_view
 as
 select c.id as id
@@ -84,17 +89,18 @@ from customer c;
 
 create or replace view reservation_view
 as
-select r.id as id, r.date_time as date_time, sp.name as provider_name, s.name as service_name, s.duration_minutes as duration, r.customer_id as customer_id
+select r.id as id, r.date_time as date_time, sp.name as provider_name, s.name as service_name, s.duration_minutes as duration, r.customer_id as customer_id, r2.id as review_id
 from reservation r
-         join service s on r.service_id = s.id
-         join service_provider sp on s.service_provider_id = sp.id;
+        join service s on r.service_id = s.id
+        join service_provider sp on s.service_provider_id = sp.id
+        left join review r2 on r.id = r2.reservation_id;
 
 create or replace view favourite_view
 as
 select sp.id as id, count(*) as number
 from service_provider sp
     join favourites f on sp.id = f.service_provider_id
-    group by sp.id
+    group by sp.id;
 
 create or replace view service_providers_view
 as
@@ -105,4 +111,4 @@ from service_provider sp
                from service s
                         join reservation r on s.id = r.service_id
                         join review r2 on r.id = r2.reservation_id
-               group by s.service_provider_id) average on service_provider_id = sp.id
+               group by s.service_provider_id) average on service_provider_id = sp.id;
