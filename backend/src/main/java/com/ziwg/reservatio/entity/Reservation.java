@@ -19,6 +19,10 @@ public class Reservation {
     @NotNull
     private LocalDateTime dateTime;
 
+    @OneToOne
+    @PrimaryKeyJoinColumn
+    private Review review;
+
     @ManyToOne
     private Customer customer;
 

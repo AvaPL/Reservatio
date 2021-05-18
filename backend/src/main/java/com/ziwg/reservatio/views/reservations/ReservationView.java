@@ -1,6 +1,5 @@
 package com.ziwg.reservatio.views.reservations;
 
-
 import lombok.Data;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Subselect;
@@ -23,5 +22,10 @@ public class ReservationView {
     private String serviceName;
     private String duration;
     private String providerName;
+    private String reviewId;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    private CustomerReservationView customerReservationView;
 
 }

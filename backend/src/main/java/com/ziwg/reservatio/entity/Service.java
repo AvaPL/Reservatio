@@ -1,6 +1,7 @@
 package com.ziwg.reservatio.entity;
 
 import com.sun.istack.NotNull;
+import com.ziwg.reservatio.views.reservation.ServiceProvidersView;
 import lombok.*;
 
 import javax.persistence.*;
