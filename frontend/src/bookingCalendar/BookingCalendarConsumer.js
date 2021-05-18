@@ -97,18 +97,7 @@ export default function BookingCalendarConsumer() {
                 employeeid: 2,
             },
         ],
-        employees: [
-            {
-                id: 1,
-                firstName: "Mario",
-                lastName: "Luigi",
-            },
-            {
-                id: 2,
-                firstName: "Ash",
-                lastName: "Ketchum",
-            }
-        ],
+        employees: [],
     });
 
     const [value, setValue] = useState('');
@@ -137,7 +126,36 @@ export default function BookingCalendarConsumer() {
         })
     }
 
-    console.log("value: " + value)
+    window.onload = function() {
+        processEmployees(fetchEmployees(serviceid));
+    };
+
+    const processEmployees = (employees)  => {
+        console.log(employees)
+        state.employees = employees
+    }
+
+    const fetchEmployees = (serviceId) => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }}
+
+        const endpoint = '/rest/employeesByService'
+
+        authService.fetchAuthenticated(`${backendHost}${endpoint}/${serviceId}`, requestOptions)
+        .then(response => {
+            if (!response.ok)
+                throw new Error(response.statusText)
+            return response.json();
+        })
+        .catch(error => {
+            console.log('error', error)
+        })
+    }
+
     return (
         <>
             <div className={styles.mainImgWrapper}>

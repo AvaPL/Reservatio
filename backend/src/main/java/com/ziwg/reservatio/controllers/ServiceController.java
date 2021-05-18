@@ -4,9 +4,9 @@ import com.ziwg.reservatio.entity.Employee;
 import com.ziwg.reservatio.entity.Service;
 import com.ziwg.reservatio.entity.ServiceProvider;
 import com.ziwg.reservatio.pojos.ServicePojo;
-import com.ziwg.reservatio.repository.EmployeeRepository;
-import com.ziwg.reservatio.repository.ServiceProviderRepository;
-import com.ziwg.reservatio.repository.ServiceRepository;
+import com.ziwg.reservatio.repository.*;
+import com.ziwg.reservatio.views.services.ServiceEmployeeView;
+import com.ziwg.reservatio.views.services.ServiceView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +33,8 @@ public class ServiceController {
         this.serviceRepository = serviceRepository;
         this.employeeRepository = employeeRepository;
     }
+
+
 
     @PostMapping("addService/{serviceProviderId}")
     public ResponseEntity<HttpStatus> addService(@PathVariable Long serviceProviderId,

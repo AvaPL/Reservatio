@@ -5,7 +5,9 @@ import com.ziwg.reservatio.entity.Service;
 import com.ziwg.reservatio.entity.ServiceProvider;
 import com.ziwg.reservatio.pojos.EmployeePojo;
 import com.ziwg.reservatio.repository.EmployeeRepository;
+import com.ziwg.reservatio.repository.ServiceEmployeeViewRepository;
 import com.ziwg.reservatio.repository.ServiceProviderRepository;
+import com.ziwg.reservatio.views.services.ServiceEmployeeView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +26,36 @@ public class EmployeeController {
 
     private final EmployeeRepository employeeRepository;
     private final ServiceProviderRepository serviceProviderRepository;
+    private final ServiceEmployeeViewRepository serviceEmployeeViewRepository;
 
     @Autowired
     public EmployeeController(EmployeeRepository employeeRepository,
-                              ServiceProviderRepository serviceProviderRepository) {
+                              ServiceProviderRepository serviceProviderRepository,
+                              ServiceEmployeeViewRepository serviceEmployeeViewRepository) {
         this.employeeRepository = employeeRepository;
         this.serviceProviderRepository = serviceProviderRepository;
+        this.serviceEmployeeViewRepository = serviceEmployeeViewRepository;
+    }
+
+    @GetMapping("employeesByService/{serviceId}")
+    public ResponseEntity<List<Employee>> getEmployeesByService(@PathVariable Long serviceId) {
+        List<Long> serviceEmployeeView = serviceEmployeeViewRepository.findByServiceId(serviceId);
+        List<Employee> employeeList = new ArrayList<>();
+
+        for (Long employeeId: serviceEmployeeView) {
+                Optional<Employee> optionalEmployee = employeeRepository.findById(employeeId);
+                Employee employee = Employee.builder()
+                                    .id(optionalEmployee.get().getId())
+                                    .firstName(optionalEmployee.get().getFirstName())
+                                    .lastName(optionalEmployee.get().getLastName()).build();
+
+                employeeList.add(employee);
+        }
+        if (employeeList.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(employeeList, HttpStatus.OK);
     }
 
     @PostMapping("addEmployee/{serviceProviderId}")
