@@ -1,4 +1,5 @@
-package com.ziwg.reservatio.views.employeesviews;
+package com.ziwg.reservatio.views.reservation;
+
 
 import lombok.Data;
 import org.hibernate.annotations.Immutable;
@@ -12,14 +13,14 @@ import javax.persistence.ManyToOne;
 @Data
 @Entity
 @Immutable
-@Subselect("select * from service_provider_service_view")
-public class ServiceProviderServiceView {
+@Subselect("select * from reservation_view")
+public class ReservationView {
 
     @Id
     private Long id;
-    private String name;
+    private String dateTime;
+    private String serviceName;
+    private String duration;
+    private String providerName;
 
-    @ManyToOne
-    @JoinColumn(name = "service_provider_id")
-    private ServiceProviderEmployeesView serviceProviderView;
 }

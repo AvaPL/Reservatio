@@ -1,5 +1,4 @@
-package com.ziwg.reservatio.view;
-
+package com.ziwg.reservatio.views.employees;
 
 import lombok.Data;
 import org.hibernate.annotations.Immutable;
@@ -10,18 +9,17 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-// TODO: Invalid package
 @Data
 @Entity
 @Immutable
-@Subselect("select * from reservation_view")
-public class ReservationView {
+@Subselect("select * from employee_service_view")
+public class EmployeeServiceView {
 
     @Id
     private Long id;
-    private String dateTime;
-    private String serviceName;
-    private String duration;
-    private String providerName;
+    private String name;
 
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
+    private EmployeeView employeeView;
 }

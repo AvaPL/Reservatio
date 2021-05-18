@@ -22,7 +22,7 @@ public class Customer {
     @Column(length = 50)
     private String lastName;
     @NotNull
-    @Column(length = 20, unique = true)
+    @Column(length = 30, unique = true)
     private String phoneNumber;
     @NotNull
     @Column(unique = true)
@@ -31,4 +31,13 @@ public class Customer {
     @OneToMany(mappedBy = "customer")
     @Singular
     private List<Reservation> reservations;
+
+    @ManyToMany
+    @JoinTable(
+            name = "favourites",
+            joinColumns = @JoinColumn(name = "customer_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_provider_id")
+    )
+    @Singular
+    private List<ServiceProvider> favourites;
 }
