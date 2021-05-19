@@ -128,7 +128,7 @@ function ServiceCard({ name, priceUsd, serviceid, serviceproviderid }) {
               variant="primary"
               href={`/booking/${serviceproviderid}/${serviceid}`}
           >
-            {priceUsd} zł
+            ${priceUsd}
           </Button>
         </Col>
       </Row>

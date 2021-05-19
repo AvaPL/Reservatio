@@ -40,3 +40,4 @@ public class Service {
     @Singular
     private List<Employee> employees;
 }
+
