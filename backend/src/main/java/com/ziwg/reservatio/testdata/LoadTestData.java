@@ -16,7 +16,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +49,7 @@ public class LoadTestData {
     }
 
     private static int reservationsCount() {
-        return faker.number().numberBetween(10, 20);
+        return faker.number().numberBetween(20, 30);
     }
 
     private static int reviewsCount() {
@@ -200,7 +199,7 @@ public class LoadTestData {
 
     private Service fakeService(ServiceProvider serviceProvider) {
         return Service.builder().name(faker.company().catchPhrase())
-                .priceUsd(Float.parseFloat(faker.commerce().price().replaceAll(",",".")))
+                .priceUsd(Float.parseFloat(faker.commerce().price().replaceAll(",", ".")))
                 .durationMinutes(faker.number().numberBetween(1, 7) * 10)
                 .description(StringUtils.left(faker.shakespeare().hamletQuote(), 500)).serviceProvider(serviceProvider)
                 .build();
@@ -297,16 +296,15 @@ public class LoadTestData {
 
     private ArrayList<Review> createReviews(List<Reservation> reservations, int count) {
         val result = new ArrayList<Review>();
-        for (int i = 0; i < count; i++) {
-            val review = createReview(reservations);
+        for (int i = 0; i < count && i < reservations.size(); i++) {
+            val review = createReview(reservations.get(i));
             result.add(review);
         }
         return result;
     }
 
-    private Review createReview(List<Reservation> reservations) {
-        val randomReservation = random(reservations);
-        val review = fakeReview(randomReservation);
+    private Review createReview(Reservation reservation) {
+        val review = fakeReview(reservation);
         log.info("Loaded test review '" + review.getMessage() + "'");
         return review;
     }
