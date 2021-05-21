@@ -89,6 +89,7 @@ keycloak:
             - /rest/employeesByService/*
             - /rest/service/*
             - /rest/serviceProvider/*
+            - /rest/reservation/
     - auth-roles:
         - service_provider
       security-collections:

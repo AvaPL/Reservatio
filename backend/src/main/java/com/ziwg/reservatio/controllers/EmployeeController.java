@@ -1,12 +1,11 @@
 package com.ziwg.reservatio.controllers;
 
 import com.ziwg.reservatio.entity.Employee;
+import com.ziwg.reservatio.entity.Reservation;
 import com.ziwg.reservatio.entity.Service;
 import com.ziwg.reservatio.entity.ServiceProvider;
 import com.ziwg.reservatio.pojos.EmployeePojo;
-import com.ziwg.reservatio.repository.EmployeeRepository;
-import com.ziwg.reservatio.repository.ServiceEmployeeViewRepository;
-import com.ziwg.reservatio.repository.ServiceProviderRepository;
+import com.ziwg.reservatio.repository.*;
 import com.ziwg.reservatio.views.services.ServiceEmployeeView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,14 +26,17 @@ public class EmployeeController {
     private final EmployeeRepository employeeRepository;
     private final ServiceProviderRepository serviceProviderRepository;
     private final ServiceEmployeeViewRepository serviceEmployeeViewRepository;
+    private final ReservationRepository reservationRepository;
 
     @Autowired
     public EmployeeController(EmployeeRepository employeeRepository,
                               ServiceProviderRepository serviceProviderRepository,
-                              ServiceEmployeeViewRepository serviceEmployeeViewRepository) {
+                              ServiceEmployeeViewRepository serviceEmployeeViewRepository,
+                              ReservationRepository reservationRepository) {
         this.employeeRepository = employeeRepository;
         this.serviceProviderRepository = serviceProviderRepository;
         this.serviceEmployeeViewRepository = serviceEmployeeViewRepository;
+        this.reservationRepository = reservationRepository;
     }
 
     @GetMapping("employeesByService/{serviceId}")
@@ -43,11 +45,22 @@ public class EmployeeController {
         List<Employee> employeeList = new ArrayList<>();
 
         for (Long employeeId: serviceEmployeeView) {
+                List<ReservationFields> reservationFields = reservationRepository.findByEmployeeId(employeeId);
+                List<Reservation> reservationList = new ArrayList<>();
+                for(ReservationFields reservationField: reservationFields){
+                    reservationList.add(Reservation.builder()
+                                        .id(reservationField.getId())
+                                        .dateTime(reservationField.getDateTime())
+                                        .service(Service.builder().durationMinutes(reservationField.getService().getDurationMinutes()).build())
+                                        .build());
+                }
                 Optional<Employee> optionalEmployee = employeeRepository.findById(employeeId);
                 Employee employee = Employee.builder()
                                     .id(optionalEmployee.get().getId())
                                     .firstName(optionalEmployee.get().getFirstName())
-                                    .lastName(optionalEmployee.get().getLastName()).build();
+                                    .lastName(optionalEmployee.get().getLastName())
+                                    .reservations(reservationList)
+                                    .build();
 
                 employeeList.add(employee);
         }

@@ -1,24 +1,24 @@
 import { useState, useEffect } from "react";
 
 export function useFetch(promiseFn, dependencyArray) {
-    const [isLoading, setLoading] = useState(true);
-    const [data, setData] = useState(null);
+    const [state, setState] = useState({isLoading: true, data: null})
 
     useEffect(() => {
-        setLoading(true);
+        setState({isLoading: true, data: null});
         promiseFn().then(async (res) => {
             if (!res.ok) {
-                setData({status: false, raw: res.code});
+                throw new Error(res.code);
             } else {
                 const raw = await res.json();
-                setData({status: true, raw});
+                setState({isLoading: false, data: raw});
             }
         })
-            .catch((err) => setData({status: false, raw: err}))
-            .finally(() => setLoading(false))
+            .catch((err) => {
+                throw new Error(err)
+            })
     }, dependencyArray ? [...dependencyArray] : [])
 
-    return isLoading ? ({ isLoading, status: false, data: null }) : ({ isLoading, status: data.status, data: data.raw })
+    return state;
 }
 
 

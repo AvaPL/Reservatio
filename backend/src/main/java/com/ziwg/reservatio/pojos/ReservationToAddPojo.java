@@ -8,4 +8,6 @@ import java.time.LocalDateTime;
 public class ReservationToAddPojo {
     private Long employeeId;
     private LocalDateTime dateTime;
+    private Long serviceId;
+    private Long customerId;
 }

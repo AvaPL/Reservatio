@@ -10,4 +10,6 @@ import java.util.List;
 public interface ReservationRepository extends PagingAndSortingRepository<Reservation, Long> {
     @Query("select r.id from Reservation r where r.service.id in :serviceId")
     List<Reservation> findByServiceId(@Param("serviceId") Long serviceId);
+
+    List<ReservationFields> findByEmployeeId(@Param("serviceId") Long employeeId);
 }

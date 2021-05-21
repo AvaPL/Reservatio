@@ -28,21 +28,10 @@ public class ServiceProviderController {
     @GetMapping("serviceProvider/{serviceProviderId}")
     public ResponseEntity<ServiceProvider> getServiceProvider(@PathVariable Long serviceProviderId) {
         Optional<ServiceProviderFields> serviceProvider = serviceProviderRepository.getById(serviceProviderId);
-        //var mapper = RawQueryMapper.buildRawQueryMapper(serviceProviderObject);
 
         if(serviceProvider.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-//        var sureMapper = mapper.get();
-//
-//        ServiceProvider serviceProvider = ServiceProvider.builder()
-//                .id(sureMapper.get(0).toLong())
-//                .name(sureMapper.get(1).toString())
-//                .address((Address)sureMapper.get(2).item)
-//                .imageUrl(sureMapper.get(3).toString())
-//                .phoneNumber(sureMapper.get(4).toString())
-//                .email(sureMapper.get(5).toString())
-//                .build();
 
         return new ResponseEntity(serviceProvider, HttpStatus.OK);
     }
