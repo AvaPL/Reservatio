@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @RestController
 // TODO Change base path to /serviceProvider/{serviceProviderId} (?)
-@RequestMapping("${spring.data.rest.base-path}")
+@RequestMapping("${spring.data.rest.base-path}/serviceProvider/{serviceProviderId}/services")
 public class ServiceController {
 
     private final ServiceProviderRepository serviceProviderRepository;
@@ -34,7 +34,7 @@ public class ServiceController {
         this.employeeRepository = employeeRepository;
     }
 
-    @PostMapping("addService/{serviceProviderId}")
+    @PostMapping()
     public ResponseEntity<HttpStatus> addService(@PathVariable Long serviceProviderId,
                                                  @RequestBody ServicePojo servicePojo) {
         Optional<ServiceProvider> serviceProvider = serviceProviderRepository.findById(serviceProviderId);
@@ -63,8 +63,8 @@ public class ServiceController {
         }
     }
 
-    @DeleteMapping("deleteService/{serviceId}")
-    public ResponseEntity<String> deleteService(@PathVariable Long serviceId) {
+    @DeleteMapping("{serviceId}")
+    public ResponseEntity<String> deleteService(@PathVariable Long serviceProviderId, @PathVariable Long serviceId) {
         Optional<Service> serviceToDelete = serviceRepository.findById(serviceId);
         if (serviceToDelete.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -91,8 +91,8 @@ public class ServiceController {
         }
     }
 
-    @PutMapping("editService/{serviceId}")
-    public ResponseEntity<HttpStatus> editService(@PathVariable Long serviceId, @RequestBody ServicePojo servicePojo) {
+    @PutMapping("{serviceId}")
+    public ResponseEntity<HttpStatus> editService(@PathVariable Long serviceProviderId, @PathVariable Long serviceId, @RequestBody ServicePojo servicePojo) {
         Optional<Service> serviceToEdit = serviceRepository.findById(serviceId);
         if (serviceToEdit.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

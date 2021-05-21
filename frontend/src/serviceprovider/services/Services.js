@@ -173,7 +173,7 @@ class Services extends Component {
         console.log("Service to add: ");
         console.log(service);
         const serviceProviderId = authService.token?.entityId;
-        authService.fetchAuthenticated(`${backendHost}/rest/addService/${serviceProviderId}`, {
+        authService.fetchAuthenticated(`${backendHost}/rest/serviceProvider/${serviceProviderId}/services`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -235,7 +235,8 @@ class Services extends Component {
     onEditClick = service => {
         console.log("Service to edit: ");
         console.log(service);
-        authService.fetchAuthenticated(`${backendHost}/rest/editService/${this.state.selectedService.id}`, {
+        const serviceProviderId = authService.token?.entityId;
+        authService.fetchAuthenticated(`${backendHost}/rest/serviceProvider/${serviceProviderId}/services/${this.state.selectedService.id}`, {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -304,7 +305,8 @@ class Services extends Component {
     }
 
     onDeleteClicked = () => {
-        authService.fetchAuthenticated(`${backendHost}/rest/deleteService/${this.state.selectedService.id}`, {
+        const serviceProviderId = authService.token?.entityId;
+        authService.fetchAuthenticated(`${backendHost}/rest/serviceProvider/${serviceProviderId}/services/${this.state.selectedService.id}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',

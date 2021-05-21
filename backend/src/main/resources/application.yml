@@ -97,16 +97,10 @@ keycloak:
       security-collections:
         - patterns:
             - /rest/serviceProviderEmployeesViews/*
-#            - /rest/addEmployee/*
-#            - /rest/deleteEmployee/*
-#            - /rest/editEmployee/*
             - /rest/serviceProvider/*
             - /rest/updateServiceProvider/*
             - /rest/salonViews/*
             - /rest/uploadImage/*
             - /rest/serviceProviderServicesViews/*
-            - /rest/addService/*
-            - /rest/deleteService/*
-            - /rest/editService/*
             - /rest/favouriteViews/*
             - /rest/bookingViews/*
