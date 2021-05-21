@@ -35,7 +35,7 @@ from service_provider sp
 
 create or replace view booking_services_view
 as
-select s.id as id, s.name as name, s.price as price, s.service_provider_id as service_provider_id
+select s.id as id, s.name as name, s.price_usd as price, s.service_provider_id as service_provider_id
 from service s;
 -- services views
 create
