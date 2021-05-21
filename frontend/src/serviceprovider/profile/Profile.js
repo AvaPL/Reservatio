@@ -127,7 +127,15 @@ class Profile extends Component {
                     }
                     return response;
                 })
-                .then(result => console.log(result))
+                .then(result => {
+                        console.log(result);
+                        this.setState({
+                            showModalChange: false,
+                            src: `http://localhost:9000/reservatio/serviceprovider${authService.token?.entityId}.jpg?${global.Date.now()}`,
+                            file: null
+                        });
+                    }
+                )
                 .catch(error => console.log('error', error));
             this.setState({
                 showModalChange: false,
