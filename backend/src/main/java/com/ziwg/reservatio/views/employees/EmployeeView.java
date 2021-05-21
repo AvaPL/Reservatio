@@ -1,6 +1,7 @@
 package com.ziwg.reservatio.views.employees;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Subselect;
 
@@ -8,6 +9,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Data
+@EqualsAndHashCode(exclude = {"serviceProviderView"})
 @Entity
 @Immutable
 @Subselect("select * from employee_view")
