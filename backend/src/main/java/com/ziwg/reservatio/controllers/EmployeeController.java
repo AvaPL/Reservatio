@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @RestController
 // TODO Change base path to /serviceProvider/{serviceProviderId} (?)
-@RequestMapping("${spring.data.rest.base-path}")
+@RequestMapping("${spring.data.rest.base-path}/serviceProvider/{serviceProviderId}/employees")
 public class EmployeeController {
 
     private final EmployeeRepository employeeRepository;
@@ -32,7 +32,7 @@ public class EmployeeController {
         this.serviceProviderRepository = serviceProviderRepository;
     }
 
-    @PostMapping("addEmployee/{serviceProviderId}")
+    @PostMapping()
     public ResponseEntity<HttpStatus> addEmployee(@PathVariable Long serviceProviderId,
                                                   @RequestBody EmployeePojo employeePojo) {
         Optional<ServiceProvider> serviceProvider = serviceProviderRepository.findById(serviceProviderId);
@@ -48,8 +48,8 @@ public class EmployeeController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @DeleteMapping("deleteEmployee/{employeeId}")
-    public ResponseEntity<String> deleteEmployee(@PathVariable Long employeeId) {
+    @DeleteMapping("{employeeId}")
+    public ResponseEntity<String> deleteEmployee(@PathVariable Long serviceProviderId, @PathVariable Long employeeId) {
         Optional<Employee> employeeToDelete = employeeRepository.findById(employeeId);
         if (employeeToDelete.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -64,8 +64,8 @@ public class EmployeeController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("editEmployee/{employeeId}")
-    public ResponseEntity<HttpStatus> editEmployee(@PathVariable Long employeeId, @RequestBody EmployeePojo employeePojo) {
+    @PutMapping("{employeeId}")
+    public ResponseEntity<HttpStatus> editEmployee(@PathVariable Long serviceProviderId, @PathVariable Long employeeId, @RequestBody EmployeePojo employeePojo) {
         Optional<Employee> employeeToEdit = employeeRepository.findById(employeeId);
         if (employeeToEdit.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
