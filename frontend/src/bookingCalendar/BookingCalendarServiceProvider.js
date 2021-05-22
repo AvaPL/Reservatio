@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import Button from "react-bootstrap/Button";
-import {useHistory, useParams} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import styles from "./bookingCalendar.module.scss";
 import calendarStyle from "./Calender.scss";
 import {Container, Dropdown, DropdownButton, Table} from "react-bootstrap";
@@ -14,14 +14,13 @@ import {backendHost} from "../Config";
 import {Instant, LocalDateTime} from "@js-joda/core";
 
 export default function BookingCalendarConsumer() {
-    const {serviceproviderid} = useParams();
     const history = useHistory();
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [selectedEmployee, setSelectedEmployee] = useState('');
     const [reservationsForEmployee, setReservationsForEmployee] = useState([])
 
-    const Employees = useFetch(() => fetchEmployees(serviceproviderid));
-    const ServiceProvider = useFetch(() => fetchServiceProvider(serviceproviderid));
+    const Employees = useFetch(() => fetchEmployees(authService.token?.entityId));
+    const ServiceProvider = useFetch(() => fetchServiceProvider(authService.token?.entityId));
 
     useEffect(() => {
         if (!selectedEmployee || !selectedDate || !ServiceProvider.data) return;
@@ -60,7 +59,7 @@ export default function BookingCalendarConsumer() {
     return (
         <>
             <div className={styles.mainImgWrapper}>
-                <img src={`http://localhost:9000/reservatio/serviceprovider${serviceproviderid}.jpg`} alt={ServiceProvider.data.name} className={styles.mainImg} />
+                <img src={`http://localhost:9000/reservatio/serviceprovider${authService.token?.entityId}.jpg`} alt={ServiceProvider.data.name} className={styles.mainImg} />
                 {history.length > 0 && (
                     <div className={styles.mainBack}>
                         <Button
@@ -110,7 +109,7 @@ export default function BookingCalendarConsumer() {
                                     {reservation.dateTime.toString().slice(11, 16)}
                                 </td>
                                 <td className={styles.timeTableRow}>
-                                    {reservation.service.name} Duration: {reservation.service.durationMinutes} Price: {reservation.service.priceUsd}
+                                    {reservation.service? reservation.service.name : "No services"} Duration: {reservation.service ? reservation.service.durationMinutes : ""} Price: {reservation.service? reservation.service.priceUsd : ""}
                                 </td>
                             </tr>
                         ))}

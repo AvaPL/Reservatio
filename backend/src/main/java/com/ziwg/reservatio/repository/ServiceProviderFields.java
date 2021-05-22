@@ -9,8 +9,6 @@ public interface ServiceProviderFields {
 
     String getName();
 
-    Address getAddress();
-
     String getImageUrl();
 
     String getPhoneNumber();

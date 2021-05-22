@@ -76,7 +76,7 @@ class App extends Component {
                         <Route exact path="/register" render={props => this.renderRegister(props)}/>
                         {/* TODO: Paths below should have a hierarchy originating from navbar routes */}
                         <Route exact path="/booking/:serviceproviderid/:serviceid" component={BookingCalendarConsumer}/>
-                        <Route exact path="/serviceprovider/:serviceproviderid/calendar" component={BookingCalendarServiceProvider}/>
+                        <Route exact path="/calendar" component={BookingCalendarServiceProvider}/>
                         <Route exact path="/booking/:serviceproviderid" component={Booking}/>
                         <Route exact path="/serviceproviderdetails" component={ServiceProviderDetails}/>
                         {this.routesWithNavigation()}
