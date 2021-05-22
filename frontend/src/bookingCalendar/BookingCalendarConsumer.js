@@ -201,6 +201,7 @@ function SuccessModal({closeModal}) {
         }, 1000);
 
         return () => window.clearTimeout(t);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [counter])
 
     return (

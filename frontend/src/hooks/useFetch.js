@@ -16,6 +16,8 @@ export function useFetch(promiseFn, dependencyArray) {
             .catch((err) => {
                 throw new Error(err)
             })
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, dependencyArray ? [...dependencyArray] : [])
 
     return state;
