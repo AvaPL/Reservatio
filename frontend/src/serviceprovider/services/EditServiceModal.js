@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {authService} from "../../auth/AuthService";
 import {backendHost} from "../../Config";
-import {Alert, Button, Modal} from "react-bootstrap";
+import {Button, Modal} from "react-bootstrap";
 import styles from "./Services.module.scss";
 import Form from "react-bootstrap/Form";
 
@@ -14,8 +14,8 @@ class EditServiceModal extends Component {
             checkedEmployees: new Set(),
             error: null,
             isLoaded: false,
-            formErrors: new Set(),
             name: null,
+            validated: false
         }
     }
 
@@ -69,43 +69,18 @@ class EditServiceModal extends Component {
                         Edit service
                     </Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
-                    <Form>
-                        {this.alerts()}
-                        <Form.Group controlId="name">
-                            <Form.Label className={styles.formLabel}>Name</Form.Label>
-                            <Form.Control type="text" defaultValue={this.props.serviceToEdit?.name}
-                                          onChange={event => this.props.handleChange(event, this)}/>
-                        </Form.Group>
-                        <Form.Group controlId="description">
-                            <Form.Label className={styles.formLabel}>Description</Form.Label>
-                            <Form.Control type="text" defaultValue={this.props.serviceToEdit?.description}
-                                          onChange={event => this.props.handleChange(event, this)}/>
-                        </Form.Group>
-                        <Form.Group controlId="priceUsd">
-                            <Form.Label className={styles.formLabel}>Price (USD)</Form.Label>
-                            <Form.Control type="number" defaultValue={this.props.serviceToEdit?.priceUsd}
-                                          onChange={event => this.props.handleChange(event, this)}/>
-                        </Form.Group>
-                        <Form.Group controlId="durationMinutes">
-                            <Form.Label className={styles.formLabel}>Duration (minutes)</Form.Label>
-                            <Form.Control type="number" defaultValue={this.props.serviceToEdit?.durationMinutes}
-                                          onChange={event => this.props.handleChange(event, this)}/>
-                        </Form.Group>
-                        <Form.Group controlId="employees">
-                            <Form.Label className={styles.formLabel}>Employees</Form.Label>
-                            {
-                                this.renderEmployees()
-                            }
-                        </Form.Group>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button className={`${styles.buttonSecondary} shadow-none`}
-                            onClick={this.handleHide}>Cancel</Button>
-                    <Button className={`${styles.buttonPrimary} shadow-none`} disabled={this.state.formErrors.size > 0}
-                            onClick={this.handleEditClicked}>Edit</Button>
-                </Modal.Footer>
+                <Form noValidate validated={this.state.validated} onSubmit={this.onSubmit}>
+                    <Modal.Body>
+                        {this.getModalBody()}
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button className={`${styles.buttonSecondary} shadow-none`}
+                                onClick={this.handleHide}>Cancel</Button>
+                        <Button className={`${styles.buttonPrimary} shadow-none`} type="submit"
+                                disabled={!this.props.serviceToEdit}
+                                onClick={() => this.setState({validated: true})}>Edit</Button>
+                    </Modal.Footer>
+                </Form>
             </Modal>
         );
     }
@@ -121,12 +96,81 @@ class EditServiceModal extends Component {
         this.props.onHide();
     };
 
-    alerts() {
-        if (this.state.formErrors.size > 0) {
-            return <Alert variant="danger">
-                {Array.from(this.state.formErrors).join(", ")}
-            </Alert>
+    onSubmit = event => {
+        const form = event.currentTarget
+        event.preventDefault()
+        event.stopPropagation()
+        if (form.checkValidity())
+            this.handleEditClicked();
+    };
+
+    handleEditClicked = () => {
+        let serviceToEdit = {
+            id: this.props.serviceToEdit.id,
+            name: this.state.name ? this.state.name : this.props.serviceToEdit.name,
+            description: this.state.description ? this.state.description : this.props.serviceToEdit.description,
+            priceUsd: this.state.priceUsd ? this.state.priceUsd : this.props.serviceToEdit.priceUsd,
+            durationMinutes: this.state.durationMinutes ? this.state.durationMinutes : this.props.serviceToEdit.durationMinutes,
+            employees: Array.from(this.state.checkedEmployees)
         }
+        this.props.onClick(serviceToEdit);
+        this.setState({checkedEmployees: new Set()})
+
+    };
+
+    getModalBody() {
+        if (this.props.serviceToEdit) {
+            return <div>
+                <Form.Group controlId="name">
+                    <Form.Label className={styles.formLabel}>Name</Form.Label>
+                    <Form.Control required type="text" defaultValue={this.props.serviceToEdit?.name}
+                                  onChange={event => this.handleChange(event)}/>
+                    <Form.Control.Feedback type="invalid">
+                        Please enter a name.
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="description">
+                    <Form.Label className={styles.formLabel}>Description</Form.Label>
+                    <Form.Control required type="text" defaultValue={this.props.serviceToEdit?.description}
+                                  onChange={event => this.handleChange(event)}/>
+                    <Form.Control.Feedback type="invalid">
+                        Please enter a description.
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="priceUsd">
+                    <Form.Label className={styles.formLabel}>Price (USD)</Form.Label>
+                    <Form.Control required min={0} step={0.05} type="number"
+                                  defaultValue={this.props.serviceToEdit?.priceUsd}
+                                  onChange={event => this.handleChange(event)}/>
+                    <Form.Control.Feedback type="invalid">
+                        Please enter a correct price.
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="durationMinutes">
+                    <Form.Label className={styles.formLabel}>Duration (minutes)</Form.Label>
+                    <Form.Control required min={0} step={1} type="number"
+                                  defaultValue={this.props.serviceToEdit?.durationMinutes}
+                                  onChange={event => this.handleChange(event)}/>
+                    <Form.Control.Feedback type="invalid">
+                        Please enter duration in minutes.
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group controlId="employees">
+                    <Form.Label className={styles.formLabel}>Employees</Form.Label>
+                    {
+                        this.renderEmployees()
+                    }
+                </Form.Group>
+            </div>;
+        } else {
+            return <>
+                No service selected.
+            </>;
+        }
+    }
+
+    handleChange(event) {
+        this.setState({[event.target.id]: event.target.value})
     }
 
     renderEmployees() {
@@ -150,21 +194,6 @@ class EditServiceModal extends Component {
         if (event.target.checked) checkedEmployees.add(eventId)
         else checkedEmployees.delete(eventId)
         this.setState({checkedEmployees: checkedEmployees});
-    };
-
-    handleEditClicked = () => {
-        if (!this.state.formErrors.size > 0) {
-            let serviceToEdit = {
-                id: this.props.serviceToEdit.id,
-                name: this.state.name ? this.state.name : this.props.serviceToEdit.name,
-                description: this.state.description ? this.state.description : this.props.serviceToEdit.description,
-                priceUsd: this.state.priceUsd ? this.state.priceUsd : this.props.serviceToEdit.priceUsd,
-                durationMinutes: this.state.durationMinutes ? this.state.durationMinutes : this.props.serviceToEdit.durationMinutes,
-                employees: Array.from(this.state.checkedEmployees)
-            }
-            this.props.onClick(serviceToEdit);
-            this.setState({checkedEmployees: new Set()})
-        }
     };
 }
 
