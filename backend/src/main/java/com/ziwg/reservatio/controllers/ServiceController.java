@@ -18,7 +18,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-// TODO Change base path to /serviceProvider/{serviceProviderId} (?)
 @RequestMapping("${spring.data.rest.base-path}/serviceProvider/{serviceProviderId}/services")
 public class ServiceController {
 
@@ -27,73 +26,103 @@ public class ServiceController {
     private final EmployeeRepository employeeRepository;
 
     @Autowired
-    public ServiceController(ServiceProviderRepository serviceProviderRepository, ServiceRepository serviceRepository
-            , EmployeeRepository employeeRepository) {
+    public ServiceController(ServiceProviderRepository serviceProviderRepository, ServiceRepository serviceRepository,
+                             EmployeeRepository employeeRepository) {
         this.serviceProviderRepository = serviceProviderRepository;
         this.serviceRepository = serviceRepository;
         this.employeeRepository = employeeRepository;
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<HttpStatus> addService(@PathVariable Long serviceProviderId,
                                                  @RequestBody ServicePojo servicePojo) {
         Optional<ServiceProvider> serviceProvider = serviceProviderRepository.findById(serviceProviderId);
         if (serviceProvider.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        Service service = Service.builder().name(servicePojo.getName()).description(servicePojo.getDescription())
-                .priceUsd(servicePojo.getPriceUsd()).durationMinutes(servicePojo.getDurationMinutes())
-                .serviceProvider(serviceProvider.get()).build();
-        List<String> serviceProviderEmployees = serviceProvider.get().getEmployees().stream()
-                .map(employee -> employee.getFirstName() + " " + employee.getLastName()).collect(Collectors.toList());
+        Service service = createService(servicePojo, serviceProvider.get());
+        List<String> serviceProviderEmployees = getServiceProviderEmployees(serviceProvider.get());
         if (!serviceProviderEmployees.containsAll(servicePojo.getEmployees()))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        List<Employee> employeesToAdd = serviceProvider.get().getEmployees().stream()
-                .filter(employee -> servicePojo.getEmployees()
-                        .contains(employee.getFirstName() + " " + employee.getLastName())).collect(Collectors.toList());
+        List<Employee> employeesToAdd = getEmployees(servicePojo, serviceProvider.get().getEmployees());
         service.setEmployees(employeesToAdd);
         serviceRepository.save(service);
         addServiceToEmployees(service, employeesToAdd);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    private Service createService(ServicePojo servicePojo, ServiceProvider serviceProvider) {
+        return Service.builder().name(servicePojo.getName()).description(servicePojo.getDescription())
+                .priceUsd(servicePojo.getPriceUsd()).durationMinutes(servicePojo.getDurationMinutes())
+                .serviceProvider(serviceProvider).build();
+    }
+
+    private List<String> getServiceProviderEmployees(ServiceProvider serviceProvider) {
+        return serviceProvider.getEmployees().stream()
+                .map(employee -> employee.getFirstName() + " " + employee.getLastName()).collect(Collectors.toList());
+    }
+
+    private List<Employee> getEmployees(ServicePojo servicePojo, List<Employee> employees) {
+        return employees.stream().filter(employee -> servicePojo.getEmployees()
+                .contains(employee.getFirstName() + " " + employee.getLastName())).collect(Collectors.toList());
+    }
+
     private void addServiceToEmployees(Service service, List<Employee> employeesToAdd) {
-        for (Employee employee : employeesToAdd) {
+        for (Employee employee : employeesToAdd)
             employee.getServices().add(service);
-            employeeRepository.save(employee);
-        }
+        employeeRepository.saveAll(employeesToAdd);
     }
 
     @DeleteMapping("{serviceId}")
     public ResponseEntity<String> deleteService(@PathVariable Long serviceProviderId, @PathVariable Long serviceId) {
-        Optional<Service> serviceToDelete = serviceRepository.findById(serviceId);
+        Optional<ServiceProvider> serviceProvider = serviceProviderRepository.findById(serviceProviderId);
+        if (serviceProvider.isEmpty())
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        Optional<Service> serviceToDelete = getServiceFromServiceProvider(serviceId, serviceProvider.get());
         if (serviceToDelete.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        if (serviceToDelete.get().getReservations().stream()
-                .anyMatch(reservation -> reservation.getDateTime().isAfter(LocalDateTime.now())))
+        if (hasAnyUpcomingReservations(serviceToDelete.get()))
             return new ResponseEntity<>("Cannot delete a service assigned to upcoming appointments",
                     HttpStatus.BAD_REQUEST);
-        ServiceProvider serviceProvider = serviceToDelete.get().getServiceProvider();
-        serviceProvider
-                .setServices(serviceProvider.getServices().stream().filter(service -> service.getId().equals(serviceId))
-                        .collect(Collectors.toList()));
-        serviceProviderRepository.save(serviceProvider);
-        serviceToDelete.get().setServiceProvider(null);
-        deleteServiceFromEmployees(serviceToDelete.get());
-        serviceRepository.save(serviceToDelete.get());
+        deleteServiceFromServiceProvider(serviceId, serviceProvider.get());
+        clearRelationsInService(serviceToDelete.get());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    private Optional<Service> getServiceFromServiceProvider(Long serviceId, ServiceProvider serviceProvider) {
+        return serviceProvider.getServices().stream().filter(service -> service.getId().equals(serviceId)).findAny();
+    }
+
+    private boolean hasAnyUpcomingReservations(Service serviceToDelete) {
+        return serviceToDelete.getReservations().stream()
+                .anyMatch(reservation -> reservation.getDateTime().isAfter(LocalDateTime.now()));
+    }
+
+    private void deleteServiceFromServiceProvider(Long serviceId, ServiceProvider serviceProvider) {
+        serviceProvider.setServices(serviceProvider.getServices().stream()
+                .filter(service -> service.getId().equals(serviceId)).collect(Collectors.toList()));
+        serviceProviderRepository.save(serviceProvider);
+    }
+
+    private void clearRelationsInService(Service serviceToDelete) {
+        serviceToDelete.setServiceProvider(null);
+        deleteServiceFromEmployees(serviceToDelete);
+        serviceRepository.save(serviceToDelete);
+    }
+
     private void deleteServiceFromEmployees(Service serviceToDelete) {
-        for (Employee employee : serviceToDelete.getEmployees()) {
+        for (Employee employee : serviceToDelete.getEmployees())
             employee.setServices(employee.getServices().stream()
                     .filter(service -> !service.getId().equals(serviceToDelete.getId())).collect(Collectors.toList()));
-            employeeRepository.save(employee);
-        }
+        employeeRepository.saveAll(serviceToDelete.getEmployees());
     }
 
     @PutMapping("{serviceId}")
-    public ResponseEntity<HttpStatus> editService(@PathVariable Long serviceProviderId, @PathVariable Long serviceId, @RequestBody ServicePojo servicePojo) {
-        Optional<Service> serviceToEdit = serviceRepository.findById(serviceId);
+    public ResponseEntity<HttpStatus> editService(@PathVariable Long serviceProviderId, @PathVariable Long serviceId,
+                                                  @RequestBody ServicePojo servicePojo) {
+        Optional<ServiceProvider> serviceProvider = serviceProviderRepository.findById(serviceProviderId);
+        if (serviceProvider.isEmpty())
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        Optional<Service> serviceToEdit = getServiceFromServiceProvider(serviceId, serviceProvider.get());
         if (serviceToEdit.isEmpty())
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         updateService(serviceToEdit.get(), servicePojo);
@@ -101,15 +130,22 @@ public class ServiceController {
     }
 
     private void updateService(Service serviceToEdit, ServicePojo servicePojo) {
+        updateServiceProperties(serviceToEdit, servicePojo);
+        updateServiceEmployees(serviceToEdit, servicePojo);
+    }
+
+    private void updateServiceProperties(Service serviceToEdit, ServicePojo servicePojo) {
         serviceToEdit.setName(servicePojo.getName());
         serviceToEdit.setDescription(servicePojo.getDescription());
         serviceToEdit.setPriceUsd(servicePojo.getPriceUsd());
         serviceToEdit.setDurationMinutes(servicePojo.getDurationMinutes());
         serviceRepository.save(serviceToEdit);
+    }
+
+    private void updateServiceEmployees(Service serviceToEdit, ServicePojo servicePojo) {
         deleteServiceFromEmployees(serviceToEdit);
         List<Employee> employees = serviceToEdit.getServiceProvider().getEmployees();
-        List<Employee> newEmployees = employees.stream().filter(employee -> servicePojo.getEmployees()
-                .contains(employee.getFirstName() + " " + employee.getLastName())).collect(Collectors.toList());
+        List<Employee> newEmployees = getEmployees(servicePojo, employees);
         addServiceToEmployees(serviceToEdit, newEmployees);
     }
 }
