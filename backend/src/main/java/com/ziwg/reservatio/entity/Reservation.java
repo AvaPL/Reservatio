@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
+@EqualsAndHashCode(exclude = {"customer", "service", "employee"})
 @Builder
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -18,6 +19,10 @@ public class Reservation {
 
     @NotNull
     private LocalDateTime dateTime;
+
+    @OneToOne
+    @PrimaryKeyJoinColumn
+    private Review review;
 
     @ManyToOne
     private Customer customer;

@@ -8,6 +8,7 @@ import java.util.List;
 
 @Entity
 @Data
+@EqualsAndHashCode(exclude = {"serviceProvider", "services"})
 @Builder
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

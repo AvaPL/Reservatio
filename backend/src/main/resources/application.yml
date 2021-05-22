@@ -1,15 +1,7 @@
-logging:
-  level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type: TRACE
 spring:
   profiles:
     active: prod
   jpa:
-    show_sql: true
-    properties:
-      hibernate:
-        format_sql: true
     hibernate:
       ddl-auto: create
   datasource:
@@ -98,6 +90,12 @@ keycloak:
             - /rest/service/*
             - /rest/serviceProvider/*
             - /rest/reservation/
+            - /rest/bookingViews/*
+            - /rest/customerReservationViews/*
+            - /rest/addReview/*
+            - /rest/serviceProvidersViews/*
+            - /rest/customers/*
+            - /rest/reservationViews/*
     - auth-roles:
         - service_provider
       security-collections:
@@ -106,9 +104,14 @@ keycloak:
             - /rest/employeesByServiceProvider/*
             - /rest/addEmployee/*
             - /rest/deleteEmployee/*
+            - /rest/updateServiceProvider/*
+            - /rest/salonViews/*
+            - /rest/uploadImage/*
             - /rest/serviceProviderServicesViews/*
             - /rest/addService/*
             - /rest/deleteService/*
             - /rest/editService/*
             - /rest/editEmployee/*
             - /rest/serviceProvider/*
+            - /rest/favouriteViews/*
+            - /rest/bookingViews/*
