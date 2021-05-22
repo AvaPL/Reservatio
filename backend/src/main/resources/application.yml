@@ -1,7 +1,15 @@
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type: TRACE
 spring:
   profiles:
     active: prod
   jpa:
+    show_sql: true
+    properties:
+      hibernate:
+        format_sql: true
     hibernate:
       ddl-auto: create
   datasource:
@@ -95,6 +103,7 @@ keycloak:
       security-collections:
         - patterns:
             - /rest/serviceProviderEmployeesViews/*
+            - /rest/employeesByServiceProvider/*
             - /rest/addEmployee/*
             - /rest/deleteEmployee/*
             - /rest/serviceProviderServicesViews/*
@@ -102,3 +111,4 @@ keycloak:
             - /rest/deleteService/*
             - /rest/editService/*
             - /rest/editEmployee/*
+            - /rest/serviceProvider/*

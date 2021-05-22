@@ -2,6 +2,7 @@ import React, {useEffect, useState} from "react";
 import Button from "react-bootstrap/Button";
 import {useHistory, useParams} from "react-router-dom";
 import styles from "./bookingCalendar.module.scss";
+import calendarStyle from "./Calender.scss";
 import {Col, Container, Row, Dropdown, DropdownButton} from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Calendar from 'react-calendar'
@@ -60,6 +61,7 @@ export default function BookingCalendarConsumer() {
         if (!selectedEmployee || !selectedDate || !ServiceProvider.data) return;
         let utcTimestamp = Instant.parse(selectedDate.toISOString())
         const selectedLocalDate = LocalDateTime.ofInstant(utcTimestamp);
+        
         const employeeReservations = selectedEmployee.reservations
             .map(res => ({...res, date: LocalDateTime.parse(res.dateTime)}))
             .filter(res => res.date.toLocalDate().equals(selectedLocalDate.toLocalDate()))
@@ -71,7 +73,7 @@ export default function BookingCalendarConsumer() {
         const selectedLocalCloseDateTime = LocalDateTime.ofDateAndTime(selectedLocalDate.toLocalDate(), localCloseHour).withNano(0).minusMinutes(Service.data.durationMinutes);
 
         const openingHoursInMinutes = selectedLocalOpenDateTime.until(selectedLocalCloseDateTime, ChronoUnit.MINUTES);
-        console.log(openingHoursInMinutes);
+
         const allReservationSlotsInDay = new Array(Math.floor(openingHoursInMinutes / RESERVATION_SLOT) + 1)
             .fill(undefined).map((_, idx) => selectedLocalOpenDateTime.plusMinutes(idx * RESERVATION_SLOT));
 
@@ -118,7 +120,7 @@ export default function BookingCalendarConsumer() {
     return (
         <>
             <div className={styles.mainImgWrapper}>
-                <img src={ServiceProvider.data.imageUrl} alt={ServiceProvider.data.name} className={styles.mainImg}/>
+                <img src={`http://localhost:9000/reservatio/serviceprovider${serviceproviderid}.jpg`} alt={ServiceProvider.data.name} className={styles.mainImg}/>
                 {history.length > 0 && (
                     <div className={styles.mainBack}>
                         <Button
@@ -142,11 +144,11 @@ export default function BookingCalendarConsumer() {
                     <div>
                         <Calendar value={selectedDate}
                                   onChange={setSelectedDate}
-                                  className={cn(Calendar.css, styles.calendarStyle)}
+                                  className={[Calendar.css, calendarStyle.reactCalendar]}
                         />
                     </div>
                     <DropdownButton className={styles.dropdownButton}
-                                    title={selectedEmployee ? `${selectedEmployee.firstName} ${selectedEmployee.lastName}` : "Wybierz pracownika"}
+                                    title={selectedEmployee ? `${selectedEmployee.firstName} ${selectedEmployee.lastName}` : "Choose an employee"}
                                     onSelect={handleSelectEmployee}
                                     isexpanded={true}>
                         {Employees.data.map((employee) => (
@@ -175,8 +177,6 @@ export default function BookingCalendarConsumer() {
         </>
     );
 }
-BookingCalendarConsumer.whyDidYouRender = true;
-
 
 function AvailableService({localDateTime, employeeId, serviceId, handleAddReservation}) {
     return (
@@ -203,15 +203,17 @@ function SuccessModal({closeModal}) {
         return () => window.clearTimeout(t);
     }, [counter])
 
-    return <Modal show={true} onHide={closeModal}>
+    return (
+        <Modal show={true} onHide={closeModal}>
         <Modal.Header closeButton>
-            <Modal.Title>Rezerwacja</Modal.Title>
+            <Modal.Title>Reservation</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Rezerwacja udana!!!</Modal.Body>
+        <Modal.Body>Reservation accomplished!</Modal.Body>
         <Modal.Footer>
             <Button variant="secondary" onClick={closeModal}>
-                Zamknij (Zostaniesz przeniesiony za {counter}s)
+                Close (You will be redirected in {counter}s)
             </Button>
         </Modal.Footer>
-    </Modal>
+        </Modal>
+    );
 }

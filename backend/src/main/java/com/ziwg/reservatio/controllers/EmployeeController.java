@@ -26,16 +26,19 @@ public class EmployeeController {
     private final EmployeeRepository employeeRepository;
     private final ServiceProviderRepository serviceProviderRepository;
     private final ServiceEmployeeViewRepository serviceEmployeeViewRepository;
+    private final ServiceProviderEmployeeViewRepository serviceProviderEmployeeViewRepository;
     private final ReservationRepository reservationRepository;
 
     @Autowired
     public EmployeeController(EmployeeRepository employeeRepository,
                               ServiceProviderRepository serviceProviderRepository,
                               ServiceEmployeeViewRepository serviceEmployeeViewRepository,
+                              ServiceProviderEmployeeViewRepository serviceProviderEmployeeViewRepository,
                               ReservationRepository reservationRepository) {
         this.employeeRepository = employeeRepository;
         this.serviceProviderRepository = serviceProviderRepository;
         this.serviceEmployeeViewRepository = serviceEmployeeViewRepository;
+        this.serviceProviderEmployeeViewRepository = serviceProviderEmployeeViewRepository;
         this.reservationRepository = reservationRepository;
     }
 
@@ -63,6 +66,39 @@ public class EmployeeController {
                                     .build();
 
                 employeeList.add(employee);
+        }
+        if (employeeList.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return new ResponseEntity<>(employeeList, HttpStatus.OK);
+    }
+
+    @GetMapping("employeesByServiceProvider/{serviceProviderId}")
+    public ResponseEntity<List<Employee>> getEmployeesByServiceProvider(@PathVariable Long serviceProviderId) {
+        List<Long> serviceProviderEmployeeView = serviceProviderEmployeeViewRepository.findByServiceProviderId(serviceProviderId);
+        List<Employee> employeeList = new ArrayList<>();
+
+        for (Long id: serviceProviderEmployeeView) {
+            List<ReservationFields> reservationFields = reservationRepository.findByEmployeeId(id);
+            List<Reservation> reservationList = new ArrayList<>();
+            for(ReservationFields reservationField: reservationFields){
+                reservationList.add(Reservation.builder()
+                        .id(reservationField.getId())
+                        .dateTime(reservationField.getDateTime())
+                        .service(Service.builder().durationMinutes(reservationField.getService().getDurationMinutes())
+                                .name(reservationField.getService().getName())
+                                .priceUsd(reservationField.getService().getPriceUsd()).build()).build());
+            }
+            Optional<Employee> optionalEmployee = employeeRepository.findById(id);
+            Employee employee = Employee.builder()
+                    .id(optionalEmployee.get().getId())
+                    .firstName(optionalEmployee.get().getFirstName())
+                    .lastName(optionalEmployee.get().getLastName())
+                    .reservations(reservationList)
+                    .build();
+
+            employeeList.add(employee);
         }
         if (employeeList.isEmpty()){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);

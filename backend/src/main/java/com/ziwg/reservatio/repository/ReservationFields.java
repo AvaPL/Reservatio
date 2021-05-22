@@ -9,5 +9,7 @@ public interface ReservationFields {
 
     interface ServiceDurationField {
         Integer getDurationMinutes();
+        String getName();
+        Float getPriceUsd();
     }
 }
