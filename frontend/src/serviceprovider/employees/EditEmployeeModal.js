@@ -68,29 +68,12 @@ class EditEmployeeModal extends Component {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form>
-                        <Form.Group controlId="firstName">
-                            <Form.Label className={styles.formLabel}>First name</Form.Label>
-                            <Form.Control type="text" defaultValue={this.props.employeeToEdit?.firstName}
-                                          onChange={event => this.handleChange(event)}/>
-                        </Form.Group>
-                        <Form.Group controlId="lastName">
-                            <Form.Label className={styles.formLabel}>Last name</Form.Label>
-                            <Form.Control type="text" defaultValue={this.props.employeeToEdit?.lastName}
-                                          onChange={event => this.handleChange(event)}/>
-                        </Form.Group>
-                        <Form.Group controlId="services">
-                            <Form.Label className={styles.formLabel}>Services</Form.Label>
-                            {
-                                this.renderServices()
-                            }
-                        </Form.Group>
-                    </Form>
+                    {this.getModalBody()}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button className={`${styles.buttonSecondary} shadow-none`}
                             onClick={this.handleHide}>Cancel</Button>
-                    <Button className={`${styles.buttonPrimary} shadow-none`}
+                    <Button className={`${styles.buttonPrimary} shadow-none`} disabled={!this.props.employeeToEdit}
                             onClick={this.handleEditClicked}>Edit</Button>
                 </Modal.Footer>
             </Modal>
@@ -107,6 +90,33 @@ class EditEmployeeModal extends Component {
         this.setState({checkedServices: new Set()})
         this.props.onHide();
     };
+
+    getModalBody() {
+        if (this.props.employeeToEdit) {
+            return <Form>
+                <Form.Group controlId="firstName">
+                    <Form.Label className={styles.formLabel}>First name</Form.Label>
+                    <Form.Control type="text" defaultValue={this.props.employeeToEdit?.firstName}
+                                  onChange={event => this.handleChange(event)}/>
+                </Form.Group>
+                <Form.Group controlId="lastName">
+                    <Form.Label className={styles.formLabel}>Last name</Form.Label>
+                    <Form.Control type="text" defaultValue={this.props.employeeToEdit?.lastName}
+                                  onChange={event => this.handleChange(event)}/>
+                </Form.Group>
+                <Form.Group controlId="services">
+                    <Form.Label className={styles.formLabel}>Services</Form.Label>
+                    {
+                        this.renderServices()
+                    }
+                </Form.Group>
+            </Form>;
+        } else {
+            return <>
+                No employee selected.
+            </>;
+        }
+    }
 
     renderServices() {
         if (this.state.error) {

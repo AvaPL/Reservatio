@@ -70,40 +70,12 @@ class EditServiceModal extends Component {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form>
-                        {this.alerts()}
-                        <Form.Group controlId="name">
-                            <Form.Label className={styles.formLabel}>Name</Form.Label>
-                            <Form.Control type="text" defaultValue={this.props.serviceToEdit?.name}
-                                          onChange={event => this.props.handleChange(event, this)}/>
-                        </Form.Group>
-                        <Form.Group controlId="description">
-                            <Form.Label className={styles.formLabel}>Description</Form.Label>
-                            <Form.Control type="text" defaultValue={this.props.serviceToEdit?.description}
-                                          onChange={event => this.props.handleChange(event, this)}/>
-                        </Form.Group>
-                        <Form.Group controlId="priceUsd">
-                            <Form.Label className={styles.formLabel}>Price (USD)</Form.Label>
-                            <Form.Control type="number" defaultValue={this.props.serviceToEdit?.priceUsd}
-                                          onChange={event => this.props.handleChange(event, this)}/>
-                        </Form.Group>
-                        <Form.Group controlId="durationMinutes">
-                            <Form.Label className={styles.formLabel}>Duration (minutes)</Form.Label>
-                            <Form.Control type="number" defaultValue={this.props.serviceToEdit?.durationMinutes}
-                                          onChange={event => this.props.handleChange(event, this)}/>
-                        </Form.Group>
-                        <Form.Group controlId="employees">
-                            <Form.Label className={styles.formLabel}>Employees</Form.Label>
-                            {
-                                this.renderEmployees()
-                            }
-                        </Form.Group>
-                    </Form>
+                    {this.getModalBody()}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button className={`${styles.buttonSecondary} shadow-none`}
                             onClick={this.handleHide}>Cancel</Button>
-                    <Button className={`${styles.buttonPrimary} shadow-none`} disabled={this.state.formErrors.size > 0}
+                    <Button className={`${styles.buttonPrimary} shadow-none`} disabled={this.state.formErrors.size > 0 || !this.props.serviceToEdit}
                             onClick={this.handleEditClicked}>Edit</Button>
                 </Modal.Footer>
             </Modal>
@@ -120,6 +92,44 @@ class EditServiceModal extends Component {
         this.setState({checkedEmployees: new Set()})
         this.props.onHide();
     };
+
+    getModalBody() {
+        if (this.props.serviceToEdit) {
+            return <Form>
+                {this.alerts()}
+                <Form.Group controlId="name">
+                    <Form.Label className={styles.formLabel}>Name</Form.Label>
+                    <Form.Control type="text" defaultValue={this.props.serviceToEdit?.name}
+                                  onChange={event => this.props.handleChange(event, this)}/>
+                </Form.Group>
+                <Form.Group controlId="description">
+                    <Form.Label className={styles.formLabel}>Description</Form.Label>
+                    <Form.Control type="text" defaultValue={this.props.serviceToEdit?.description}
+                                  onChange={event => this.props.handleChange(event, this)}/>
+                </Form.Group>
+                <Form.Group controlId="priceUsd">
+                    <Form.Label className={styles.formLabel}>Price (USD)</Form.Label>
+                    <Form.Control type="number" defaultValue={this.props.serviceToEdit?.priceUsd}
+                                  onChange={event => this.props.handleChange(event, this)}/>
+                </Form.Group>
+                <Form.Group controlId="durationMinutes">
+                    <Form.Label className={styles.formLabel}>Duration (minutes)</Form.Label>
+                    <Form.Control type="number" defaultValue={this.props.serviceToEdit?.durationMinutes}
+                                  onChange={event => this.props.handleChange(event, this)}/>
+                </Form.Group>
+                <Form.Group controlId="employees">
+                    <Form.Label className={styles.formLabel}>Employees</Form.Label>
+                    {
+                        this.renderEmployees()
+                    }
+                </Form.Group>
+            </Form>;
+        } else {
+            return <>
+                No service selected.
+            </>;
+        }
+    }
 
     alerts() {
         if (this.state.formErrors.size > 0) {
