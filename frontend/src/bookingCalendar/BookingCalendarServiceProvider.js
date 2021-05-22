@@ -8,7 +8,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Calendar from 'react-calendar'
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import 'react-calendar/dist/Calendar.css';
-import cn from "classnames";
 import {useFetch} from "../hooks/useFetch";
 import {authService} from "../auth/AuthService";
 import {backendHost} from "../Config";

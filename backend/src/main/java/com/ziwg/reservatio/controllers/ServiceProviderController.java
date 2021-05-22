@@ -1,27 +1,20 @@
 package com.ziwg.reservatio.controllers;
 
-import com.ziwg.reservatio.entity.ServiceProvider;
 import com.ziwg.reservatio.entity.Address;
 import com.ziwg.reservatio.entity.ServiceProvider;
-import com.ziwg.reservatio.helpers.RawQueryMapper;
+import com.ziwg.reservatio.minio.MinioUploader;
+import com.ziwg.reservatio.pojos.ServiceProviderToUpdate;
+import com.ziwg.reservatio.repository.AddressRepository;
 import com.ziwg.reservatio.repository.ServiceProviderFields;
 import com.ziwg.reservatio.repository.ServiceProviderRepository;
-import io.minio.ObjectWriteResponse;
 import lombok.SneakyThrows;
 import lombok.val;
-import org.simpleframework.xml.Path;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.IanaLinkRelations;
-import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.InputStream;
 import java.util.Optional;
 
 @CrossOrigin
@@ -50,7 +43,7 @@ public class ServiceProviderController {
 
         return new ResponseEntity(serviceProvider, HttpStatus.OK);
 	}
-	
+
     @PutMapping("updateServiceProvider/{serviceProviderId}")
     public ResponseEntity<HttpStatus> updateServiceProvider(@PathVariable Long serviceProviderId,
                                                             @RequestBody ServiceProviderToUpdate serviceProviderToUpdate){

@@ -61,7 +61,7 @@ export default function BookingCalendarConsumer() {
         if (!selectedEmployee || !selectedDate || !ServiceProvider.data) return;
         let utcTimestamp = Instant.parse(selectedDate.toISOString())
         const selectedLocalDate = LocalDateTime.ofInstant(utcTimestamp);
-        
+
         const employeeReservations = selectedEmployee.reservations
             .map(res => ({...res, date: LocalDateTime.parse(res.dateTime)}))
             .filter(res => res.date.toLocalDate().equals(selectedLocalDate.toLocalDate()))

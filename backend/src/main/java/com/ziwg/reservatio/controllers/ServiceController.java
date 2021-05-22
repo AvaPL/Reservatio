@@ -1,15 +1,13 @@
 package com.ziwg.reservatio.controllers;
 
-import com.ziwg.reservatio.entity.Address;
 import com.ziwg.reservatio.entity.Employee;
 import com.ziwg.reservatio.entity.Service;
 import com.ziwg.reservatio.entity.ServiceProvider;
-import com.ziwg.reservatio.helpers.RawQueryMapper;
 import com.ziwg.reservatio.pojos.ServicePojo;
-import com.ziwg.reservatio.repository.*;
-import com.ziwg.reservatio.views.services.ServiceEmployeeView;
-import com.ziwg.reservatio.views.services.ServiceView;
-import org.keycloak.authorization.client.util.Http;
+import com.ziwg.reservatio.repository.EmployeeRepository;
+import com.ziwg.reservatio.repository.ServiceFields;
+import com.ziwg.reservatio.repository.ServiceProviderRepository;
+import com.ziwg.reservatio.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,17 +38,10 @@ public class ServiceController {
     @GetMapping("service/{serviceId}")
     public ResponseEntity<Service> getService(@PathVariable Long serviceId) {
         Optional<ServiceFields> service = serviceRepository.getById(serviceId);
-//        var mapper = RawQueryMapper.buildRawQueryMapper(serviceObject);
 
         if(service.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-//        var sureMapper = mapper.get();
-//
-//        Service service = Service.builder()
-//                .id(sureMapper.get(0).toLong())
-//                .description(sureMapper.get(1).toString())
-//                .priceUsd(sureMapper.get(4).toFloat()).build();
 
         return new ResponseEntity(service, HttpStatus.OK);
     }
