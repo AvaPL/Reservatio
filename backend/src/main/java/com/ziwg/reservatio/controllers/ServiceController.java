@@ -34,16 +34,16 @@ public class ServiceController {
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> addService(@PathVariable Long serviceProviderId,
+    public ResponseEntity<String> addService(@PathVariable Long serviceProviderId,
                                                  @RequestBody ServicePojo servicePojo) {
         Optional<ServiceProvider> serviceProvider = serviceProviderRepository.findById(serviceProviderId);
         if (serviceProvider.isEmpty())
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Wrong service provider id", HttpStatus.BAD_REQUEST);
         Service service = createService(servicePojo, serviceProvider.get());
-        List<String> serviceProviderEmployees = getServiceProviderEmployees(serviceProvider.get());
+        List<String> serviceProviderEmployees = getServiceProviderEmployeesNames(serviceProvider.get());
         if (!serviceProviderEmployees.containsAll(servicePojo.getEmployees()))
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        List<Employee> employeesToAdd = getEmployees(servicePojo, serviceProvider.get().getEmployees());
+            return new ResponseEntity<>("Wrong employees", HttpStatus.BAD_REQUEST);
+        List<Employee> employeesToAdd = getEmployeesToAdd(servicePojo, serviceProvider.get().getEmployees());
         service.setEmployees(employeesToAdd);
         serviceRepository.save(service);
         addServiceToEmployees(service, employeesToAdd);
@@ -56,12 +56,12 @@ public class ServiceController {
                 .serviceProvider(serviceProvider).build();
     }
 
-    private List<String> getServiceProviderEmployees(ServiceProvider serviceProvider) {
+    private List<String> getServiceProviderEmployeesNames(ServiceProvider serviceProvider) {
         return serviceProvider.getEmployees().stream()
                 .map(employee -> employee.getFirstName() + " " + employee.getLastName()).collect(Collectors.toList());
     }
 
-    private List<Employee> getEmployees(ServicePojo servicePojo, List<Employee> employees) {
+    private List<Employee> getEmployeesToAdd(ServicePojo servicePojo, List<Employee> employees) {
         return employees.stream().filter(employee -> servicePojo.getEmployees()
                 .contains(employee.getFirstName() + " " + employee.getLastName())).collect(Collectors.toList());
     }
@@ -76,10 +76,10 @@ public class ServiceController {
     public ResponseEntity<String> deleteService(@PathVariable Long serviceProviderId, @PathVariable Long serviceId) {
         Optional<ServiceProvider> serviceProvider = serviceProviderRepository.findById(serviceProviderId);
         if (serviceProvider.isEmpty())
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Wrong service provider id", HttpStatus.BAD_REQUEST);
         Optional<Service> serviceToDelete = getServiceFromServiceProvider(serviceId, serviceProvider.get());
         if (serviceToDelete.isEmpty())
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Wrong service id", HttpStatus.BAD_REQUEST);
         if (hasAnyUpcomingReservations(serviceToDelete.get()))
             return new ResponseEntity<>("Cannot delete a service assigned to upcoming appointments",
                     HttpStatus.BAD_REQUEST);
@@ -98,9 +98,13 @@ public class ServiceController {
     }
 
     private void deleteServiceFromServiceProvider(Long serviceId, ServiceProvider serviceProvider) {
-        serviceProvider.setServices(serviceProvider.getServices().stream()
-                .filter(service -> service.getId().equals(serviceId)).collect(Collectors.toList()));
+        serviceProvider.setServices(getServicesWithoutService(serviceId, serviceProvider));
         serviceProviderRepository.save(serviceProvider);
+    }
+
+    private List<Service> getServicesWithoutService(Long serviceId, ServiceProvider serviceProvider) {
+        return serviceProvider.getServices().stream()
+                .filter(service -> service.getId().equals(serviceId)).collect(Collectors.toList());
     }
 
     private void clearRelationsInService(Service serviceToDelete) {
@@ -117,14 +121,14 @@ public class ServiceController {
     }
 
     @PutMapping("{serviceId}")
-    public ResponseEntity<HttpStatus> editService(@PathVariable Long serviceProviderId, @PathVariable Long serviceId,
+    public ResponseEntity<String> editService(@PathVariable Long serviceProviderId, @PathVariable Long serviceId,
                                                   @RequestBody ServicePojo servicePojo) {
         Optional<ServiceProvider> serviceProvider = serviceProviderRepository.findById(serviceProviderId);
         if (serviceProvider.isEmpty())
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Wrong service provider id", HttpStatus.BAD_REQUEST);
         Optional<Service> serviceToEdit = getServiceFromServiceProvider(serviceId, serviceProvider.get());
         if (serviceToEdit.isEmpty())
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Wrong service id", HttpStatus.BAD_REQUEST);
         updateService(serviceToEdit.get(), servicePojo);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -145,7 +149,7 @@ public class ServiceController {
     private void updateServiceEmployees(Service serviceToEdit, ServicePojo servicePojo) {
         deleteServiceFromEmployees(serviceToEdit);
         List<Employee> employees = serviceToEdit.getServiceProvider().getEmployees();
-        List<Employee> newEmployees = getEmployees(servicePojo, employees);
+        List<Employee> newEmployees = getEmployeesToAdd(servicePojo, employees);
         addServiceToEmployees(serviceToEdit, newEmployees);
     }
 }
