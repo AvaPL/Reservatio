@@ -5,6 +5,7 @@ import com.ziwg.reservatio.entity.Service;
 import com.ziwg.reservatio.entity.ServiceProvider;
 import com.ziwg.reservatio.pojos.ServicePojo;
 import com.ziwg.reservatio.repository.EmployeeRepository;
+import com.ziwg.reservatio.repository.ServiceFields;
 import com.ziwg.reservatio.repository.ServiceProviderRepository;
 import com.ziwg.reservatio.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +27,25 @@ public class ServiceController {
     private final EmployeeRepository employeeRepository;
 
     @Autowired
-    public ServiceController(ServiceProviderRepository serviceProviderRepository, ServiceRepository serviceRepository,
+    public ServiceController(ServiceProviderRepository serviceProviderRepository,
+                             ServiceRepository serviceRepository,
                              EmployeeRepository employeeRepository) {
         this.serviceProviderRepository = serviceProviderRepository;
         this.serviceRepository = serviceRepository;
         this.employeeRepository = employeeRepository;
     }
+
+    @GetMapping("service/{serviceId}")
+    public ResponseEntity<Service> getService(@PathVariable Long serviceId) {
+        Optional<ServiceFields> service = serviceRepository.getById(serviceId);
+
+        if(service.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity(service, HttpStatus.OK);
+    }
+
 
     @PostMapping
     public ResponseEntity<String> addService(@PathVariable Long serviceProviderId,

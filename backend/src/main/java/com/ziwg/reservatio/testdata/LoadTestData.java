@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -147,7 +148,7 @@ public class LoadTestData {
 
     private ServiceProvider fakeServiceProvider(Address address, String imageUrl) {
         return ServiceProvider.builder().email(faker.internet().emailAddress()).name(faker.company().name())
-                .phoneNumber(fakePhoneNumber()).address(address).imageUrl(imageUrl).build();
+                .phoneNumber(fakePhoneNumber()).address(address).imageUrl(imageUrl).openHours(LocalTime.of(10, 00)).closeHours(LocalTime.of(18, 00)).build();
     }
 
     private String fakePhoneNumber() {

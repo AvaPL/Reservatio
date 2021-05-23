@@ -39,14 +39,14 @@ export default function Booking() {
         id: 123,
         image: "https://source.unsplash.com/600x600/?person",
         name: "Name",
-        review: "Ala ma kota i nie ma psa. Tola ma lisa.",
+        review: "Bardzo miła atmosfera.",
         score: 3,
       },
       {
         id: 124,
         image: "https://source.unsplash.com/600x600/?man,woman",
-        name: "XDD",
-        review: "Trololol super fryzjer.",
+        name: "Michałek",
+        review: "Jestem bardzo zodowolona.",
         score: 2,
       },
     ],
@@ -128,7 +128,7 @@ function ServiceCard({ name, priceUsd, serviceid, serviceproviderid }) {
               variant="primary"
               href={`/booking/${serviceproviderid}/${serviceid}`}
           >
-            {priceUsd} zł
+            ${priceUsd}
           </Button>
         </Col>
       </Row>

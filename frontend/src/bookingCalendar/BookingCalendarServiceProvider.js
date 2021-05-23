@@ -1,91 +1,65 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import Button from "react-bootstrap/Button";
 import {useHistory} from "react-router-dom";
 import styles from "./bookingCalendar.module.scss";
-import {Container, Table} from "react-bootstrap";
+import calendarStyle from "./Calender.scss";
+import {Container, Dropdown, DropdownButton, Table} from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Calendar from 'react-calendar'
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import 'react-calendar/dist/Calendar.css';
-import cn from "classnames";
+import {useFetch} from "../hooks/useFetch";
+import {authService} from "../auth/AuthService";
+import {backendHost} from "../Config";
+import {Instant, LocalDateTime} from "@js-joda/core";
 
 export default function BookingCalendarConsumer() {
     const history = useHistory();
     const [selectedDate, setSelectedDate] = useState(new Date());
-    const [state] = useState({
-        image: "https://source.unsplash.com/1600x900/?barber",
-        favourite: true,
-        score: 0,
-        calendarHeader: "Zestawienie rezerwacji",
-        address: "ul. Owaka 4, Wrocław",
-        terms: [
-            {
-                id: 1,
-                time: "8:00",
-                date: new Date(2021, 3, 10),
-                available: "Wolne",
-            },
-            {
-                id: 2,
-                time: "8:45",
-                date: new Date(2021, 3, 10),
-                available: "Strzyżenie męskie",
-            },
-            {
-                id: 3,
-                time: "9:30",
-                date: new Date(2021, 3, 10),
-                available: "Wolne",
-            },
-            {
-                id: 4,
-                time: "10:15",
-                date: new Date(2021, 3, 11),
-                available: "Wolne",
-            },
-            {
-                id: 5,
-                time: "11:00",
-                date: new Date(2021, 3, 11),
-                available: "Włosy klasycznie + broda",
-            },
-            {
-                id: 6,
-                time: "11:45",
-                date: new Date(2021, 3, 11),
-                available: "Strzyżenie damskie",
-            },
-            {
-                id: 7,
-                time: "12:30",
-                date: new Date(2021, 3, 11),
-                available: "Wolne",
-            },
-            {
-                id: 8,
-                time: "14:45",
-                date: new Date(2021, 3, 11),
-                available: "Wolne",
-            },
-            {
-                id: 9,
-                time: "15:30",
-                date: new Date(2021, 3, 11),
-                available: "Wolne",
-            },
-            {
-                id: 10,
-                time: "16:15",
-                date: new Date(2021, 3, 11),
-                available: "Wolne",
-            },
-        ],
-    });
+    const [selectedEmployee, setSelectedEmployee] = useState('');
+    const [reservationsForEmployee, setReservationsForEmployee] = useState([])
+
+    const Employees = useFetch(() => fetchEmployees(authService.token?.entityId));
+    const ServiceProvider = useFetch(() => fetchServiceProvider(authService.token?.entityId));
+
+    useEffect(() => {
+        if (!selectedEmployee || !selectedDate || !ServiceProvider.data) return;
+        let utcTimestamp = Instant.parse(selectedDate.toISOString())
+        const selectedLocalDate = LocalDateTime.ofInstant(utcTimestamp);
+
+        const employeeReservations = selectedEmployee.reservations
+            .map(res => ({...res, dateTime: LocalDateTime.parse(res.dateTime)}))
+            .filter(res => res.dateTime.toLocalDate().equals(selectedLocalDate.toLocalDate()))
+            .sort((l, r) => l.dateTime.compareTo(r.dateTime));
+        setReservationsForEmployee(employeeReservations);
+    }, [selectedEmployee, selectedDate, ServiceProvider])
+
+    console.log(reservationsForEmployee);
+    console.log(Employees);
+
+    const fetchServiceProvider = (serviceProviderId) => {
+        const endpoint = '/rest/serviceProvider'
+
+        return authService.fetchAuthenticated(`${backendHost}${endpoint}/${serviceProviderId}`);
+    }
+
+    const fetchEmployees = (serviceProviderId) => {
+
+        const endpoint = '/rest/employeesByServiceProvider'
+
+        return authService.fetchAuthenticated(`${backendHost}${endpoint}/${serviceProviderId}`);
+    }
+
+    const handleSelectEmployee = (selectedEmployee) => {
+        setSelectedEmployee(Employees.data?.find(e => e.id === Number(selectedEmployee)));
+    }
+
+    if (Employees.isLoading || ServiceProvider.isLoading) return null;
 
     return (
         <>
             <div className={styles.mainImgWrapper}>
-                <img src={state.image} alt={state.name} className={styles.mainImg} />
+                <img src={`http://localhost:9000/reservatio/serviceprovider${authService.token?.entityId}.jpg`} alt={ServiceProvider.data.name} className={styles.mainImg} />
                 {history.length > 0 && (
                     <div className={styles.mainBack}>
                         <Button
@@ -102,31 +76,40 @@ export default function BookingCalendarConsumer() {
                 <div className={styles.calendarTable} >
                     <div>
                         <label className={styles.rectangle}>
-                            {`${state.calendarHeader}`}
+                            Services Calendar
                         </label>
                     </div>
                     <div>
                         <Calendar value={selectedDate}
                                   onChange={setSelectedDate}
-                                  className={cn(Calendar.css, styles.calendarStyle)}
+                                  className={[Calendar.css, calendarStyle.reactCalendar]}
                         />
                     </div>
+                    <DropdownButton className={styles.dropdownButton}
+                                title={selectedEmployee ? `${selectedEmployee.firstName} ${selectedEmployee.lastName}` : "Choose an employee"}
+                                onSelect={handleSelectEmployee}
+                                isexpanded={true}>
+                    {Employees.data.map((employee) => (
+                        <Dropdown.Item key={employee.id}
+                                       eventKey={employee.id}>{`${employee.firstName} ${employee.lastName}`}</Dropdown.Item>
+                    ))}
+                    </DropdownButton>
                 </div>
                 <Table className={styles.timeTable}>
                     <thead>
-                    <tr>
-                        <th className={styles.timeTableRow}>Czas</th>
-                        <th className={styles.timeTableRow}>Dostępność</th>
+                    <tr bgcolor={`#F85F6A`}>
+                        <th className={styles.timeTableRow}>Time</th>
+                        <th className={styles.timeTableRow}>Service</th>
                     </tr>
                     </thead>
                     <tbody>
-                        {state.terms.filter(term => term.date.getTime() === selectedDate.getTime()).map((term) => (
-                            <tr key={term.id}>
+                        {reservationsForEmployee?.map(reservation => (
+                            <tr key={reservation.id}>
                                 <td className={styles.timeTableRow}>
-                                    {term.time}
+                                    {reservation.dateTime.toString().slice(11, 16)}
                                 </td>
                                 <td className={styles.timeTableRow}>
-                                    {term.available}
+                                    {reservation.service? reservation.service.name : "No services"} Duration: {reservation.service ? reservation.service.durationMinutes : ""} Price: {reservation.service? reservation.service.priceUsd : ""}
                                 </td>
                             </tr>
                         ))}

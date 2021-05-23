@@ -85,6 +85,10 @@ keycloak:
         - customer
       security-collections:
         - patterns:
+            - /rest/employeesByService/*
+            - /rest/service/*
+            - /rest/serviceProvider/*
+            - /rest/reservation/
             - /rest/bookingViews/*
             - /rest/customerReservationViews/*
             - /rest/addReview/*
@@ -96,10 +100,12 @@ keycloak:
       security-collections:
         - patterns:
             - /rest/serviceProviderEmployeesViews/*
+            - /rest/employeesByServiceProvider/*
             - /rest/serviceProvider/*
             - /rest/updateServiceProvider/*
             - /rest/salonViews/*
             - /rest/uploadImage/*
             - /rest/serviceProviderServicesViews/*
+            - /rest/serviceProvider/*
             - /rest/favouriteViews/*
             - /rest/bookingViews/*
