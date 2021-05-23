@@ -45,9 +45,9 @@ export default function BookingCalendarConsumer() {
 
     const fetchEmployees = (serviceProviderId) => {
 
-        const endpoint = '/rest/employeesByServiceProvider'
+        const endpoint = `/rest/serviceProvider/${serviceProviderId}/employees/employeesByServiceProvider`;
 
-        return authService.fetchAuthenticated(`${backendHost}${endpoint}/${serviceProviderId}`);
+        return authService.fetchAuthenticated(`${backendHost}${endpoint}`);
     }
 
     const handleSelectEmployee = (selectedEmployee) => {

@@ -35,7 +35,7 @@ public class ServiceController {
         this.employeeRepository = employeeRepository;
     }
 
-    @GetMapping("service/{serviceId}")
+    @GetMapping("{serviceId}")
     public ResponseEntity<Service> getService(@PathVariable Long serviceId) {
         Optional<ServiceFields> service = serviceRepository.getById(serviceId);
 
