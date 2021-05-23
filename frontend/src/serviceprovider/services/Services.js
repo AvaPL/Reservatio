@@ -40,6 +40,7 @@ class Services extends Component {
 
     processServices() {
         return services => {
+            console.log(services)
             this.setState({
                 isLoaded: true,
                 services: services,
