@@ -35,6 +35,7 @@ class AddServiceModal extends Component {
 
     processEmployees() {
         return employees => {
+            console.log(employees)
             this.setState({
                 isLoaded: true,
                 employees: employees
@@ -86,7 +87,7 @@ class AddServiceModal extends Component {
                         </Form.Group>
                         <Form.Group controlId="priceUsd">
                             <Form.Label className={styles.formLabel}>Price (USD)</Form.Label>
-                            <Form.Control required min={0} step={0.05} type="number" placeholder="Price (USD)"
+                            <Form.Control required min={0} step={0.01} type="number" placeholder="Price (USD)"
                                           onChange={event => this.handleChange(event)}/>
                             <Form.Control.Feedback type="invalid">
                                 Please enter a correct price.

@@ -139,7 +139,7 @@ class EditServiceModal extends Component {
                 </Form.Group>
                 <Form.Group controlId="priceUsd">
                     <Form.Label className={styles.formLabel}>Price (USD)</Form.Label>
-                    <Form.Control required min={0} step={0.05} type="number"
+                    <Form.Control required min={0} step={0.01} type="number"
                                   defaultValue={this.props.serviceToEdit?.priceUsd}
                                   onChange={event => this.handleChange(event)}/>
                     <Form.Control.Feedback type="invalid">
