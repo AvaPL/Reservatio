@@ -77,8 +77,10 @@
 
 .serviceCardPriceInfoCol {
   display: flex;
-  justify-content: flex-end;
+  flex-display: column;
+  justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .reviewCardImgWrapper {

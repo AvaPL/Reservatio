@@ -22,11 +22,21 @@ from service s
 
 create or replace view salon_view
 as
-select sp.id as id, sp.name as name, sp.phone_number as phone_nr, sp.email as email, a.street as street,
+select sp.id as id, sp.name as name, sp.phone_number as phone_nr, sp.email as email, a.street as street, sp.image_url as image_url,
        a.property_number as property_nr, a.city as city, a.post_code as post_code
 from service_provider sp
     join address a on a.id = sp.address_id;
 
+create or replace view booking_view
+as
+select sp.id as id, sp.name as name, a.city as city, a.street as street, a.property_number as property_nr, sp.image_url as image_url
+from service_provider sp
+    join address a on sp.address_id = a.id;
+
+create or replace view booking_services_view
+as
+select s.id as id, s.name as name, s.price_usd as price, s.service_provider_id as service_provider_id
+from service s;
 -- services views
 create
 or replace view service_provider_services_view
@@ -40,6 +50,17 @@ as
 select e.id, concat(e.first_name, ' ', e.last_name) as name, e.service_provider_id
 from employee e;
 
+create or replace view booking_service_view
+as
+select s.id as id, s.service_provider_id as service_provider_id
+from service s;
+
+create or replace view booking_reservation_view
+as
+select r.id as id, r.service_id as service_id, r2.grade as grade, r2.message as message, c.first_name as first_name, c.last_name as last_name
+from reservation r
+    join review r2 on r.id = r2.reservation_id
+    join customer c on r.customer_id = c.id;
 create
 or replace view service_view
 as
@@ -53,34 +74,6 @@ select e.id, concat(e.first_name, ' ', e.last_name) as name, s.id as service_id
 from employee e
          join employee_service es on e.id = es.employee_id
          join service s on s.id = es.service_id;
-
-
-
-create or replace view booking_services_view
-as
-select s.id as id, s.name as name, s.price_usd as price, s.service_provider_id as service_provider_id
-from service s;
-
-create or replace view booking_service_view
-as
-select s.id as id, s.service_provider_id as service_provider_id
-from service s;
-
-create or replace view booking_reservation_view
-as
-select r.id as id, r.service_id as service_id, r2.grade as grade, r2.message as message, c.first_name as first_name, c.last_name as last_name
-from reservation r
-    join review r2 on r.id = r2.reservation_id
-    join customer c on r.customer_id = c.id;
-
-create or replace view booking_view
-as
-select sp.id as id, sp.name as name, a.city as city, a.street as street, a.property_number as property_nr
-from service_provider sp
-         join address a on sp.address_id = a.id;
-
-
-
 
 create or replace view customer_reservation_view
 as
@@ -97,9 +90,9 @@ from reservation r
 
 create or replace view favourite_view
 as
-select sp.id as id, count(*) as number
+select sp.id as id, count(f.customer_id) as number
 from service_provider sp
-    join favourites f on sp.id = f.service_provider_id
+    left join favourites f on sp.id = f.service_provider_id
     group by sp.id;
 
 create or replace view service_providers_view

@@ -126,8 +126,8 @@ class Appointments extends Component {
         const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN",
             "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
         ];
-
-        let tmp = this.state.data.sort((a,b)=>Date.parse(b.dateTime)-Date.parse(a.dateTime)).map((item, index) => (
+        //console.log(this.state.data)
+        let tmp = this.state.data.sort((a,b)=>Date.parse(a.dateTime)-Date.parse(b.dateTime)).map((item, index) => (
             <>
                 <div className="rcorners2 justify-content-center" key={index}>
                     <div className="container-fluid">
@@ -215,8 +215,8 @@ class Appointments extends Component {
                             variant="danger"
                             onClick={()=>{
                                 this.hideReview();
-                                console.log(`${backendHost}/rest/addReview/${item._links.self.href.substr(-2)}`);
-                                authService.fetchAuthenticated(`${backendHost}/rest/addReview/${item._links.self.href.substr(-2)}`,{
+                                console.log(`${backendHost}/rest/addReview/${item._links.self.href.substring(item._links.self.href.lastIndexOf("/")+1,item._links.self.href.length)}`);
+                                authService.fetchAuthenticated(`${backendHost}/rest/addReview/${item._links.self.href.substring(item._links.self.href.lastIndexOf("/")+1,item._links.self.href.length)}`,{
                                     method: 'POST',
                                     headers: {
                                         'Accept': 'application/json',
@@ -229,8 +229,10 @@ class Appointments extends Component {
                                         }
                                         return response;
                                     })
+                                    // .then(this.fetchData())
+                                    // .then(this.forceUpdate());
                                 //TODO delete reload
-                                //window.location.reload(false);
+                                window.location.reload(false);
                                 this.setState({reviewMessage: ""});
                                 this.setState({reviewStar: ""});
                             }}

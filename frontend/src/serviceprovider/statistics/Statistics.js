@@ -9,10 +9,10 @@ class Statistics extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            numberServices: 751,
-            numberVisits: 4592,
-            averageRate: 4.5,
-            numberLikes: 311
+            // numberServices: 0,
+            // numberVisits: 0,
+            // averageRate: 0,
+            // numberLikes: 0
         }
     }
 
@@ -34,7 +34,7 @@ class Statistics extends Component {
                 this.setState({numberLikes:number})
             })
 
-        authService.fetchAuthenticated(`${backendHost}/rest/bookingViews/${1}`)
+        authService.fetchAuthenticated(`${backendHost}/rest/bookingViews/${providerId}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error("Failed to fetch");
@@ -43,7 +43,7 @@ class Statistics extends Component {
             })
             .then(res => res.reviews)
             .then(reviews =>{
-                console.log(reviews)
+                //console.log(reviews)
                 var counter = 0;
                 var sumGrade = 0;
                 for(let i = 0; i< reviews.length; i++){
@@ -52,7 +52,10 @@ class Statistics extends Component {
                         sumGrade = sumGrade + reviews[i].reservations[j].grade;
                     }
                 }
-                this.setState({averageRate: sumGrade/counter})
+                if(counter===0)
+                    this.setState({averageRate: 0})
+                else
+                    this.setState({averageRate: sumGrade/counter})
                 this.setState({numberServices: counter})
             })
 
