@@ -85,8 +85,15 @@ keycloak:
         - customer
       security-collections:
         - patterns:
-            - /rest/customer/* # TODO: Remove after creating first customer path
+            - /rest/employeesByService/*
+            - /rest/service/*
+            - /rest/serviceProvider/*
+            - /rest/reservation/
             - /rest/bookingViews/*
+            - /rest/customerReservationViews/*
+            - /rest/serviceProvider/*/employees/employeesByService/*
+            - /rest/serviceProvider/*/services/*
+            - /rest/addReview/*
             - /rest/serviceProvidersViews/*
             - /rest/customers/*
             - /rest/reservationViews/*
@@ -97,17 +104,12 @@ keycloak:
       security-collections:
         - patterns:
             - /rest/serviceProviderEmployeesViews/*
-            - /rest/addEmployee/*
-            - /rest/deleteEmployee/*
-<<<<<<<<< Temporary merge branch 1
+            - /rest/employeesByServiceProvider/*
+            - /rest/serviceProvider/*
             - /rest/updateServiceProvider/*
             - /rest/salonViews/*
             - /rest/uploadImage/*
-=========
             - /rest/serviceProviderServicesViews/*
-            - /rest/addService/*
-            - /rest/deleteService/*
-            - /rest/editService/*
-            - /rest/editEmployee/*
+            - /rest/serviceProvider/*
             - /rest/favouriteViews/*
             - /rest/bookingViews/*

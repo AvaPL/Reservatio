@@ -14,6 +14,21 @@
   transform: translate(-50%, -50%);
 }
 
+.react-calendarStyle {
+  background-color: pink;
+}
+
+.dropdownContainer {
+  color: white;
+  alignment: center;
+}
+
+.dropdownButton {
+  position: absolute;
+  transform: translate(25%);
+  color: #F85F6A !important;
+}
+
 .rectangle {
   position: relative;
   alignment: center;
@@ -27,11 +42,12 @@
 .row {
   position: absolute;
   contain: size;
-  top: 66%;
+  top: 69%;
   left:0;
   right:0;
   margin:0 auto;
   text-align: center;
+  z-index: -1;
 }
 
 .timeTable {
@@ -42,6 +58,7 @@
   right:0;
   margin:0 auto;
   text-align: center;
+  z-index: -1;
   //transform: translate(-50%, -50%);
 }
 
@@ -52,7 +69,7 @@
 }
 
 .calendarStyle {
-  alignment: center;
+  //alignment: center;
 }
 
 .button {

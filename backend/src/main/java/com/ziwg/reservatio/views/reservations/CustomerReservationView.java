@@ -1,4 +1,4 @@
-package com.ziwg.reservatio.views.reservation;
+package com.ziwg.reservatio.views.reservations;
 
 import lombok.Data;
 import org.hibernate.annotations.Immutable;

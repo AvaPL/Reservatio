@@ -164,8 +164,7 @@ class Services extends Component {
         return (
             <AddServiceModal show={this.state.showModalAdd}
                              onHide={() => this.setState({showModalAdd: false})}
-                             onClick={this.onAddClick}
-                             handleChange={this.handleChange}/>
+                             onClick={this.onAddClick}/>
         );
     }
 
@@ -173,7 +172,7 @@ class Services extends Component {
         console.log("Service to add: ");
         console.log(service);
         const serviceProviderId = authService.token?.entityId;
-        authService.fetchAuthenticated(`${backendHost}/rest/addService/${serviceProviderId}`, {
+        authService.fetchAuthenticated(`${backendHost}/rest/serviceProvider/${serviceProviderId}/services`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -206,36 +205,15 @@ class Services extends Component {
             <EditServiceModal show={this.state.showModalEdit}
                               serviceToEdit={this.state.selectedService}
                               onHide={() => this.setState({showModalEdit: false})}
-                              onClick={this.onEditClick}
-                              handleChange={this.handleChange}/>
+                              onClick={this.onEditClick}/>
         );
     }
-
-    handleChange = (event, component) => {
-        let formErrors = component.state.formErrors
-        if (event.target.id === "priceUsd") {
-            if (event.target.value < 0)
-                formErrors.add("Price cannot be lower than 0")
-            else
-                formErrors.delete("Price cannot be lower than 0")
-        }
-        if (event.target.id === "durationMinutes") {
-            if (event.target.value < 0)
-                formErrors.add("Duration cannot be lower than 0")
-            else
-                formErrors.delete("Duration cannot be lower than 0")
-            if (Number(event.target.value) % 1 !== 0)
-                formErrors.add("Duration must be an integer")
-            else
-                formErrors.delete("Duration must be an integer")
-        }
-        component.setState({formErrors: formErrors, [event.target.id]: event.target.value});
-    };
 
     onEditClick = service => {
         console.log("Service to edit: ");
         console.log(service);
-        authService.fetchAuthenticated(`${backendHost}/rest/editService/${this.state.selectedService.id}`, {
+        const serviceProviderId = authService.token?.entityId;
+        authService.fetchAuthenticated(`${backendHost}/rest/serviceProvider/${serviceProviderId}/services/${this.state.selectedService.id}`, {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -304,7 +282,8 @@ class Services extends Component {
     }
 
     onDeleteClicked = () => {
-        authService.fetchAuthenticated(`${backendHost}/rest/deleteService/${this.state.selectedService.id}`, {
+        const serviceProviderId = authService.token?.entityId;
+        authService.fetchAuthenticated(`${backendHost}/rest/serviceProvider/${serviceProviderId}/services/${this.state.selectedService.id}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',

@@ -3,7 +3,6 @@ package com.ziwg.reservatio.controllers;
 
 import com.ziwg.reservatio.entity.Reservation;
 import com.ziwg.reservatio.entity.Review;
-import com.ziwg.reservatio.entity.ServiceProvider;
 import com.ziwg.reservatio.pojos.ReviewToAdd;
 import com.ziwg.reservatio.repository.ReservationRepository;
 import com.ziwg.reservatio.repository.ReviewRepository;
