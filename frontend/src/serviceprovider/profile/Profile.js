@@ -101,13 +101,13 @@ class Profile extends Component {
                 <Modal.Footer>
                     <Button className="employees-button-secondary shadow-none"
                             onClick={() => this.setState({showModalChange: false})}>Cancel</Button>
-                    <Button className="employees-button-primary shadow-none" onClick={this.onChangeClicked} >Change</Button>
+                    <Button className="employees-button-primary shadow-none" onClick={() => this.onChangeClicked()} >Change</Button>
                 </Modal.Footer>
             </Modal>
         );
     }
 
-    onChangeClicked = () => {
+    onChangeClicked() {
         if (!this.state.file){
             alert("You didn't choose file!");
         }
@@ -127,12 +127,16 @@ class Profile extends Component {
                     }
                     return response;
                 })
-                .then(result => console.log(result))
+                .then(result => {
+                        console.log(result);
+                        this.setState({
+                            showModalChange: false,
+                            src: `http://localhost:9000/reservatio/serviceprovider${authService.token?.entityId}.jpg?${global.Date.now()}`,
+                            file: null
+                        });
+                    }
+                )
                 .catch(error => console.log('error', error));
-            this.setState({showModalChange: false});
-            this.setState({file: null});
-            this.setState({src : `http://localhost:9000/reservatio/serviceprovider${authService.token?.entityId}.jpg#${global.Date.now()}`});
-            window.location.reload();
         }
     }
 
