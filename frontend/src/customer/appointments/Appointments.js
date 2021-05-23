@@ -171,7 +171,7 @@ class Appointments extends Component {
                                     return response;
                                 })
                                 //TODO delete reload
-                                //window.location.reload(false);
+                                window.location.reload(false);
                                 this.setState({reviewMessage: ""});
                                 this.setState({reviewStar: ""});
                             }}
