@@ -78,12 +78,6 @@ class Registration extends Component {
                 event.target.setCustomValidity('passwords_mismatch')
     }
 
-    handleKeyDown = event => {
-        if (event.key === 'Enter') {
-            this.handleSignUpClicked();
-        }
-    };
-
     handleSignUpClicked(event) {
         const form = event.currentTarget
         event.preventDefault()
@@ -159,14 +153,14 @@ class Registration extends Component {
                     </ButtonGroup>
                     {this.state.salonButtonClicked ?
                         <ServiceProviderRegistrationForm handleChange={this.handleChange}
-                                                         handleKeyDown={this.handleKeyDown}
                                                          onSubmit={event => this.handleSignUpClicked(event)}/> :
-                        <CustomerRegistrationForm handleChange={this.handleChange} handleKeyDown={this.handleKeyDown}
+                        <CustomerRegistrationForm handleChange={this.handleChange}
                                                   onSubmit={event => this.handleSignUpClicked(event)}/>
                     }
                     {
                         this.state.showError &&
-                        <Alert className="mt-2" variant="danger" onClose={() => this.setState({showError: false})} dismissible>
+                        <Alert className="mt-2" variant="danger" onClose={() => this.setState({showError: false})}
+                               dismissible>
                             <span>The registration could not be performed. For support contact us at </span>
                             <a href="mailto:support@reservatio.com">support@reservatio.com</a>
                             <span>.</span>
