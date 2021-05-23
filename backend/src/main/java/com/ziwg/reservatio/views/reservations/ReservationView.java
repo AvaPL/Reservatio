@@ -1,6 +1,7 @@
-package com.ziwg.reservatio.views.reservation;
+package com.ziwg.reservatio.views.reservations;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Subselect;
 
@@ -9,7 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+// TODO: Invalid package
 @Data
+@EqualsAndHashCode(exclude = {"customerReservationView"})
 @Entity
 @Immutable
 @Subselect("select * from reservation_view")

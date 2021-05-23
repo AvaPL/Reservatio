@@ -11,57 +11,146 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faStar as farStar } from "@fortawesome/free-regular-svg-icons";
 import cn from "classnames";
+import {authService} from "../auth/AuthService";
+import {backendHost} from "../Config";
 
-export default function Booking() {
+export default function Booking(){
   const { serviceproviderid } = useParams();
   const history = useHistory();
 
   const [state, setState] = useState({
-    image: "https://source.unsplash.com/1600x900/?barber",
-    favourite: true,
-    score: 0,
-    name: "Nazwa salonu",
-    address: "ul. Owaka 4, Wrocław",
-    services: [
-      {
-        id: 1,
-        name: "Strzyżenie damskie",
-        priceUsd: 60,
-      },
-      {
-        id: 2,
-        name: "Strzyżenie męskie",
-        priceUsd: 20,
-      },
-    ],
-    reviews: [
-      {
-        id: 123,
-        image: "https://source.unsplash.com/600x600/?person",
-        name: "Name",
-        review: "Ala ma kota i nie ma psa. Tola ma lisa.",
-        score: 3,
-      },
-      {
-        id: 124,
-        image: "https://source.unsplash.com/600x600/?man,woman",
-        name: "XDD",
-        review: "Trololol super fryzjer.",
-        score: 2,
-      },
-    ],
-  });
+    favourite: false,
+    services: [],
+    reviews: [],
+    favourites: [],
+    data : {},
+    datafav : [],
+    error : null,
+  }
+  );
+  window.onload = function (){
+    processBooking(fetchBooking(serviceproviderid));
+    processFavourites(fetchFavourites(authService.token?.entityId));
+
+    state.datafav.then (response => {
+      for(let i = 0; i< response.length; i++){
+        state.favourites.push(response[i].id);
+        if(response[i].id === parseInt(serviceproviderid)){
+          state.favourite = true;
+        }
+      }
+    });
+
+    state.data.then (response => {
+
+      let counter = 0;
+      let sumGrade = 0;
+      for(let i = 0; i< response.reviews.length; i++){
+        counter = counter + response.reviews[i].reservations.length
+        for(let j = 0; j< response.reviews[i].reservations.length;j++){
+          sumGrade = sumGrade + response.reviews[i].reservations[j].grade;
+          state.reviews.push(response.reviews[i].reservations[j]);
+        }
+      }
+      for(let i = 0; i < response.services.length; i++){
+        state.services.push(response.services[i]);
+      }
+      setState((prevState) => ({
+        ...prevState,
+        name: response.name,
+        address: "ul. " + response.street + " " + response.property_nr + ", " + response.city,
+        score: (sumGrade/counter).toFixed(1),
+        image: response.imageUrl,
+      }));
+    });
+  };
+
+  const processBooking = (data) => {
+    console.log(data)
+    state.data = data
+  }
+
+  const fetchBooking = (serviceproviderid) => {
+    return authService.fetchAuthenticated(`${backendHost}/rest/bookingViews/${serviceproviderid}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Failed to fetch");
+          }
+          return response.json();
+        })
+        .catch(error => {
+          console.log('error', error)
+        })
+  }
+
+  const fetchFavourites = (customerId) => {
+    return authService.fetchAuthenticated(`${backendHost}/rest/customers/${customerId}/favourites`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error("Failed to fetch");
+          }
+          return response.json();
+        })
+        .then(response => response._embedded.serviceProviders)
+        .catch(error => {
+          console.log('error', error)
+        })
+  }
+
+  const processFavourites = (data) => {
+    console.log(data)
+    state.datafav = data
+  }
 
   function changeFavourite() {
-    // Jakis call do API
     setState((prevState) => ({
       ...prevState,
       favourite: !prevState.favourite,
     }));
+    if (!state.favourite){
+      console.log("Favourite to add: ");
+      const customerId = authService.token?.entityId;
+      authService.fetchAuthenticated(`${backendHost}/rest/addFavourite/${customerId}/${serviceproviderid}`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      }).then(response => {
+        if (!response.ok) {
+          throw new Error("Failed to post");
+        }
+        return response;
+      })
+          .then(() => console.log("Favourite added successfully"))
+          .catch(error => {
+            console.log("Error occurred: ", error);
+          });
+    }
+    else if(state.favourite){
+      console.log("Fav to delete: ");
+      const customerId = authService.token?.entityId;
+      authService.fetchAuthenticated(`${backendHost}/rest/deleteFavourite/${customerId}/${serviceproviderid}`, {
+        method: 'DELETE',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        }
+      }).then(response => {
+        if (!response.ok) {
+          throw response
+        }
+        return response;
+      })
+          .then(() => console.log(`Delete Fav`))
+          .catch(error => {
+            console.log("Error occurred: ", error);
+          });
+    }
   }
 
   return (
-    <>
+    <>{}
       <div className={styles.mainImgWrapper}>
         <img src={state.image} alt={state.name} className={styles.mainImg} />
         {history.length > 0 && (
@@ -103,12 +192,13 @@ export default function Booking() {
                 {...service}
                 serviceproviderid={serviceproviderid}
                 serviceid={service.id}
+                priceUsd={service.price}
               />
             </Col>
           ))}
         </Row>
         {state.reviews.map((review) => (
-          <ReviewCard key={review.id} {...review} />
+            <ReviewCard name={review.first_name + " " + review.last_name} score={review.grade} review={review.message}/>
         ))}
       </Container>
     </>
@@ -122,27 +212,28 @@ function ServiceCard({ name, priceUsd, serviceid, serviceproviderid }) {
         <Col xs={7} sm={6}>
           <Card.Title className={styles.serviceCardTitle}>{name}</Card.Title>
         </Col>
-        <Col xs={5} sm={6} className={styles.serviceCardPriceInfoCol}>
-          <Button
-              className={styles.button}
-              variant="primary"
-              href={`/booking/${serviceproviderid}/${serviceid}`}
-          >
-            {priceUsd} zł
-          </Button>
+        <Col xs={5} sm={4} className={styles.serviceCardPriceInfoCol}>
+            {priceUsd} $
+            <Button
+                className={styles.button}
+                variant="primary"
+                href={`/booking/${serviceproviderid}/${serviceid}`}
+            >
+              Book
+            </Button>
         </Col>
       </Row>
     </Card>
   );
 }
 
-function ReviewCard({ image, name, score, review }) {
+function ReviewCard({name, score, review }) {
   return (
     <Card body className={styles.marginBottom}>
       <Row>
         <Col xs={6} md={3}>
           <div className={styles.reviewCardImgWrapper}>
-            <img src={image} alt={name} className={styles.reviewCardImg} />
+            <img src={"https://www.allianceplast.com/wp-content/uploads/2017/11/no-image.png"} alt={name} className={styles.reviewCardImg} />
           </div>
         </Col>
         <Col xs={6} md={9} className={styles.serviceCardInfoColumn}>

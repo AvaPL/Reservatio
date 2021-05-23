@@ -8,6 +8,7 @@ import java.util.List;
 
 @Entity
 @Data
+@EqualsAndHashCode(exclude = {"favourites"})
 @Builder
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

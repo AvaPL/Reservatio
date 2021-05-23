@@ -13,7 +13,8 @@ export class AddEmployeeModal extends Component {
             services: [],
             checkedServices: new Set(),
             error: null,
-            isLoaded: false
+            isLoaded: false,
+            validated: false
         }
     }
 
@@ -66,17 +67,23 @@ export class AddEmployeeModal extends Component {
                         Add new employee
                     </Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
-                    <Form>
+                <Form noValidate validated={this.state.validated} onSubmit={this.onSubmit}>
+                    <Modal.Body>
                         <Form.Group controlId="firstName">
                             <Form.Label className={styles.formLabel}>First name</Form.Label>
-                            <Form.Control type="text" placeholder="First name"
+                            <Form.Control required type="text" placeholder="First name"
                                           onChange={event => this.handleChange(event)}/>
+                            <Form.Control.Feedback type="invalid">
+                                Please enter employee's first name.
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group controlId="lastName">
                             <Form.Label className={styles.formLabel}>Last name</Form.Label>
-                            <Form.Control type="text" placeholder="Last name"
+                            <Form.Control required type="text" placeholder="Last name"
                                           onChange={event => this.handleChange(event)}/>
+                            <Form.Control.Feedback type="invalid">
+                                Please enter employee's last name.
+                            </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group controlId="services">
                             <Form.Label className={styles.formLabel}>Services</Form.Label>
@@ -84,26 +91,34 @@ export class AddEmployeeModal extends Component {
                                 this.renderServices()
                             }
                         </Form.Group>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button className={`${styles.buttonSecondary} shadow-none`}
-                            onClick={this.props.onHide}>Cancel</Button>
-                    <Button className={`${styles.buttonPrimary} shadow-none`}
-                            onClick={this.handleAddClicked}>Add</Button>
-                </Modal.Footer>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button className={`${styles.buttonSecondary} shadow-none`}
+                                onClick={this.props.onHide}>Cancel</Button>
+                        <Button className={`${styles.buttonPrimary} shadow-none`} type="submit"
+                                onClick={() => this.setState({validated: true})}>Add</Button>
+                    </Modal.Footer>
+                </Form>
             </Modal>
         );
     }
 
-    handleAddClicked = () => {
+    onSubmit = event => {
+        const form = event.currentTarget
+        event.preventDefault()
+        event.stopPropagation()
+        if (form.checkValidity())
+            this.handleAddClicked();
+    };
+
+    handleAddClicked() {
         let employeeToAdd = {
             firstName: this.state.firstName,
             lastName: this.state.lastName,
             services: Array.from(this.state.checkedServices)
         }
         this.props.onClick(employeeToAdd);
-        this.setState({checkedServices: new Set()})
+        this.setState({checkedServices: new Set()});
     };
 
     renderServices() {

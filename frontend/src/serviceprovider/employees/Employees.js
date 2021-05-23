@@ -168,7 +168,7 @@ class Employees extends Component {
         console.log("Employee to add: ")
         console.log(employee)
         const serviceProviderId = authService.token?.entityId;
-        authService.fetchAuthenticated(`${backendHost}/rest/addEmployee/${serviceProviderId}`, {
+        authService.fetchAuthenticated(`${backendHost}/rest/serviceProvider/${serviceProviderId}/employees`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -208,7 +208,8 @@ class Employees extends Component {
     onEditClick = employee => {
         console.log("Employee to edit: ");
         console.log(employee);
-        authService.fetchAuthenticated(`${backendHost}/rest/editEmployee/${this.state.selectedEmployee.id}`, {
+        const serviceProviderId = authService.token?.entityId;
+        authService.fetchAuthenticated(`${backendHost}/rest/serviceProvider/${serviceProviderId}/employees/${this.state.selectedEmployee.id}`, {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -278,7 +279,8 @@ class Employees extends Component {
     }
 
     onDeleteClicked = () => {
-        authService.fetchAuthenticated(`${backendHost}/rest/deleteEmployee/${this.state.selectedEmployee.id}`, {
+        const serviceProviderId = authService.token?.entityId;
+        authService.fetchAuthenticated(`${backendHost}/rest/serviceProvider/${serviceProviderId}/employees/${this.state.selectedEmployee.id}`, {
             method: 'DELETE',
             headers: {
                 'Accept': 'application/json',

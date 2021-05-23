@@ -4,10 +4,12 @@ import com.sun.istack.NotNull;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
 @Data
+@EqualsAndHashCode(exclude = {"customers"})
 @Builder
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -26,6 +28,14 @@ public class ServiceProvider {
     @Column(length = 30, unique = true)
     private String phoneNumber;
     private String imageUrl;
+
+    @NotNull
+    @Column(columnDefinition = "TIME default '18:00:00'")
+    private LocalTime closeHours;
+
+    @NotNull
+    @Column(columnDefinition = "TIME default '10:00:00'")
+    private LocalTime openHours;
 
     @OneToOne
     private Address address;
