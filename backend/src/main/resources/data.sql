@@ -90,9 +90,9 @@ from reservation r
 
 create or replace view favourite_view
 as
-select sp.id as id, count(*) as number
+select sp.id as id, count(f.customer_id) as number
 from service_provider sp
-    join favourites f on sp.id = f.service_provider_id
+    left join favourites f on sp.id = f.service_provider_id
     group by sp.id;
 
 create or replace view service_providers_view
