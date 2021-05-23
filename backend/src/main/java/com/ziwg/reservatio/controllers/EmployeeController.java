@@ -41,6 +41,10 @@ public class EmployeeController {
     @GetMapping("employeesByService/{serviceId}")
     public ResponseEntity<List<Employee>> getEmployeesByService(@PathVariable Long serviceId) {
         List<Long> serviceEmployeeView = serviceEmployeeViewRepository.findByServiceId(serviceId);
+        if (serviceEmployeeView.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
         List<Employee> employeeList = new ArrayList<>();
 
         for (Long employeeId: serviceEmployeeView) {
@@ -70,9 +74,13 @@ public class EmployeeController {
         return new ResponseEntity<>(employeeList, HttpStatus.OK);
     }
 
-    @GetMapping("employeesByServiceProvider/{serviceProviderId}")
+    @GetMapping("employeesByServiceProvider")
     public ResponseEntity<List<Employee>> getEmployeesByServiceProvider(@PathVariable Long serviceProviderId) {
         List<Long> serviceProviderEmployeeView = serviceProviderEmployeeViewRepository.findByServiceProviderId(serviceProviderId);
+        if (serviceProviderEmployeeView.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
         List<Employee> employeeList = new ArrayList<>();
 
         for (Long id: serviceProviderEmployeeView) {

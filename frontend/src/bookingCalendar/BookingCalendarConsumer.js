@@ -51,11 +51,11 @@ export default function BookingCalendarConsumer() {
         })
     }
 
-    const Employees = useFetch(() => fetchEmployees(serviceid));
+    const Employees = useFetch(() => fetchEmployees(serviceproviderid, serviceid));
 
     const ServiceProvider = useFetch(() => fetchServiceProvider(serviceproviderid));
 
-    const Service = useFetch(() => fetchService(serviceid));
+    const Service = useFetch(() => fetchService(serviceproviderid, serviceid));
 
     useEffect(() => {
         if (!selectedEmployee || !selectedDate || !ServiceProvider.data) return;
@@ -92,23 +92,22 @@ export default function BookingCalendarConsumer() {
 
 
 
-    const fetchEmployees = (serviceId) => {
+    const fetchEmployees = (serviceProviderId, serviceId) => {
+        const endpoint = `/rest/serviceProvider/${serviceProviderId}/employees/employeesByService/${serviceId}`;
 
-        const endpoint = '/rest/employeesByService'
-
-        return authService.fetchAuthenticated(`${backendHost}${endpoint}/${serviceId}`);
+        return authService.fetchAuthenticated(`${backendHost}${endpoint}`);
     }
 
     const fetchServiceProvider = (serviceProviderId) => {
-        const endpoint = '/rest/serviceProvider'
+        const endpoint = `/rest/serviceProvider/${serviceProviderId}`;
 
-        return authService.fetchAuthenticated(`${backendHost}${endpoint}/${serviceProviderId}`);
+        return authService.fetchAuthenticated(`${backendHost}${endpoint}`);
     }
 
-    const fetchService = (serviceId) => {
-        const endpoint = '/rest/service'
+    const fetchService = (serviceProviderId, serviceId) => {
+        const endpoint = `/rest/serviceProvider/${serviceProviderId}/services/${serviceId}`
 
-        return authService.fetchAuthenticated(`${backendHost}${endpoint}/${serviceId}`);
+        return authService.fetchAuthenticated(`${backendHost}${endpoint}`);
     }
 
     function closeModal() {

@@ -91,6 +91,8 @@ keycloak:
             - /rest/reservation/
             - /rest/bookingViews/*
             - /rest/customerReservationViews/*
+            - /rest/serviceProvider/*/employees/employeesByService/*
+            - /rest/serviceProvider/*/services/*
             - /rest/addReview/*
             - /rest/serviceProvidersViews/*
             - /rest/customers/*
