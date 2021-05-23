@@ -22,14 +22,14 @@ from service s
 
 create or replace view salon_view
 as
-select sp.id as id, sp.name as name, sp.phone_number as phone_nr, sp.email as email, a.street as street,
+select sp.id as id, sp.name as name, sp.phone_number as phone_nr, sp.email as email, a.street as street, sp.image_url as image_url,
        a.property_number as property_nr, a.city as city, a.post_code as post_code
 from service_provider sp
     join address a on a.id = sp.address_id;
 
 create or replace view booking_view
 as
-select sp.id as id, sp.name as name, a.city as city, a.street as street, a.property_number as property_nr
+select sp.id as id, sp.name as name, a.city as city, a.street as street, a.property_number as property_nr, sp.image_url as image_url
 from service_provider sp
     join address a on sp.address_id = a.id;
 

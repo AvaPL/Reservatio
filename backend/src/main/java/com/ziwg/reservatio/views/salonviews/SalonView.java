@@ -21,5 +21,6 @@ public class SalonView {
     private String property_nr;
     private String city;
     private String post_code;
+    private String imageUrl;
 
 }
