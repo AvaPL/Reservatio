@@ -34,7 +34,7 @@ class Statistics extends Component {
                 this.setState({numberLikes:number})
             })
 
-        authService.fetchAuthenticated(`${backendHost}/rest/bookingViews/${1}`)
+        authService.fetchAuthenticated(`${backendHost}/rest/bookingViews/${providerId}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error("Failed to fetch");
