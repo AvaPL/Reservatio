@@ -1,6 +1,7 @@
 package com.ziwg.reservatio.configuration;
 
 import com.ziwg.reservatio.entity.ServiceProvider;
+import com.ziwg.reservatio.views.bookingviews.BookingServicesView;
 import com.ziwg.reservatio.views.employees.EmployeeView;
 import com.ziwg.reservatio.views.reservations.ServiceProvidersView;
 import com.ziwg.reservatio.views.services.ServiceView;
@@ -14,6 +15,6 @@ public class RepositoryConfig implements RepositoryRestConfigurer {
 
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
-        config.exposeIdsFor(EmployeeView.class, ServiceView.class, ServiceProvidersView.class, ServiceProvider.class);
+        config.exposeIdsFor(EmployeeView.class, ServiceView.class, ServiceProvidersView.class, ServiceProvider.class, BookingServicesView.class);
     }
 }
