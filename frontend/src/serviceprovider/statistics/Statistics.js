@@ -52,7 +52,7 @@ class Statistics extends Component {
                         sumGrade = sumGrade + reviews[i].reservations[j].grade;
                     }
                 }
-                if(counter==0)
+                if(counter===0)
                     this.setState({averageRate: 0})
                 else
                     this.setState({averageRate: sumGrade/counter})
