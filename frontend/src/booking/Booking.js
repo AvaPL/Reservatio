@@ -35,7 +35,7 @@ export default function Booking(){
     state.datafav.then (response => {
       for(let i = 0; i< response.length; i++){
         state.favourites.push(response[i].id);
-        if(response[i].id == serviceproviderid){
+        if(response[i].id === parseInt(serviceproviderid)){
           state.favourite = true;
         }
       }
