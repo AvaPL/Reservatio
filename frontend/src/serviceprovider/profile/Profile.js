@@ -131,7 +131,7 @@ class Profile extends Component {
                         console.log(result);
                         this.setState({
                             showModalChange: false,
-                            src: `http://localhost:9000/reservatio/serviceprovider${authService.token?.entityId}.jpg?${global.Date.now()}`,
+                            src : `${this.state.data.imageUrl}?${global.Date.now()}`,
                             file: null
                         });
                     }
@@ -276,6 +276,7 @@ class Profile extends Component {
             <div className={'baseprofile'}>
                 {this.addNamePhoto()}
                 {this.addAddress()}
+                {this.state.data.imageUrl}
             </div>
         );
     }

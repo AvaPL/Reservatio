@@ -60,7 +60,7 @@ export default function Booking(){
         name: response.name,
         address: "ul. " + response.street + " " + response.property_nr + ", " + response.city,
         score: (sumGrade/counter).toFixed(1),
-        image: `http://localhost:9000/reservatio/serviceprovider${serviceproviderid}.jpg`,
+        image: response.imageUrl,
       }));
     });
   };

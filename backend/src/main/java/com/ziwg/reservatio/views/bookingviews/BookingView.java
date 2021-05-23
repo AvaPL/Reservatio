@@ -19,6 +19,7 @@ public class BookingView {
     private String city;
     private String street;
     private String property_nr;
+    private String imageUrl;
 
     @OneToMany(mappedBy = "bookingView")
     private List<BookingServicesView> services;
