@@ -13,8 +13,8 @@ export function useFetch(promiseFn, dependencyArray) {
                 setState({isLoading: false, data: raw});
             }
         })
-            .catch((err) => {
-                throw new Error(err)
+            .catch(() => {
+                setState({isLoading: false, data: []});
             })
 
         // eslint-disable-next-line react-hooks/exhaustive-deps

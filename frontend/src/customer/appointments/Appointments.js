@@ -34,7 +34,6 @@ class Appointments extends Component {
             .then(res => res._embedded.reservationViews)
             .then(reservations => {
                 this.setState({data:reservations});
-                //console.log(this.state.data)
                 for(let i=0;i<this.state.data.length;i++){
                     array = this.state.data[i].dateTime.substring(11,16).split(':')
                     seconds = (+array[0]) * 60 * 60 + (+array[1]) * 60  + this.state.data[i].duration * 60
@@ -43,14 +42,20 @@ class Appointments extends Component {
                     d.end = this.sec2time(seconds)
                     data[i]=d
                     this.setState({data})
+
+                    let test = this.state.data[i]._links.self.href.substring(this.state.data[i]._links.self.href.lastIndexOf("/")+1,this.state.data[i]._links.self.href.length)
+                    data = [...this.state.data]
+                    let t = {...data[i]}
+                    t.ID = test
+                    data[i]=t
+                    this.setState({data})
+
                     if(Date.now() < Date.parse(this.state.data[i].dateTime)){
-                        //console.log(this.state.data[i])
                         let joined = this.state.dataU.concat(this.state.data.splice(i,1))
                         this.setState({dataU: joined})
                         i--
                     }
                 }
-                //console.log(this.state.dataU)
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -110,6 +115,71 @@ class Appointments extends Component {
                 </Nav>
                 &nbsp;
                 {page}
+
+                <Modal show={this.state.open} onHide={()=>this.hideReview()}
+                       size="lg"
+                       aria-labelledby="contained-modal-title-vcenter"
+                       centered
+                       className="mod"
+                >
+                    <Modal.Header closeButton>
+                        <Modal.Title>Review</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form.Group controlId="exampleForm.ControlTextarea1">
+                            <Form.Label>
+                                <ToggleButtonGroup className="mod" type="radio"  name="options" defaultValue={1} onChange={(value) =>this.setState({reviewStar: value})}>
+                                    <ToggleButton variant="danger" value={1}>1</ToggleButton>
+                                    <ToggleButton variant="danger" value={2}>2</ToggleButton>
+                                    <ToggleButton variant="danger" value={3}>3</ToggleButton>
+                                    <ToggleButton variant="danger" value={4}>4</ToggleButton>
+                                    <ToggleButton variant="danger" value={5}>5</ToggleButton>
+                                </ToggleButtonGroup>
+                            </Form.Label>
+                            <Form.Control as="textarea"  rows={10}
+                                          onChange={(event) =>this.setState({reviewMessage: event.target.value})}
+                            />
+                        </Form.Group>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button
+                            variant="secondary"
+                            onClick={()=>{
+                                this.hideReview();
+                                this.setState({reviewMessage: ""});
+                                this.setState({reviewStar: ""});
+                            }}
+                        >
+                            Close
+                        </Button>
+                        <Button
+                            variant="danger"
+                            onClick={()=>{
+                                this.hideReview();
+                                console.log(`${backendHost}/rest/addReview/${this.state.clickedReservation}`);
+                                authService.fetchAuthenticated(`${backendHost}/rest/addReview/${this.state.clickedReservation}`,{
+                                    method: 'POST',
+                                    headers: {
+                                        'Accept': 'application/json',
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({grade: this.state.reviewStar, message: this.state.reviewMessage})
+                                }).then(response => {
+                                    if (!response.ok) {
+                                        throw new Error("Failed to post");
+                                    }
+                                    return response;
+                                })
+                                //TODO delete reload
+                                window.location.reload(false);
+                                this.setState({reviewMessage: ""});
+                                this.setState({reviewStar: ""});
+                            }}
+                        >
+                            Save Changes
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </>
         );
     }
@@ -126,8 +196,7 @@ class Appointments extends Component {
         const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN",
             "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
         ];
-        //console.log(this.state.data)
-        let tmp = this.state.data.sort((a,b)=>Date.parse(a.dateTime)-Date.parse(b.dateTime)).map((item, index) => (
+        let tmp = this.state.data.sort((a,b)=>Date.parse(b.dateTime)-Date.parse(a.dateTime)).map((item, index) => (
             <>
                 <div className="rcorners2 justify-content-center" key={index}>
                     <div className="container-fluid">
@@ -159,7 +228,7 @@ class Appointments extends Component {
                                 {item.dateTime.substring(11,16).concat('-',item.end)}
                             </div>
                             <div className="col">
-                                <Button variant="danger" onClick={()=>this.showReview()} disabled={item.reviewId}>
+                                <Button variant="danger" onClick={()=>{this.setState({clickedReservation: item.ID});this.showReview()}} disabled={item.reviewId}>
                                     Add review
                                 </Button>
                             </div>
@@ -175,72 +244,6 @@ class Appointments extends Component {
                 </div>
                 <div className="break"></div>
 
-                <Modal show={this.state.open} onHide={()=>this.hideReview()}
-                       size="lg"
-                       aria-labelledby="contained-modal-title-vcenter"
-                       centered
-                       className="mod"
-                >
-                    <Modal.Header closeButton>
-                        <Modal.Title>Review</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <Form.Group controlId="exampleForm.ControlTextarea1">
-                            <Form.Label>
-                                <ToggleButtonGroup className="mod" type="radio"  name="options" defaultValue={1} onChange={(value) =>this.setState({reviewStar: value})}>
-                                    <ToggleButton variant="danger" value={1}>1</ToggleButton>
-                                    <ToggleButton variant="danger" value={2}>2</ToggleButton>
-                                    <ToggleButton variant="danger" value={3}>3</ToggleButton>
-                                    <ToggleButton variant="danger" value={4}>4</ToggleButton>
-                                    <ToggleButton variant="danger" value={5}>5</ToggleButton>
-                                </ToggleButtonGroup>
-                            </Form.Label>
-                            <Form.Control as="textarea"  rows={10}
-                            onChange={(event) =>this.setState({reviewMessage: event.target.value})}
-                            />
-                        </Form.Group>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button
-                            variant="secondary"
-                            onClick={()=>{
-                                this.hideReview();
-                                this.setState({reviewMessage: ""});
-                                this.setState({reviewStar: ""});
-                            }}
-                        >
-                            Close
-                        </Button>
-                        <Button
-                            variant="danger"
-                            onClick={()=>{
-                                this.hideReview();
-                                console.log(`${backendHost}/rest/addReview/${item._links.self.href.substring(item._links.self.href.lastIndexOf("/")+1,item._links.self.href.length)}`);
-                                authService.fetchAuthenticated(`${backendHost}/rest/addReview/${item._links.self.href.substring(item._links.self.href.lastIndexOf("/")+1,item._links.self.href.length)}`,{
-                                    method: 'POST',
-                                    headers: {
-                                        'Accept': 'application/json',
-                                        'Content-Type': 'application/json',
-                                    },
-                                    body: JSON.stringify({grade: this.state.reviewStar, message: this.state.reviewMessage})
-                                }).then(response => {
-                                        if (!response.ok) {
-                                            throw new Error("Failed to post");
-                                        }
-                                        return response;
-                                    })
-                                    // .then(this.fetchData())
-                                    // .then(this.forceUpdate());
-                                //TODO delete reload
-                                window.location.reload(false);
-                                this.setState({reviewMessage: ""});
-                                this.setState({reviewStar: ""});
-                            }}
-                        >
-                            Save Changes
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
             </>
         ));
         return tmp;
@@ -250,10 +253,9 @@ class Appointments extends Component {
         const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN",
             "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
         ];
-        //console.log(this.state.dataU)
         return this.state.dataU.sort((a,b)=>Date.parse(a.dateTime)-Date.parse(b.dateTime)).map((item, index) => (
             <>
-                <div className="rcorners2 justify-content-center" key={index}>
+                <div className="rcorners2 justify-content-center" key={item.ID}>
                     <div className="container-fluid">
                         <div className="row">
                             <div className="col top">

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("${spring.data.rest.base-path}/serviceProvider/{serviceProviderId}/employees")
@@ -42,7 +43,7 @@ public class EmployeeController {
     public ResponseEntity<List<Employee>> getEmployeesByService(@PathVariable Long serviceId) {
         List<Long> serviceEmployeeView = serviceEmployeeViewRepository.findByServiceId(serviceId);
         if (serviceEmployeeView.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         List<Employee> employeeList = new ArrayList<>();
@@ -68,7 +69,7 @@ public class EmployeeController {
                 employeeList.add(employee);
         }
         if (employeeList.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         return new ResponseEntity<>(employeeList, HttpStatus.OK);
@@ -78,7 +79,7 @@ public class EmployeeController {
     public ResponseEntity<List<Employee>> getEmployeesByServiceProvider(@PathVariable Long serviceProviderId) {
         List<Long> serviceProviderEmployeeView = serviceProviderEmployeeViewRepository.findByServiceProviderId(serviceProviderId);
         if (serviceProviderEmployeeView.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         List<Employee> employeeList = new ArrayList<>();
@@ -105,7 +106,7 @@ public class EmployeeController {
             employeeList.add(employee);
         }
         if (employeeList.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
         return new ResponseEntity<>(employeeList, HttpStatus.OK);
