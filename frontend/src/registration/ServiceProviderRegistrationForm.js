@@ -21,16 +21,15 @@ class ServiceProviderRegistrationForm extends Component {
                     <Form.Group controlId="name">
                         <Form.Label className={authStyles.formLabel}>Name</Form.Label>
                         <Form.Control required maxLength={50} type="text" placeholder="Enter name"
-                                      onChange={this.props.handleChange}
-                                      onKeyDown={this.props.handleKeyDown}/>
+                                      onChange={this.props.handleChange}/>
                         <Form.Control.Feedback type="invalid">
                             Please enter your salon name.
                         </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId="email">
                         <Form.Label className={authStyles.formLabel}>Email address</Form.Label>
-                        <Form.Control required type="email" placeholder="Enter email" onChange={this.props.handleChange}
-                                      onKeyDown={this.props.handleKeyDown}/>
+                        <Form.Control required type="email" placeholder="Enter email"
+                                      onChange={this.props.handleChange}/>
                         <Form.Control.Feedback type="invalid">
                             Please enter a valid email address.
                         </Form.Control.Feedback>
@@ -38,8 +37,7 @@ class ServiceProviderRegistrationForm extends Component {
                     <Form.Group controlId="phoneNumber">
                         <Form.Label className={authStyles.formLabel}>Phone number</Form.Label>
                         <Form.Control required maxLength={30} pattern="\+?\d+" type="text"
-                                      placeholder="Enter phone number" onChange={this.props.handleChange}
-                                      onKeyDown={this.props.handleKeyDown}/>
+                                      placeholder="Enter phone number" onChange={this.props.handleChange}/>
                         <Form.Control.Feedback type="invalid">
                             Please enter a valid phone number.
                         </Form.Control.Feedback>
@@ -47,8 +45,7 @@ class ServiceProviderRegistrationForm extends Component {
                     <Form.Group controlId="city">
                         <Form.Label className={authStyles.formLabel}>City</Form.Label>
                         <Form.Control required maxLength={50} type="text" placeholder="Enter city"
-                                      onChange={this.props.handleChange}
-                                      onKeyDown={this.props.handleKeyDown}/>
+                                      onChange={this.props.handleChange}/>
                         <Form.Control.Feedback type="invalid">
                             Please enter your city.
                         </Form.Control.Feedback>
@@ -56,8 +53,7 @@ class ServiceProviderRegistrationForm extends Component {
                     <Form.Group controlId="postCode">
                         <Form.Label className={authStyles.formLabel}>Post code</Form.Label>
                         <Form.Control required maxLength={10} type="text" placeholder="Enter post code"
-                                      onChange={this.props.handleChange}
-                                      onKeyDown={this.props.handleKeyDown}/>
+                                      onChange={this.props.handleChange}/>
                         <Form.Control.Feedback type="invalid">
                             Please enter a valid post code.
                         </Form.Control.Feedback>
@@ -65,8 +61,7 @@ class ServiceProviderRegistrationForm extends Component {
                     <Form.Group controlId="street">
                         <Form.Label className={authStyles.formLabel}>Street name</Form.Label>
                         <Form.Control required maxLength={50} type="text" placeholder="Enter street name"
-                                      onChange={this.props.handleChange}
-                                      onKeyDown={this.props.handleKeyDown}/>
+                                      onChange={this.props.handleChange}/>
                         <Form.Control.Feedback type="invalid">
                             Please enter a valid street.
                         </Form.Control.Feedback>
@@ -74,8 +69,7 @@ class ServiceProviderRegistrationForm extends Component {
                     <Form.Group controlId="propertyNumber">
                         <Form.Label className={authStyles.formLabel}>Property number</Form.Label>
                         <Form.Control required maxLength={10} type="text" placeholder="Enter property number"
-                                      onChange={this.props.handleChange}
-                                      onKeyDown={this.props.handleKeyDown}/>
+                                      onChange={this.props.handleChange}/>
                         <Form.Control.Feedback type="invalid">
                             Please enter a valid property number.
                         </Form.Control.Feedback>
@@ -83,8 +77,7 @@ class ServiceProviderRegistrationForm extends Component {
                     <Form.Group controlId="password">
                         <Form.Label className={authStyles.formLabel}>Password</Form.Label>
                         <Form.Control required minLength={8} type="password" placeholder="Password"
-                                      onChange={this.props.handleChange}
-                                      onKeyDown={this.props.handleKeyDown}/>
+                                      onChange={this.props.handleChange}/>
                         <Form.Control.Feedback type="invalid">
                             A valid password must contain at least 8 characters.
                         </Form.Control.Feedback>
@@ -92,8 +85,7 @@ class ServiceProviderRegistrationForm extends Component {
                     <Form.Group controlId="repeatPassword">
                         <Form.Label className={authStyles.formLabel}>Repeat password</Form.Label>
                         <Form.Control required type="password" placeholder="Repeat password"
-                                      onChange={this.props.handleChange}
-                                      onKeyDown={this.props.handleKeyDown}/>
+                                      onChange={this.props.handleChange}/>
                         <Form.Control.Feedback type="invalid">
                             Password does not match the one above.
                         </Form.Control.Feedback>
@@ -101,7 +93,7 @@ class ServiceProviderRegistrationForm extends Component {
                     <Form.Group controlId="agreeToTerms">
                         <Form.Check required type="checkbox" className={styles.checkbox}
                                     label="I agree to the Terms of Services and Privacy Policy."
-                                    onChange={this.props.handleChange} onKeyDown={this.props.handleKeyDown}/>
+                                    onChange={this.props.handleChange}/>
                     </Form.Group>
                     <Button className={authStyles.button} type="submit"
                             onClick={() => this.setState({validated: true})}>Submit</Button>
