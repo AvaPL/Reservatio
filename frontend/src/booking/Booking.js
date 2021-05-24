@@ -233,7 +233,7 @@ function ReviewCard({name, score, review }) {
       <Row>
         <Col xs={6} md={3}>
           <div className={styles.reviewCardImgWrapper}>
-            <img src={"https://www.allianceplast.com/wp-content/uploads/2017/11/no-image.png"} alt={name} className={styles.reviewCardImg} />
+            <img src={"https://t3.ftcdn.net/jpg/01/65/63/94/360_F_165639425_kRh61s497pV7IOPAjwjme1btB8ICkV0L.jpg"} alt={name} className={styles.reviewCardImg} />
           </div>
         </Col>
         <Col xs={6} md={9} className={styles.serviceCardInfoColumn}>

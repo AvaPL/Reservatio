@@ -27,6 +27,7 @@
   position: absolute;
   transform: translate(25%);
   color: #F85F6A !important;
+  margin-top: 20px;
 }
 
 .rectangle {
@@ -45,9 +46,9 @@
   top: 69%;
   left:0;
   right:0;
-  margin:0 auto;
   text-align: center;
   z-index: -1;
+  margin: 50px auto 30px;
 }
 
 .timeTable {
@@ -56,9 +57,9 @@
   top: 66%;
   left:0;
   right:0;
-  margin:0 auto;
   text-align: center;
   z-index: -1;
+  margin: 10px auto 0;
   //transform: translate(-50%, -50%);
 }
 

@@ -27,7 +27,8 @@ const routes = [
     {name: "Statistics", path: "/statistics", component: Statistics, requiredRole: "service_provider"},
     {name: "Services", path: "/services", component: Services, requiredRole: "service_provider"},
     {name: "Employees", path: "/employees", component: Employees, requiredRole: "service_provider"},
-    {name: "Profile", path: "/profile", component: Profile, requiredRole: "service_provider"}
+    {name: "Profile", path: "/profile", component: Profile, requiredRole: "service_provider"},
+    {name: "Reservations", path: "/calendar", component: BookingCalendarServiceProvider, requiredRole: "service_provider"}
 ]
 
 class App extends Component {

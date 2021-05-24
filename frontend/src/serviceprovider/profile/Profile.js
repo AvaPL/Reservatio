@@ -276,7 +276,6 @@ class Profile extends Component {
             <div className={'baseprofile'}>
                 {this.addNamePhoto()}
                 {this.addAddress()}
-                {this.state.data.imageUrl}
             </div>
         );
     }

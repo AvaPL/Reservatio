@@ -116,7 +116,7 @@ class Appointments extends Component {
                 &nbsp;
                 {page}
 
-                <Modal show={this.state.open} onHide={()=>this.hideReview()}
+                <Modal show={this.state.open} onHide={()=>this.hideReview()} onShow={() => this.setState({reviewStar: 1})}
                        size="lg"
                        aria-labelledby="contained-modal-title-vcenter"
                        centered

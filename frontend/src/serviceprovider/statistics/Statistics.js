@@ -55,7 +55,7 @@ class Statistics extends Component {
                 if(counter===0)
                     this.setState({averageRate: 0})
                 else
-                    this.setState({averageRate: sumGrade/counter})
+                    this.setState({averageRate: +(sumGrade/counter).toFixed(2)})
                 this.setState({numberServices: counter})
             })
 
