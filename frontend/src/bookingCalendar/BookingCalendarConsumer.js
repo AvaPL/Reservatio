@@ -111,7 +111,7 @@ export default function BookingCalendarConsumer() {
     }
 
     function closeModal() {
-        history.push(`/booking/${serviceproviderid}`);
+        window.location.replace(`/booking/${serviceproviderid}`);
     }
 
     if (Employees.isLoading || ServiceProvider.isLoading || Service.isLoading) return null;

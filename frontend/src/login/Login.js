@@ -14,15 +14,15 @@ class Login extends Component {
         height: window.innerHeight,
         featuredSalons: [
             {
-                name: "uBasi",
+                name: "",
                 imageUrl: "https://pliki.propertydesign.pl/i/11/75/94/117594_r0_1140.jpg"
             },
             {
-                name: "Cool salon",
+                name: "",
                 imageUrl: "https://welpmagazine.com/wp-content/uploads/2020/10/Filament-hair-salon1.jpg"
             },
             {
-                name: "Another salon",
+                name: "",
                 imageUrl: "https://www.triss.com.pl/wp-content/uploads/granat-2768U-1.jpg"
             }
         ],
