@@ -64,16 +64,6 @@ class Profile extends Component {
         this.setState({[name]: value});
     }
 
-    clearData(){
-        document.getElementById('1').value = '';
-        document.getElementById('2').value = '';
-        document.getElementById('3').value = '';
-        document.getElementById('4').value = '';
-        document.getElementById('5').value = '';
-        document.getElementById('6').value = '';
-        document.getElementById('7').value = '';
-    }
-
     changePhoto(event){
         this.setState({
             file: event.target.files[0]
@@ -168,7 +158,7 @@ class Profile extends Component {
         if (this.state.isLoaded)
         return(
             <div className={'salon-address'}>
-                <Form className={'w-75'} noValidate validated={this.state.validated} onSubmit={this.onSubmit}>
+                <Form id={"data_form"} className={'w-75'} noValidate validated={this.state.validated} onSubmit={this.onSubmit}>
                     <Form.Group controlId="1">
                         <Form.Label className={authStyles.formLabel}>Name:</Form.Label>
                             <Form.Control className={'salon-address-input'} type="text" placeholder={this.state.data.name}
@@ -276,7 +266,7 @@ class Profile extends Component {
         })
             .then(() => console.log("Salon changed successfully"))
             .then(() => this.fetchSalon().then(this.processSalon(), this.handleError()))
-            // .then(this.clearData());
+            .then(document.getElementById("data_form").reset());
     }
 
     render() {
