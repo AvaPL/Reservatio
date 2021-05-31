@@ -57,8 +57,8 @@ class EditEmployeeModal extends Component {
         return (
             <Modal
                 show={this.props.show}
-                onShow={this.onShow}
-                onHide={this.props.onHide}
+                onShow={this.handleShow}
+                onHide={this.handleHide}
                 size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
@@ -84,6 +84,17 @@ class EditEmployeeModal extends Component {
         );
     }
 
+    handleShow = () => {
+        const checkedServices = this.state.checkedServices
+        this.props.employeeToEdit?.services.forEach(service => checkedServices.add(service.name))
+        this.setState({checkedServices: checkedServices});
+    };
+
+    handleHide = () => {
+        this.setState({checkedServices: new Set()})
+        this.props.onHide();
+    };
+
     onSubmit = event => {
         const form = event.currentTarget
         event.preventDefault()
@@ -100,18 +111,6 @@ class EditEmployeeModal extends Component {
             services: Array.from(this.state.checkedServices)
         }
         this.props.onClick(employeeToEdit);
-        this.setState({checkedServices: new Set()})
-    };
-
-    onShow = () => {
-        const checkedServices = this.state.checkedServices
-        this.props.employeeToEdit?.services.forEach(service => checkedServices.add(service.name))
-        this.setState({checkedServices: checkedServices});
-    };
-
-    handleHide = () => {
-        this.setState({checkedServices: new Set()})
-        this.props.onHide();
     };
 
     getModalBody() {

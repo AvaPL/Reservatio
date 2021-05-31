@@ -58,7 +58,7 @@ class EditServiceModal extends Component {
         return (
             <Modal
                 show={this.props.show}
-                onShow={this.onShow}
+                onShow={this.handleShow}
                 onHide={this.handleHide}
                 size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
@@ -85,7 +85,7 @@ class EditServiceModal extends Component {
         );
     }
 
-    onShow = () => {
+    handleShow = () => {
         const checkedEmployees = this.state.checkedEmployees
         this.props.serviceToEdit?.employees.forEach(employee => checkedEmployees.add(employee.name))
         this.setState({checkedEmployees: checkedEmployees});
@@ -114,8 +114,6 @@ class EditServiceModal extends Component {
             employees: Array.from(this.state.checkedEmployees)
         }
         this.props.onClick(serviceToEdit);
-        this.setState({checkedEmployees: new Set()})
-
     };
 
     getModalBody() {
