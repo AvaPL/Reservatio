@@ -57,7 +57,7 @@ export class AddEmployeeModal extends Component {
         return (
             <Modal
                 show={this.props.show}
-                onHide={this.props.onHide}
+                onHide={this.handleHide}
                 size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
@@ -94,7 +94,7 @@ export class AddEmployeeModal extends Component {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button className={`${styles.buttonSecondary} shadow-none`}
-                                onClick={this.props.onHide}>Cancel</Button>
+                                onClick={this.handleHide}>Cancel</Button>
                         <Button className={`${styles.buttonPrimary} shadow-none`} type="submit"
                                 onClick={() => this.setState({validated: true})}>Add</Button>
                     </Modal.Footer>
@@ -102,6 +102,11 @@ export class AddEmployeeModal extends Component {
             </Modal>
         );
     }
+
+    handleHide = () => {
+        this.setState({checkedServices: new Set()});
+        this.props.onHide();
+    };
 
     onSubmit = event => {
         const form = event.currentTarget
@@ -118,7 +123,6 @@ export class AddEmployeeModal extends Component {
             services: Array.from(this.state.checkedServices)
         }
         this.props.onClick(employeeToAdd);
-        this.setState({checkedServices: new Set()});
     };
 
     renderServices() {

@@ -57,7 +57,7 @@ class AddServiceModal extends Component {
         return (
             <Modal
                 show={this.props.show}
-                onHide={this.props.onHide}
+                onHide={this.handleHide}
                 size="lg"
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
@@ -110,7 +110,7 @@ class AddServiceModal extends Component {
                     </Modal.Body>
                     <Modal.Footer>
                         <Button className={`${styles.buttonSecondary} shadow-none`}
-                                onClick={this.props.onHide}>Cancel</Button>
+                                onClick={this.handleHide}>Cancel</Button>
                         <Button className={`${styles.buttonPrimary} shadow-none`} type="submit"
                                 onClick={() => this.setState({validated: true})}>Add</Button>
                     </Modal.Footer>
@@ -119,12 +119,28 @@ class AddServiceModal extends Component {
         );
     }
 
+    handleHide = () => {
+        this.setState({checkedEmployees: new Set()});
+        this.props.onHide();
+    };
+
     onSubmit = event => {
         const form = event.currentTarget
         event.preventDefault()
         event.stopPropagation()
         if (form.checkValidity())
             this.handleAddClicked();
+    };
+
+    handleAddClicked = () => {
+        let serviceToAdd = {
+            name: this.state.name,
+            description: this.state.description,
+            priceUsd: this.state.priceUsd,
+            durationMinutes: this.state.durationMinutes,
+            employees: Array.from(this.state.checkedEmployees)
+        }
+        this.props.onClick(serviceToAdd);
     };
 
     handleChange(event) {
@@ -151,19 +167,6 @@ class AddServiceModal extends Component {
         if (event.target.checked) checkedEmployees.add(eventId)
         else checkedEmployees.delete(eventId)
         this.setState({checkedEmployees: checkedEmployees});
-    };
-
-    handleAddClicked = () => {
-        let serviceToAdd = {
-            name: this.state.name,
-            description: this.state.description,
-            priceUsd: this.state.priceUsd,
-            durationMinutes: this.state.durationMinutes,
-            employees: Array.from(this.state.checkedEmployees)
-        }
-        this.props.onClick(serviceToAdd);
-        this.setState({checkedEmployees: new Set()})
-
     };
 }
 
