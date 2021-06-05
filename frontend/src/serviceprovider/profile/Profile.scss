@@ -77,6 +77,8 @@
   width: 47%;
   // Text
   font-size: 20px;
+  flex-basis: 0;
+  flex-grow: 1;
 }
 
 .salon-address-row-value{
@@ -95,7 +97,7 @@
   align-items: center;
   text-align: center;
   // Width
-  width: 47%;
+  min-width: 100%;
   // Text
   font-size: 20px;
 }
@@ -125,4 +127,33 @@
   min-width: 30px;
   // Height
   max-height: 30px;
+}
+
+.load{
+  color: #F85F6A;
+  font-size: 30px;
+}
+
+.buttonPrimary {
+  background-color: #F85F6A !important;
+  border: none !important;
+
+  &:hover {
+    background-color: #D9535D !important;
+  }
+
+  &:active {
+    background-color: #D9535D !important;
+  }
+}
+
+.buttonSecondary {
+  background-color: transparent !important;
+  border: none !important;
+  color: black !important;
+}
+
+.button_address_holder{
+  text-align: center;
+  margin-bottom: 5px;
 }
