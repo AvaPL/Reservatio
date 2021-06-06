@@ -23,7 +23,7 @@ from service s
 create or replace view salon_view
 as
 select sp.id as id, sp.name as name, sp.phone_number as phone_nr, sp.email as email, a.street as street, sp.image_url as image_url,
-       a.property_number as property_nr, a.city as city, a.post_code as post_code
+       a.property_number as property_nr, a.city as city, a.post_code as post_code, SUBSTRING(CAST(sp.open_hours as char), 1, 5) as open_hour, SUBSTRING(CAST(sp.close_hours as char), 1, 5) as close_hour
 from service_provider sp
     join address a on a.id = sp.address_id;
 
@@ -35,7 +35,7 @@ from service_provider sp
 
 create or replace view booking_services_view
 as
-select s.id as id, s.name as name, s.price_usd as price, s.service_provider_id as service_provider_id
+select s.id as id, s.name as name, s.price_usd as price, s.service_provider_id as service_provider_id, s.duration_minutes as duration
 from service s;
 -- services views
 create

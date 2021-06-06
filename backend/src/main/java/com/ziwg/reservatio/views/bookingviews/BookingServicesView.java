@@ -18,6 +18,7 @@ public class BookingServicesView {
     private Long id;
     private String name;
     private Float price;
+    private Integer duration;
 
     @ManyToOne
     @JoinColumn(name = "service_provider_id")

@@ -12,4 +12,6 @@ public class ServiceProviderToUpdate {
     private String property_nr;
     private String city;
     private String post_code;
+    private String open_hour;
+    private String close_hour;
 }

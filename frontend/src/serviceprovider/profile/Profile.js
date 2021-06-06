@@ -200,6 +200,22 @@ class Profile extends Component {
                                 Please enter valid phone number.
                             </Form.Control.Feedback>
                     </Form.Group>
+                    <Form.Group controlId="8">
+                        <Form.Label className={authStyles.formLabel}>Open Hour:</Form.Label>
+                        <Form.Control className={'salon-address-input'} type="text" maxLength={5} pattern="([0-1]?[0-9]|2[0-3]):[0-5][0-9]" placeholder={this.state.data.open_hour}
+                                      onChange={event => this.changeHandler(event)}/>
+                        <Form.Control.Feedback type="invalid">
+                            Please enter valid open hour.
+                        </Form.Control.Feedback>
+                    </Form.Group>
+                    <Form.Group controlId="9">
+                        <Form.Label className={authStyles.formLabel}>Close Hour:</Form.Label>
+                        <Form.Control className={'salon-address-input'} type="text" maxLength={5} pattern="([0-1]?[0-9]|2[0-3]):[0-5][0-9]" placeholder={this.state.data.close_hour}
+                                      onChange={event => this.changeHandler(event)}/>
+                        <Form.Control.Feedback type="invalid">
+                            Please enter valid close hour.
+                        </Form.Control.Feedback>
+                    </Form.Group>
                     <div className={'button_address_holder'}>
                         <Button className={`buttonPrimary shadow-none`} type="submit"
                                 onClick={() => this.setState({validated: true})}>Change info</Button>
@@ -227,6 +243,8 @@ class Profile extends Component {
             property_nr : document.getElementById('5').value,
             city : document.getElementById('2').value,
             post_code : document.getElementById('3').value,
+            open_hour : document.getElementById('8').value,
+            close_hour : document.getElementById('9').value
         };
         if (changeddata.name === '') {
             changeddata.name = this.state.data.name;
@@ -248,6 +266,12 @@ class Profile extends Component {
         }
         if (changeddata.post_code === '') {
             changeddata.post_code = this.state.data.post_code;
+        }
+        if (changeddata.open_hour === '') {
+            changeddata.open_hour = this.state.data.open_hour;
+        }
+        if (changeddata.close_hour === '') {
+            changeddata.close_hour = this.state.data.close_hour;
         }
 
         const serviceProviderId = authService.token?.entityId;
