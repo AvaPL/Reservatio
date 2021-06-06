@@ -22,5 +22,7 @@ public class SalonView {
     private String city;
     private String post_code;
     private String imageUrl;
+    private String open_hour;
+    private String close_hour;
 
 }

@@ -193,6 +193,7 @@ export default function Booking(){
                 serviceproviderid={serviceproviderid}
                 serviceid={service.id}
                 priceUsd={service.price}
+                duration = {service.duration}
               />
             </Col>
           ))}
@@ -205,7 +206,7 @@ export default function Booking(){
   );
 }
 
-function ServiceCard({ name, priceUsd, serviceid, serviceproviderid }) {
+function ServiceCard({ name, priceUsd, duration, serviceid, serviceproviderid }) {
   return (
     <Card body className={styles.marginBottom}>
       <Row>
@@ -213,7 +214,8 @@ function ServiceCard({ name, priceUsd, serviceid, serviceproviderid }) {
           <Card.Title className={styles.serviceCardTitle}>{name}</Card.Title>
         </Col>
         <Col xs={5} sm={4} className={styles.serviceCardPriceInfoCol}>
-            {priceUsd} $
+          {priceUsd}$
+          Time:{duration}min.
             <Button
                 className={styles.button}
                 variant="primary"

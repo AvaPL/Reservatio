@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalTime;
 import java.util.Optional;
 
 @CrossOrigin
@@ -57,6 +58,13 @@ public class ServiceProviderController {
         serviceProviderToEdit.get().setAddress(address);
         serviceProviderToEdit.get().setPhoneNumber(serviceProviderToUpdate.getPhone_nr());
         serviceProviderToEdit.get().setEmail(serviceProviderToUpdate.getEmail());
+
+        String[] openHour = serviceProviderToUpdate.getOpen_hour().split(":");
+        String[] closeHour = serviceProviderToUpdate.getClose_hour().split(":");
+        LocalTime openHourLT = LocalTime.of(Integer.parseInt(openHour[0].replaceFirst("^0+(?!$)", "")), Integer.parseInt(openHour[1].replaceFirst("^0+(?!$)", "")), 0);
+        LocalTime closeHourLT = LocalTime.of(Integer.parseInt(closeHour[0].replaceFirst("^0+(?!$)", "")), Integer.parseInt(closeHour[1].replaceFirst("^0+(?!$)", "")), 0);
+        serviceProviderToEdit.get().setOpenHours(openHourLT);
+        serviceProviderToEdit.get().setCloseHours(closeHourLT);
 
         serviceProviderRepository.save(serviceProviderToEdit.get());
         return new ResponseEntity<>(HttpStatus.OK);
