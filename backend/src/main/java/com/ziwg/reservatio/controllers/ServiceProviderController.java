@@ -63,6 +63,14 @@ public class ServiceProviderController {
         String[] closeHour = serviceProviderToUpdate.getClose_hour().split(":");
         LocalTime openHourLT = LocalTime.of(Integer.parseInt(openHour[0].replaceFirst("^0+(?!$)", "")), Integer.parseInt(openHour[1].replaceFirst("^0+(?!$)", "")), 0);
         LocalTime closeHourLT = LocalTime.of(Integer.parseInt(closeHour[0].replaceFirst("^0+(?!$)", "")), Integer.parseInt(closeHour[1].replaceFirst("^0+(?!$)", "")), 0);
+
+        if (openHourLT.isAfter(closeHourLT))
+        {
+            LocalTime pom = openHourLT;
+            openHourLT = closeHourLT;
+            closeHourLT = pom;
+        }
+
         serviceProviderToEdit.get().setOpenHours(openHourLT);
         serviceProviderToEdit.get().setCloseHours(closeHourLT);
 
