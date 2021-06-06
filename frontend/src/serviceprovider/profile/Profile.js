@@ -205,7 +205,7 @@ class Profile extends Component {
                         <Form.Control className={'salon-address-input'} type="text" maxLength={5} pattern="([0-1]?[0-9]|2[0-3]):[0-5][0-9]" placeholder={this.state.data.open_hour}
                                       onChange={event => this.changeHandler(event)}/>
                         <Form.Control.Feedback type="invalid">
-                            Please enter valid open hour.
+                            Please enter valid open hour. Use HH:MM format.
                         </Form.Control.Feedback>
                     </Form.Group>
                     <Form.Group controlId="9">
@@ -213,7 +213,7 @@ class Profile extends Component {
                         <Form.Control className={'salon-address-input'} type="text" maxLength={5} pattern="([0-1]?[0-9]|2[0-3]):[0-5][0-9]" placeholder={this.state.data.close_hour}
                                       onChange={event => this.changeHandler(event)}/>
                         <Form.Control.Feedback type="invalid">
-                            Please enter valid close hour.
+                            Please enter valid close hour. Use HH:MM format.
                         </Form.Control.Feedback>
                     </Form.Group>
                     <div className={'button_address_holder'}>
